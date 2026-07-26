@@ -1,6 +1,6 @@
 # FDE Skill Portfolio — Design
 
-**Status:** Waves 1–3 built — `fde-core` complete at 27 skills, 5 shared references, 3 per-stack references. Wave 4 archetype packs designed, not yet written.
+**Status:** Complete — all 43 skills built across five packs. Validated in five runs; see [VALIDATION.md](VALIDATION.md).
 **Scope:** A portfolio of Claude Code skills that let one engineer be dropped into any team, in any organization, on any stack, and carry work from *requirement* to *go-live*.
 **How to use what's built:** [USAGE.md](USAGE.md) · **Cold-start test results:** [VALIDATION.md](VALIDATION.md)
 

@@ -2,8 +2,8 @@
 
 An operator's manual for the forward deployed engineer skill portfolio.
 
-**Currently built:** Waves 1–3 — 27 skills (the complete `fde-core` pack), five shared references, three per-stack references.
-**Design for the full 43-skill portfolio:** [DESIGN.md](DESIGN.md) · **Cold-start test results:** [VALIDATION.md](VALIDATION.md)
+**Currently built:** All 43 skills across five packs — `fde-core` (30) plus four optional archetype packs.
+**Why it's shaped this way:** [DESIGN.md](DESIGN.md) · **What was tested:** [VALIDATION.md](VALIDATION.md)
 
 ---
 
@@ -17,19 +17,21 @@ The skills don't teach Claude to write Java or configure Kubernetes; it can alre
 
 ## Install
 
-Clone or copy this directory, then either:
-
-**As a plugin (recommended — portable, shareable with a team)**
+Install `fde-core` always. Add the pack that matches the engagement archetype `fde-orient` identifies.
 
 ```bash
 claude plugin install /path/to/FDE-Claude/fde-core
 ```
 
-**Or symlink the skills directly into your user skills directory**
+| Pack | Install when the engagement is | Skills |
+|---|---|---|
+| `fde-core` | **always** | 30 |
+| `fde-data` | analytics, ETL, warehouse, reporting, schema change | 3 |
+| `fde-migration` | replatform, EOL upgrade, cutover, decommission | 4 |
+| `fde-platform` | integration, contract design, COTS (SAP/Salesforce/ServiceNow) | 3 |
+| `fde-operate` | running what you shipped — pipelines, watch, observability | 3 |
 
-```bash
-ln -s /path/to/FDE-Claude/fde-core/skills/* ~/.claude/skills/
-```
+The split is deliberate. Skill descriptions load into context every session whether they fire or not — all 43 cost roughly 6k tokens, `fde-core` alone about 4k. Installing only what the engagement needs protects the budget `context-strategy` exists to defend.
 
 Verify they loaded by asking Claude Code: *"what FDE skills do you have?"*
 
@@ -234,15 +236,11 @@ That's an honest artifact. What the skills won't do is silently reconstruct a mi
 
 ## Working with the skills that aren't built yet
 
-`fde-core` is complete — 27 skills covering every engagement type at the level that applies universally. Sixteen skills remain, all in the optional archetype packs from [DESIGN.md §9.1](DESIGN.md):
+All 43 are built. What remains untested is most of their **procedures** — see [VALIDATION.md](VALIDATION.md) for the precise coverage statement.
 
-- **`fde-data`** — `data-pipeline-work`, `data-archaeology`, `db-change-management`
-- **`fde-migration`** — `cutover-plan`, `decommission-plan`, `dependency-upgrade`, `refactor-seams`
-- **`fde-platform`** — `cots-configuration`, `integration-adapter`, `contract-design`
-- **`fde-operate`** — `observability-gap`, `ci-forensics`, `post-deploy-watch`
-- Plus `git-archaeology`, `nfr-validation`, `security-compliance-check`
+Triggering is well covered (42/43 correct, no false fires) and four skills have been exercised against real repositories. The rest are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. They will get their real test on a real engagement.
 
-These fire on specific engagement types rather than universally, which is why they were deferred.
+If you hit a skill whose procedure doesn't fit your situation, that's a finding worth recording — it's better evidence than anything in the design document.
 
 Where you hit a gap, Claude Code handles the work perfectly well without a skill — you just don't get the procedure or the artifact template. Two things help:
 
