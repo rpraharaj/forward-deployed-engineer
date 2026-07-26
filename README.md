@@ -31,8 +31,8 @@ That's what this is. 43 skills encoding what an experienced forward deployed eng
 ## Quick start
 
 ```bash
-git clone https://github.com/<you>/fde-skills.git
-claude plugin install ./fde-skills/fde-core
+git clone https://github.com/rpraharaj/forward-deployed-engineer.git
+claude plugin install ./forward-deployed-engineer/fde-core
 ```
 
 Then just describe your situation. No need to name a skill:
@@ -44,10 +44,10 @@ Then just describe your situation. No need to name a skill:
 **Install `fde-core` always. Add the pack that matches the work:**
 
 ```bash
-claude plugin install ./fde-skills/fde-data        # ETL, warehouse, schema change
-claude plugin install ./fde-skills/fde-migration   # replatform, EOL upgrade, cutover, decommission
-claude plugin install ./fde-skills/fde-platform    # integration, contracts, SAP/Salesforce/ServiceNow
-claude plugin install ./fde-skills/fde-operate     # pipelines, post-deploy watch, observability
+claude plugin install ./forward-deployed-engineer/fde-data        # ETL, warehouse, schema change
+claude plugin install ./forward-deployed-engineer/fde-migration   # replatform, EOL upgrade, cutover, decommission
+claude plugin install ./forward-deployed-engineer/fde-platform    # integration, contracts, SAP/Salesforce/ServiceNow
+claude plugin install ./forward-deployed-engineer/fde-operate     # pipelines, post-deploy watch, observability
 ```
 
 The split isn't cosmetic. Skill descriptions load into context **every session** whether they fire or not — all 43 cost roughly 6k tokens. Install what the engagement needs.
