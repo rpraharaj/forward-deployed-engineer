@@ -63,7 +63,12 @@ Read the CI configuration properly at this point. It is the single most informat
 
 How does anything get *into* this system? Everything else hangs off the answer.
 
-**Read `references/entry-points-by-stack.md` and use the section matching what step 2 detected.** Do not run patterns for a stack you didn't detect — they return few or no hits, and "few hits" reads as "few entry points" rather than "wrong search." That failure is silent and it poisons every downstream artifact.
+**Read `references/entry-points-by-stack.md` before searching.** Two checks in that reference come *before* any language-specific pattern, and skipping either produces a confidently wrong map:
+
+- **Are the entry points in the code at all?** In config-driven enterprise platforms they are declared in XML, YAML, or database tables, and every code search returns near-zero while the system has thousands of routes. The file-extension counts from step 1 are the tell: config files rivalling source files means config-driven.
+- **Does this codebase use its framework's vocabulary?** Mature systems wrap framework primitives in house abstractions, so the canonical interface name returns nothing.
+
+Then use the section matching what step 2 detected. Do not run patterns for a stack you didn't detect — "few hits" reads as "few entry points" rather than "wrong search," and that failure is silent.
 
 Before searching, establish the **deployment shape** — service, CLI, library, batch, event consumer, serverless. Entry points differ more by shape than by language, and most real systems are two or three shapes at once. A CLI tool has no HTTP routes, and concluding it has no entry points because you searched for routes is a mistake you won't notice.
 

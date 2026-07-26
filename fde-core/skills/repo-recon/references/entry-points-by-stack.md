@@ -22,6 +22,58 @@ For a **library**, "entry point" means the public API. Read the module's export 
 
 ---
 
+## First: are the entry points even in the code?
+
+**Check this before running any language search.** In a config-driven system they are not, and every pattern below will return near-zero while the system has thousands of entry points.
+
+Older enterprise platforms — and many still in production — declare behavior in **configuration rather than code**. The Java, C#, or PHP you find is generic machinery that *reads* the configuration; the application lives in XML, YAML, or database tables. Searching the source finds the engine, not the application.
+
+Observed in testing: an ERP framework returned **0** hits for every Java HTTP-routing annotation. It has **3,113 routes** declared across 18 `controller.xml` files, plus 3,479 XML-declared services and 843 XML-declared entities.
+
+### The detection heuristic
+
+Compare the volume of configuration to the volume of source:
+
+```bash
+git ls-files | sed 's/.*\.//' | sort | uniq -c | sort -rn | head -12
+```
+
+If XML/YAML/JSON files **rival or exceed** the source files in count, treat the system as config-driven until proven otherwise. In the case above it was 1,035 XML against 1,169 Java — near parity, and a clear signal.
+
+### Finding the declared surface
+
+Look for repeated declaration elements rather than for code:
+
+```bash
+# Which config elements repeat at scale? Those are the declarations.
+grep -rhoE "<[a-z-]+ (name|id|entity-name|uri)=" --include="*.xml" . 2>/dev/null \
+  | sed 's/ .*//' | sort | uniq -c | sort -rn | head -15
+
+# Same idea for YAML/JSON-configured platforms
+grep -rhoE "^\s{0,4}[a-z][a-z-]+:" --include="*.y*ml" . 2>/dev/null | sort | uniq -c | sort -rn | head -15
+```
+
+The high-count elements are your entry points. Common names: `request-map`, `service`, `action`, `route`, `handler`, `entity`, `screen`, `form`, `job`, `flow`, `step`, `rule`.
+
+### Then find the loader
+
+Identify the code that reads the configuration — it's the bridge between the declarative surface and the executable one, and it's what you actually trace through:
+
+```bash
+grep -rln "controller\.xml\|services\.xml\|\.parse(\|DocumentBuilder\|Unmarshaller\|SAXReader\|yaml.load" \
+  --include="*.java" --include="*.cs" --include="*.py" . | head -10
+```
+
+Knowing the loader tells you how a declaration becomes a call, which is what `trace-the-flow` needs — see its `following-indirection.md`.
+
+### Configuration held in a database
+
+The hardest variant. Some platforms keep routing, rules, or workflow definitions in database tables, so **neither the code nor the repository contains the behavior**. Signals: tables named `*_CONFIG`, `*_RULE`, `*_WORKFLOW`, `*_ROUTE`, or an admin UI for editing behavior.
+
+Where this is the case, say so plainly and record it as an access requirement. No amount of source reading substitutes for a read on that table, and a system map that omits it is describing the engine while claiming to describe the application.
+
+---
+
 ## When the standard search returns zero
 
 **Read this before concluding a capability is absent.** It is the most common way this reference produces a confidently wrong answer.

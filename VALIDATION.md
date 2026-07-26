@@ -177,13 +177,77 @@ Single task, single repo, single run. Not a benchmark — a first data point, an
 
 ---
 
+## Run 6 — Apache OFBiz, testing a stated prediction
+
+**Date:** 2026-07-26 · **Subject:** `apache/ofbiz-framework`, 6,384 files
+**Why this subject:** run 5 ended with an explicit prediction — that a *"mainframe-adjacent, COBOL, or heavily XML-configured legacy Java system would likely surface a third class of assumption, very plausibly around config-driven wiring."* OFBiz is an ERP framework whose entities, services, and routes are all XML-declared. This run existed to test that prediction rather than to confirm the portfolio works.
+
+### The prediction was correct, and the defect is the worst found so far
+
+| | Java-annotation search | Reality |
+|---|---|---|
+| HTTP routes | **0** | **3,113** `<request-map>` across 18 `controller.xml` |
+| Services | — | **3,479** `<service name=>` |
+| Entities | — | **843** `<entity entity-name=>` |
+
+Every JVM entry-point pattern in the reference returned near-zero on a system with thousands of entry points. The map it would have produced — "5 mains, 4 controllers" — is not merely incomplete; it describes a different system.
+
+**Neither previous fix caught it.** The run-1 fix (detect the language) passed: this *is* Java. The run-2 fix (find the house abstraction) failed too, because OFBiz services are XML declarations pointing at static methods, not Java interfaces with implementors. This is a genuinely distinct third class.
+
+### The three classes, as a progression
+
+| Run | Lesson |
+|---|---|
+| 1 — Rust | Don't assume the **language** |
+| 2 — .NET | Don't assume the codebase uses its **framework's vocabulary** |
+| 3 — OFBiz | Don't assume the entry points are **in the code at all** |
+
+Each is one level more fundamental than the last, and each was invisible until a repository that violated it was tried. That progression is the strongest argument in this document for testing against real systems rather than reasoning about them.
+
+### The fix
+
+Again a method rather than a pattern, added as the **first** check in `entry-points-by-stack.md`, ahead of every language section:
+
+1. **Detection heuristic** — compare config-file volume to source volume. Here: 1,035 XML against 1,169 Java, near parity, an unmissable signal once you look.
+2. **Generic declaration discovery** — grep for repeated `<element name=>` patterns and rank by frequency.
+3. **Find the loader** — the code that reads the config is the bridge to the executable surface.
+4. **Database-held configuration** — the hardest variant, where neither code nor repository contains the behavior. Recorded as an access requirement rather than guessed at.
+
+`repo-recon`'s body now names both pre-checks explicitly, before any language pattern runs.
+
+**Verified on re-test**, using only the generic technique with no OFBiz knowledge: flagged config-driven from file counts, surfaced `<service>` (3,479), `<request-map>` (3,250), and `<screen>` (1,749) as the entry points, and identified `ConfigXMLReader.java` and `RequestHandler.java` as the loaders.
+
+### Passes worth recording
+
+Several earlier fixes were exercised and held:
+
+- **Shallow-clone guard** — clone was `--depth 500`; `git rev-parse --is-shallow-repository` returned true, so churn analysis is correctly suppressed rather than reported from a truncated history
+- **CI triage** — picked `gradle.yml` (7 build commands) out of 5 workflows
+- **Sub-manifest count** — 5 `build.gradle` files against a depth-2 survey finding 2
+- **Centralized build config** (a run-2 .NET fix) generalized to Gradle's `buildSrc`
+- **`env-bootstrap` steps 1–3** ran clean: real build workflow, `gradlew` wrapper, Gradle 8.14.5 pin, Java source/target compatibility. **First procedural test of a skill other than `repo-recon`.**
+
+---
+
 ## Still untested
 
-Honest coverage statement after three runs:
+Honest coverage statement after six runs.
 
-- **Triggering:** all 27 skills tested and passing. This is now the best-covered dimension.
-- **Procedure exercised:** `repo-recon`, `stack-detection`, `blast-radius` (ring 1 and the DI caveat), and the entry-points reference, across two stacks.
-- **Not exercised:** the procedures of the other 24 skills. Most are engagement-shaped — they need requirements, stakeholders, an environment, and a release decision, none of which a clone provides. `env-bootstrap` and `characterization-tests` could be tested against a clone and haven't been.
-- **Two stacks, both modern.** Rust and .NET. A mainframe-adjacent, COBOL, or heavily XML-configured legacy Java system would likely surface a third class of assumption — very plausibly around config-driven wiring, which is where enterprise systems hide the most behavior.
-- **No comparative run.** The skill-creator workflow calls for running the same prompt with and without the skill to confirm the skill changes the outcome. Both runs tested whether the *procedure* is correct, not whether it beats the baseline.
-- **No human check of a produced artifact.** The real test for a system map is whether someone who knows the codebase reads it and finds no material error. That needs a reader who knows the system.
+**Well covered:**
+- **Triggering** — all 43 skills, 42/43 first-choice, zero false fires on near-miss queries
+- **`repo-recon` and `stack-detection`** — three stacks (Rust workspace, .NET monolith, XML-configured Java), nine defects found and fixed
+- **Baseline comparison** — one task, one repo, one run. A data point, not a benchmark.
+
+**Partially covered:**
+- **`blast-radius`** — ring 1 and the grep-insufficiency caveat only. Rings 3–6 untested.
+- **`env-bootstrap`** — steps 1–3 on one project. No build was actually run to completion.
+
+**Not covered — 37 of 43 skills.** Most are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. `characterization-tests` remains the most testable of these against a clone and still hasn't been.
+
+**Remaining known gaps:**
+
+- **No human check of a produced artifact.** The real test for a system map is whether someone who knows the codebase reads it and finds no material error. That needs a reader who knows the system, and it is the single most valuable test still outstanding.
+- **One baseline comparison.** Enough to establish the skill changes the outcome; not enough to characterize by how much, or on which kinds of task.
+- **A fourth class of assumption probably exists.** Three runs found three distinct classes, each invisible until a repository violated it. The reasonable prior is that a fourth is waiting — likely candidates are code-generated systems where the source is an artifact, mainframe/COBOL with copybook-defined structure, or low-code platforms where there is no repository at all.
+
+That last point is the honest summary of this whole document: every round of testing found something reasoning alone had missed, including a defect predicted in advance and still not preventable without the test.

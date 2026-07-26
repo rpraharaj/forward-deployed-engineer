@@ -48,7 +48,7 @@ That's a narrower claim than "the skills make it work," and it's the honest one.
 
 No `SKILL.md` body names Maven, npm, or pytest. Skills detect the stack, then load a matching reference — entry points across nine ecosystems, test harnesses, indirection mechanisms.
 
-This was not free. Cold-start testing against a Rust workspace and a .NET monolith found six and three defects respectively, most of them language assumptions leaking into skill bodies that the design explicitly forbade. Stating a principle in a design document does not enforce it.
+This was not free. Cold-start testing against a Rust workspace, a .NET monolith, and an XML-configured Java ERP found ten defects across three runs — each a more fundamental assumption than the last: don't assume the language, don't assume the framework's vocabulary, don't assume the entry points are in the code at all. Stating a principle in a design document does not enforce it.
 
 ---
 
@@ -58,7 +58,7 @@ This was not free. Cold-start testing against a Rust workspace and a .NET monoli
 |---|---|
 | Skills | 43 across 5 packs |
 | Triggering | 42/43 correct, 0 false fires on near-miss queries |
-| Procedures exercised | 4 of 43, across 2 stacks |
+| Procedures exercised | 6 of 43, across 3 stacks |
 | Baseline comparison | 1 task, 1 repo |
 
 The honest gap is that most skills' *procedures* remain untested — they're engagement-shaped and need stakeholders, an environment, and a release decision that a cloned repository can't provide. [VALIDATION.md](VALIDATION.md) states this precisely.
