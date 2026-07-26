@@ -1,0 +1,6 @@
+{
+  "name": "fde-data",
+  "version": "0.1.0",
+  "description": "FDE archetype pack for data and analytics engagements: pipelines, warehouse work, schema archaeology, and production database change.",
+  "author": { "name": "FDE Portfolio" }
+}

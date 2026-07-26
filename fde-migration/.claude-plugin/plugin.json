@@ -1,0 +1,6 @@
+{
+  "name": "fde-migration",
+  "version": "0.1.0",
+  "description": "FDE archetype pack for migration, replatform, upgrade, and decommission engagements: seams, cutover, dual-run, and turning systems off.",
+  "author": { "name": "FDE Portfolio" }
+}

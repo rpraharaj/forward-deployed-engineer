@@ -1,0 +1,6 @@
+{
+  "name": "fde-platform",
+  "version": "0.1.0",
+  "description": "FDE archetype pack for integration and vendor-platform engagements: contract design, adapters against undocumented interfaces, and COTS configuration.",
+  "author": { "name": "FDE Portfolio" }
+}

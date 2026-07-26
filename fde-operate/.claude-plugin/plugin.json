@@ -1,0 +1,6 @@
+{
+  "name": "fde-operate",
+  "version": "0.1.0",
+  "description": "FDE archetype pack for running what you shipped: pipeline forensics, post-deploy watch, and closing observability gaps.",
+  "author": { "name": "FDE Portfolio" }
+}
