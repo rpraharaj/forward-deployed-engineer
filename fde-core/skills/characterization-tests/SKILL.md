@@ -24,16 +24,17 @@ The counter-intuitive part, and the part people resist: **you pin the bugs too.*
 
 ## When it doesn't
 
-- The code is already well covered — check what the existing tests actually assert, then proceed
+- The code is already well covered — check what the existing tests actually assert, and whether CI runs them. Doctest examples in a docstring are not coverage unless the suite collects them.
 - Genuinely new code — write real tests asserting intended behavior
 - You're deliberately changing behavior and the current behavior is agreed wrong — still consider pinning the *surrounding* behavior you're not changing
 - Throwaway code
 
 ## Prerequisites
 
-- `.fde/01-environment.md` — you need to be able to run tests
+- `.fde/01-environment.md` — you need to be able to run tests. If missing, run `env-bootstrap` or stop; you cannot characterize without a runner.
 - `.fde/04-feasibility.md` — the change sites you're protecting
-- Read `references/harness-by-stack.md` for the framework and approval-test tooling matching your stack
+- Detect the stack from `01-environment.md` or `../_shared/stack-detection.md`, then read `references/harness-by-stack.md`. Do not assume `repo-recon` already ran.
+- `refactor-seams` *(fde-migration)* is a common successor, not a prerequisite.
 
 ## Procedure
 
@@ -103,9 +104,14 @@ Run the characterization suite. Anything that goes red is a behavior change — 
 
 ## Output
 
-Tests in the repository's own convention, plus a short note in `.fde/06b-change-log.md`:
+Tests in the repository's own convention, plus a short note in `.fde/06b-change-log.md`. Create that file with the standard header if it does not exist.
 
 ```markdown
+# Change log
+
+**Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
+**Status:** live · **Source revision:** <repo>@<short SHA>
+
 ## Characterization — <component>
 
 **Protecting:** `RefundCalculator` before multi-currency change
@@ -136,3 +142,9 @@ Tests in the repository's own convention, plus a short note in `.fde/06b-change-
 **Mixing the tests into the change commit.** The reviewer needs to see the net exists before assessing the trapeze act.
 
 **Treating them as permanent.** These are scaffolding. Once real behavior is specified and properly tested, characterization tests can be replaced by tests that assert intent. Note that in the handover rather than leaving them to be mistaken for a specification.
+
+**Snapshots that depend on the clock, locale, or map iteration order.** They go red for reasons unrelated to the change and get deleted. Freeze time and seed anything random.
+
+**Treating doctests as a suite.** `>>>` examples in the function docstring are documentation unless CI runs `--doctest-modules` (or the language equivalent). Observed: `ordinalize` had doctests and no unit tests; pytest did not collect them.
+
+**Trusting an existing test by its name.** Read the assertion. A test named `test_asciify` that checks `len(b) == len(b)` pins nothing.

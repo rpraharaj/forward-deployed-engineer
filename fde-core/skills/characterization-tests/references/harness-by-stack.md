@@ -9,7 +9,7 @@ Before choosing anything, establish what's already there.
 ```bash
 # What test framework does the build actually pull in?
 grep -rniE "junit|testng|xunit|nunit|pytest|unittest|jest|vitest|mocha|rspec|minitest|testify|criterion" \
-  pom.xml build.gradle* package.json *.csproj pyproject.toml requirements*.txt Gemfile go.mod Cargo.toml 2>/dev/null | head
+  pom.xml build.gradle* package.json *.csproj pyproject.toml requirements*.txt Gemfile go.mod Cargo.toml mix.exs 2>/dev/null | head
 
 # Copy the shape of a neighbouring test
 find . -path "*test*" -name "*.*" -newer README.md 2>/dev/null | head -5
@@ -32,6 +32,7 @@ The core technique for characterization: write the output to a file, review it o
 | Go | golden files — `-update` flag convention | Idiomatic and widely used; no library needed |
 | Rust | `insta` | Excellent; `cargo insta review` |
 | Ruby | `approvals` gem, or RSpec + fixture compare | |
+| Elixir | Hand-rolled compare of captured output; no stock snapshot lib | Tests live in `*_test.exs`; ExUnit. No approval framework unless the repo already has one. |
 
 **Watch the auto-update trap.** Snapshot frameworks can regenerate baselines on failure. If that runs in CI, a behavior change silently rewrites the baseline and the test never fails. Confirm update mode is off in CI before relying on any of these.
 
@@ -50,6 +51,7 @@ Hand-rolling is entirely reasonable: serialize the output, compare to a committe
 | Go | Interfaces + hand-written fakes; `httptest` for HTTP |
 | Rust | Trait objects + hand-written fakes; `mockall` if already present |
 | Ruby | RSpec doubles; `webmock` for HTTP |
+| Elixir | Pass fakes into the function; `Mox` only if the repo already uses it |
 
 **Prefer hand-written fakes over mocks for characterization.** A mock asserts *interactions*, which couples the test to the current implementation — exactly what you're about to refactor. A fake supplies *behavior* and lets the implementation change freely underneath. Characterization tests that break during a pure refactor have failed at their one job.
 
@@ -97,5 +99,6 @@ To confirm your tests actually reach the change site:
 | Go | `go test -cover -coverprofile` |
 | Rust | `cargo-llvm-cov`, `tarpaulin` |
 | Ruby | SimpleCov |
+| Elixir | `mix test --cover` / ExCoveralls if present |
 
 Where no tool is available or installing one is blocked, a temporary `throw`/`panic` at the change site proves reachability just as well: run the tests, confirm they fail, remove it.

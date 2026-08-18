@@ -1,6 +1,6 @@
 ---
 name: ownership-map
-description: Work out who owns what and who decides, from evidence rather than the org chart - CODEOWNERS, commit authorship over time, review patterns, ticket references, and directory-level activity - distinguishing who wrote the code from who maintains it now. Use before asking anyone for anything, before opening a PR in an unfamiliar repo, when you need a reviewer or an approver, when nobody seems to own a component, or when a change crosses a team boundary. An FDE's technical work most often dies for organizational reasons, and this is the map that prevents it.
+description: Work out who owns what and who decides, from evidence rather than the org chart - CODEOWNERS, commit authorship over time, review patterns, ticket references, and directory-level activity - distinguishing who wrote the code from who maintains it now. Use when you need a reviewer, an approver, or an interview subject, when nobody seems to own a component, or when a change crosses a team boundary. Do not use for a single well-known owner, or as a gate before every question.
 ---
 
 # Ownership map
@@ -17,8 +17,8 @@ The repository will tell you, though. Commit history, review patterns, and direc
 
 ## When this applies
 
-- Before asking anyone for anything substantial
-- You need a reviewer, an approver, or an answer
+- You need a reviewer, an approver, or an interview subject
+- A change crosses a team boundary
 - A change crosses a team boundary
 - Nobody seems to own a component
 - Preparing for `knowledge-interview` — this tells you whom to interview
@@ -38,9 +38,10 @@ The repository will tell you, though. Commit history, review patterns, and direc
 ### 1. Read the declared ownership first
 
 ```bash
-find . -name "CODEOWNERS" -o -name "OWNERS" -o -name ".github/CODEOWNERS" 2>/dev/null
-cat CODEOWNERS .github/CODEOWNERS 2>/dev/null
+git ls-files | grep -E '(^|/)(CODEOWNERS|OWNERS)$'
 ```
+
+Read every hit. Nested package owners are common; the root file is not the whole story.
 
 Also check for a service catalogue (`catalog-info.yaml` for Backstage), a `docs/owners.md`, or team metadata in the CI config.
 
@@ -80,9 +81,9 @@ A module where the top contributor differs from the rest of the repo is owned by
 Areas with no active contributor at all. These matter disproportionately:
 
 ```bash
-# Last touch per area
-for d in <top-level dirs>; do
-  echo "$(git log -1 --format=%ad --date=short -- "$d") $d"
+# Last touch per top-level area — list dirs first, do not invent the names
+for d in $(find . -mindepth 1 -maxdepth 1 -type d -not -name '.git' -not -name 'node_modules'); do
+  echo "$(git log -1 --format=%ad --date=short -- "$d" 2>/dev/null) $d"
 done | sort
 ```
 
@@ -106,6 +107,10 @@ Much of this isn't in the repository. It comes from asking — and "who normally
 Practical and frequently the difference between a two-hour answer and a two-week one: preferred channel, timezone, whether they prefer a ticket or a direct message, and whether they want to be asked before a PR appears or after.
 
 Teams differ sharply on that last point. A PR arriving unannounced in a repository whose team expects a conversation first reads as presumptuous, and you only get to make that mistake once per team.
+
+### 7. Stop
+
+Map the components in **engagement scope** (from the charter or system map), not the whole monorepo. You have enough when every in-scope component has a current maintainer *or* is flagged orphan, and you know who must review a PR in the area you will touch.
 
 ## Output template
 

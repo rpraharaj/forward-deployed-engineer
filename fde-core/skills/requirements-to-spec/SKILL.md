@@ -76,6 +76,8 @@ Each criterion needs to be:
 
 Cover the unhappy paths deliberately. Most ambiguity hides there: what happens on a partial refund, an unsupported currency, a missing rate, a refund against an order predating the change. Each is a decision somebody must make, and if you don't ask, code will make it silently.
 
+**Undecided unhappy paths stay Open questions, not acceptance criteria.** A spec that invents the behavior so the table looks complete is fiction, and `feasibility-probe` will ground the fiction.
+
 ### 5. Write down what's out of scope
 
 The most valuable and most skipped section.

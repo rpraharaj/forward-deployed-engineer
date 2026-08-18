@@ -179,18 +179,18 @@ Three skills load per-stack references on detection rather than hardcoding a lan
 
 ## Workflows by engagement type
 
-`fde-orient` picks one of these and sequences it. Wave 1 covers the **bold** steps; the rest are designed but not yet built.
+`fde-orient` picks one of these and sequences it. All 43 skills exist; install the pack the charter names before sequencing pack skills.
 
 | Engagement | Path |
 |---|---|
-| **Brownfield enhancement** | **orient → access → env-bootstrap → recon → requirements → feasibility → trace → blast-radius → characterization → safe-change → verification → deploy-runbook → release-readiness** — fully covered |
-| **Assessment only** | **orient → recon → feasibility → blast-radius** → stakeholder-brief |
-| **Rescue / stabilization** | incident-triage → **orient** *(reclassify honestly)* → **env-bootstrap → recon** → ci-forensics → **verification-plan** → stabilize → delivery-plan |
-| **Integration** | **orient → recon** *(both sides)* → contract discovery → integration-adapter → **blast-radius → release-readiness** |
-| **Migration / replatform** | **orient → recon** → data-archaeology → solution-design → cutover-plan → refactor-seams → dual-run → cutover |
-| **Spike / PoC** | **orient** → timeboxed **feasibility** → stakeholder-brief |
+| **Brownfield enhancement** | orient → access → env-bootstrap → recon → requirements → feasibility → trace → blast-radius → characterization → safe-change → verification → deploy-runbook → release-readiness |
+| **Assessment only** | orient → recon → feasibility → blast-radius → stakeholder-brief |
+| **Rescue / stabilization** | incident-triage → orient *(reclassify honestly)* → env-bootstrap → recon → ci-forensics *(fde-operate)* → verification-plan → delivery-plan |
+| **Integration** | orient → recon *(both sides)* → integration-adapter → contract-design *(fde-platform)* → blast-radius → release-readiness |
+| **Migration / replatform** | orient → recon → data-archaeology *(fde-data)* → solution-design → cutover-plan → refactor-seams *(fde-migration)* → post-deploy-watch |
+| **Spike / PoC** | orient → timeboxed feasibility → stakeholder-brief |
 
-Brownfield enhancement — the most common engagement type — is now covered end to end.
+Brownfield enhancement — the most common engagement type — is covered end to end in `fde-core`.
 
 Twelve archetypes are defined in total — see [DESIGN.md §7](DESIGN.md). If none fits, `fde-orient` will say so rather than force one, and compose a path from first principles.
 
@@ -234,18 +234,15 @@ That's an honest artifact. What the skills won't do is silently reconstruct a mi
 
 ---
 
-## Working with the skills that aren't built yet
+## What is built vs what is tested
 
-All 43 are built. What remains untested is most of their **procedures** — see [VALIDATION.md](VALIDATION.md) for the precise coverage statement.
+All 43 skills are built. What remains untested is most of their **procedures** — see [VALIDATION.md](VALIDATION.md) for the precise coverage statement.
 
-Triggering is well covered (42/43 correct, no false fires) and four skills have been exercised against real repositories. The rest are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. They will get their real test on a real engagement.
+Triggering is well covered (42/43 correct, no false fires) and four skills have been exercised against real repositories. The rest are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide.
 
 If you hit a skill whose procedure doesn't fit your situation, that's a finding worth recording — it's better evidence than anything in the design document.
 
-Where you hit a gap, Claude Code handles the work perfectly well without a skill — you just don't get the procedure or the artifact template. Two things help:
-
-- Keep writing to `.fde/` with the same header and confidence conventions, so the artifact chain stays intact
-- Note which gaps you hit repeatedly — that's the real evidence for what Wave 2 should contain, better than the design's guess
+Where a procedure does not fit, Claude Code handles the work without a skill — you just don't get the artifact template. Keep writing to the workspace with the same header and confidence conventions so the chain stays intact.
 
 ---
 

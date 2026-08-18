@@ -31,8 +31,10 @@ The gap between them is where migrations fail and reports go quietly wrong.
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter's Location, else `.fde/`, else `../<repo>-fde/`. Do not invent a second workspace.
 - `.fde/02-system-map.md` — where data lives
 - Read access to a database, ideally. Where you have none, this skill still works from migrations and code, at reduced confidence — say so.
+- Understand the organization's data policy before running aggregates. Shape queries live in core `test-data-strategy` step 2 — run those, do not paste a second dialect-specific copy.
 
 ## Procedure
 
@@ -40,9 +42,9 @@ The gap between them is where migrations fail and reports go quietly wrong.
 
 ```bash
 # Migrations, in order, are the schema's history
-find . -path "*migration*" -o -path "*/db/*" -name "*.sql" | sort | tail -40
-# ORM definitions
-grep -rn "@Entity\|@Table\|class.*Base\|db.Model\|Schema(" --include="*.*" . | head -30
+find . \( -path "*migration*" -o -path "*/db/*" \) -name "*.sql" | sort | tail -40
+# ORM / schema declarations — bind EXT from the language mix, do not assume one framework
+grep -rn "CREATE TABLE\|Schema(\|DbSet\|entity-name" --include="*.$EXT" --include="*.sql" --include="*.xml" . | head -30
 ```
 
 Read migrations **in order**, not just the current state. The sequence tells you what changed and roughly when, which is the closest thing to a changelog the data model has. A column added and then made nullable three migrations later usually marks a failed assumption worth knowing about.
@@ -60,27 +62,16 @@ You're looking for: which columns are actually used (many won't be), which combi
 
 ### 3. Ask the data what's true
 
-The highest-value step, and it needs only aggregate queries — usually permitted where row access isn't. See `test-data-strategy` for the same technique applied to generation.
+The highest-value step, and it needs only aggregate queries — usually permitted where row access isn't. **Run the shape queries in core `test-data-strategy` step 2** (ANSI `SUM(CASE)` form). Add only what that set does not cover:
 
 ```sql
--- Null rates: which "required" columns are really optional, and vice versa
-SELECT COUNT(*) AS total,
-       COUNT(*) FILTER (WHERE postcode IS NULL) AS null_postcode,
-       COUNT(*) FILTER (WHERE postcode = '')   AS empty_postcode
-FROM addresses;
-
--- The live vocabulary, including values the code no longer writes
-SELECT status, COUNT(*), MIN(created_at), MAX(created_at)
-FROM orders GROUP BY status ORDER BY 2 DESC;
-
 -- Implied foreign keys: does every child actually have a parent?
 SELECT COUNT(*) FROM orders o
 LEFT JOIN customers c ON o.customer_id = c.id WHERE c.id IS NULL;
 
--- Cardinality distribution — finds the pagination and N+1 assumptions
-SELECT n, COUNT(*) FROM (
-  SELECT customer_id, COUNT(*) AS n FROM orders GROUP BY customer_id
-) t GROUP BY n ORDER BY 1 DESC LIMIT 20;
+-- When each enum value was live — maps onto undocumented eras
+SELECT status, COUNT(*), MIN(created_at), MAX(created_at)
+FROM orders GROUP BY status ORDER BY 2 DESC;
 ```
 
 `MIN`/`MAX` of `created_at` per enum value is the single most informative query here. It tells you *when* each value was in use, which usually maps directly onto a system era nobody documented.
@@ -105,6 +96,8 @@ A schema is an interface. Reporting tools, ETL jobs, warehouse syncs, partner ex
 
 This flows straight into `blast-radius` ring 5. Where you can't establish the consumers, say so — it's the most common source of a silent break.
 
+**Stop** when you can name grain, live vocabulary, eras, undeclared relationships, and other readers for the tables in scope — or each of those is `[unverified]`. Do not model the warehouse.
+
 ## Output
 
 Write to `.fde/traces/data-model.md`:
@@ -113,6 +106,7 @@ Write to `.fde/traces/data-model.md`:
 # Data model — <area>
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
+**Status:** draft
 **Source revision:** <repo>@<SHA> · **Data observed:** <environment>, <date>
 **Confidence:** <schema read vs. data queried vs. inferred>
 

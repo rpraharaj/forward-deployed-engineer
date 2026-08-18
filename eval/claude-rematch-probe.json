@@ -1,0 +1,20 @@
+{
+  "date": "2026-08-17",
+  "claude_cli": "2.1.174",
+  "result": "blocked",
+  "attempts": [
+    {
+      "path": "claude -p default / --model sonnet|opus|fable",
+      "outcome": "CLI remaps aliases to third-party OpenRouter ids (ling-3.0-flash:free, GLM-5.2-FP8). Those ids error: may not exist or no access."
+    },
+    {
+      "path": "claude -p with ANTHROPIC_BASE_URL and ANTHROPIC_API_KEY unset (OAuth)",
+      "outcome": "401 OAuth access token has been revoked."
+    },
+    {
+      "path": "OpenRouter chat/completions with anthropic/claude-sonnet-4.5 using the env OpenRouter-shaped key",
+      "outcome": "401 User not found. Model catalog lists 32 Claude ids; this key cannot invoke them."
+    }
+  ],
+  "not_a_rematch": "No query was scored. Run 8 (grok --single) remains the post-edit trigger number."
+}

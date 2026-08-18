@@ -34,6 +34,8 @@ Three forms. Use whichever is cheapest for the reader to re-check.
 | Command + output | Runtime behavior, counts, versions | `` `mvn -v` → Apache Maven 3.9.6, Java 17.0.9 `` |
 | Person + date | Anything learned from a human | `per J. Okafor (platform team), 2026-03-14` |
 
+A person+date citation is **not** `[confirmed]`. Confirmed means you read the code or ran it. Human recollection is `[inferred]` until verified, or `[unverified]` if it is memory of a design from years ago.
+
 Cite the **narrowest thing that supports the claim**. `src/billing/` is not a citation; `src/billing/Invoice.kt:212` is. A reader who has to search for what you meant will stop checking, and then the discipline has bought nothing.
 
 Include the commit SHA in the artifact header. A precise line citation against an unstated revision goes stale silently, which is worse than no citation at all — the reader trusts it and it has drifted.

@@ -45,14 +45,15 @@ Work requirement by requirement. Steps 1–5 per requirement, then 6–8 across 
 Search before assuming absence. In a large enterprise system the capability frequently exists — partially, under a different name, disabled behind a flag, or built for a neighbouring use case two years ago.
 
 ```bash
-# Search the domain vocabulary, not your own words for it
-grep -rin "refund.*currenc\|currenc.*refund" --include="*.java" --include="*.sql" . | head -20
+# Bind EXT from stack-detection. Search the domain vocabulary, not your words for it.
+# If a large repo returns near-zero hits, you searched the wrong language — see stack-detection "Searching after detection".
+grep -rin "<term>.*<term>" --include="*.$EXT" --include="*.sql" . | head -20
 
 # Feature flags often hide finished work
-grep -rn "featureFlag\|toggle\|isEnabled\|LaunchDarkly\|unleash" --include="*.*" . | head -20
+grep -rn "featureFlag\|toggle\|isEnabled\|LaunchDarkly\|unleash" . | head -20
 
 # History: someone may have tried already
-git log --all --oneline --grep="currency" -i | head -20
+git log --all --oneline --grep="<term>" -i | head -20
 ```
 
 Four possible answers, and they have very different costs:
@@ -71,8 +72,8 @@ Finding that a requirement is already satisfied is a first-class outcome. Report
 Name **specific files**, with lines. This is the section people will actually use, and vagueness here defeats the purpose of the whole exercise.
 
 ```bash
-grep -rn "class RefundService\|interface Refund" --include="*.java" . | head
-grep -rl "RefundRequest" --include="*.java" . | head -20
+grep -rn "RefundService\|interface Refund\|IRefund" --include="*.$EXT" . | head
+grep -rl "RefundRequest" --include="*.$EXT" . | head -20
 ```
 
 Distinguish three things, because they carry different risk:
@@ -103,12 +104,12 @@ The core of the skill. Run this checklist against every requirement that looked 
 
 **Shared component with many callers.** The change is one line; verifying twenty callers is the work.
 ```bash
-grep -rl "RefundService" --include="*.java" . | wc -l
+grep -rl "RefundService" --include="*.$EXT" . | wc -l
 ```
 
-**Schema change on a large or replicated table.** Row count, replication, and downstream consumers determine whether this is a migration or a project. See `db-change-management`.
+**Schema change on a large or replicated table.** Row count, replication, and downstream consumers determine whether this is a migration or a project. See `db-change-management` *(fde-data — if that pack is not installed, record the lock risk as `[unverified]`).*
 ```bash
-grep -rn "CREATE TABLE refunds\|@Table(name = \"refunds\")" --include="*.sql" --include="*.java" .
+grep -rn "CREATE TABLE refunds\|refunds" --include="*.sql" --include="*.$EXT" .
 ```
 
 **Crosses a published contract.** OpenAPI specs, `.proto` files, event schemas, WSDLs, published client libraries. Once consumers exist outside the repository, versioning and coordination dominate the cost.
@@ -129,7 +130,7 @@ git log --format="%an" --since="18 months ago" -- path/to/area | sort | uniq -c 
 
 **Duplicated logic.** Change one, miss four. Search for the *behavior*, not the class name — copy-paste rarely keeps the name.
 ```bash
-grep -rn "amount \* rate\|convertCurrency\|applyFxRate" --include="*.java" . | head -20
+grep -rn "amount \* rate\|convertCurrency\|applyFxRate" --include="*.$EXT" . | head -20
 ```
 
 **Generated code.** If the change site is generated, editing it is wrong and will be silently reverted by the next build. Find the generator and the schema it reads.
@@ -141,7 +142,7 @@ grep -rln "DO NOT EDIT\|auto-generated\|@Generated" --include="*.*" . | head
 
 **Long feedback loop.** A change to a nightly batch that can only be verified overnight has a hard floor on iteration speed regardless of how simple the code is.
 
-**COTS customization.** On a vendor platform, ask whether the customization survives the next upgrade. If not, the true cost includes re-doing it every upgrade, forever. See `cots-configuration`.
+**COTS customization.** On a vendor platform, ask whether the customization survives the next upgrade. If not, the true cost includes re-doing it every upgrade, forever. See `cots-configuration` *(fde-platform — if not installed, record the question in Unknowns).*
 
 ### 5. Assign a confidence
 
@@ -165,7 +166,9 @@ While in the code you'll see cheaper routes the spec didn't consider: an existin
 
 Record these as observations, not decisions — `solution-design` evaluates them properly. But surface them now, because the plan is still soft and this is the moment they can change it.
 
-### 8. Do not estimate
+### 8. Stop, then do not estimate
+
+When each requirement has a shape, named sites, and a confidence tag, **stop**. Remaining uncertainty belongs in the Unknowns table as tracked work, not as another hour of grep.
 
 Deliberate separation. This skill establishes what's true about the code; `estimation` turns that into ranges and dates, and does so knowing the team's velocity, availability, and the org's overheads — none of which are in the codebase.
 
@@ -226,9 +229,6 @@ Write to `.fde/04-feasibility.md`:
 
 ## Already satisfied
 <Requirements the system already meets. Free scope reduction — say so clearly.>
-
-## What this document is not
-This is not an estimate. It establishes what is true about the code. Sizing belongs to `estimation`, which needs team velocity and availability this document does not contain.
 ```
 
 ## Common traps
@@ -244,7 +244,5 @@ This is not an estimate. It establishes what is true about the code. Sizing belo
 **Averaging confidence.** One `[unverified]` requirement among five is not "mostly confident" — it's the whole risk, and flattening it is the failure mode this skill was built to prevent.
 
 **Being talked into a number.** Give the shape. A number produced in the room becomes the commitment, and you will not get to revise it.
-
-**Probing forever.** This is bounded. When each requirement has a shape, sites, and a confidence tag, stop — remaining uncertainty belongs in the Unknowns table as tracked work, not as more investigation now.
 
 **Silence about the cheaper route.** If you spotted one, say so while the plan is still soft. Two weeks later it's a criticism instead of a contribution.

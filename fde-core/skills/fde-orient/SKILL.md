@@ -34,8 +34,17 @@ None. This is the entry point.
 
 ### 1. Check for an existing engagement
 
+Resolve the workspace the same way later skills will — see `../_shared/workspace-conventions.md`. Do not assume `.fde/` in the repo root.
+
 ```bash
-cat .fde/00-engagement.md 2>/dev/null || ls -d .fde ../*-fde 2>/dev/null
+# Order: $FDE_WORKSPACE, then .fde/, then a sibling *-fde/
+if [ -n "$FDE_WORKSPACE" ] && [ -f "$FDE_WORKSPACE/00-engagement.md" ]; then
+  cat "$FDE_WORKSPACE/00-engagement.md"
+elif [ -f .fde/00-engagement.md ]; then
+  cat .fde/00-engagement.md
+else
+  ls -d .fde ../*-fde 2>/dev/null
+fi
 ```
 
 If a charter exists, read it. Decide with the user whether this is a **continuation** (read it, proceed, don't restart) or a **re-orientation** (the engagement changed; supersede the old charter rather than editing it, so the history of what was believed survives).
@@ -63,30 +72,30 @@ Ask these in **one batch**, not as an interrogation. Skip any you can already an
 5. **What access do you have right now?** Feeds straight into `access-and-onboarding`.
 6. **What's already been tried, and by whom?** Rescue engagements almost always have a history, and repeating a failed approach is a fast way to lose the room.
 
-### 4. Separate the stated ask from the real problem
+### 4. Flag stated ask vs suspected real problem — do not workshop the spec
 
-Ask yourself, and where sensible ask the user: **what happens if we don't do this?** The answer usually reveals the actual need, which is often adjacent to the request rather than identical to it.
+Ask yourself, and where it is cheap to ask the user: **what happens if we don't do this?** Record the stated ask verbatim and, if they differ, one sentence on the suspected real problem.
 
-A request to "make the nightly batch faster" may be a need to have figures ready for a 7am meeting — solvable by running it earlier, or by producing a partial result first, neither of which involves optimizing anything.
-
-Record both. The stated ask is what you were asked; the real problem is what you'll be judged on. Where they differ, say so explicitly in the charter — that sentence is often the highest-value thing an FDE writes all engagement.
+Do **not** turn this into requirements gathering. Unpacking actors, acceptance criteria, and out-of-scope is `requirements-to-spec`. Orient that spends the sponsor's patience on the spec is why they go quiet when you need them later.
 
 ### 5. Classify the archetype
 
-| Archetype | Signals | Characteristic path |
+Only name skills that exist. Pack skills are marked; if that pack is not installed, say so and substitute the nearest core skill rather than inventing a procedure.
+
+| Archetype | Pack to install | Characteristic path |
 |---|---|---|
-| **Brownfield enhancement** | Existing maintained system, new feature | recon → requirements → feasibility → trace → blast-radius → characterization → safe-change → verify → release |
-| **Greenfield in an existing org** | Nothing built yet, but platform constraints exist | recon *(of the platform)* → requirements → nfr-baseline → solution-design → build → verify → deploy-runbook |
-| **Integration** | Two systems that must talk | recon *(both sides)* → contract discovery → integration-adapter → blast-radius → verify → release |
-| **Migration / replatform** | Move from X to Y, data moves, both run for a while | recon → data-archaeology → solution-design → **cutover-plan** → refactor-seams → dual-run → cutover → post-deploy-watch |
-| **Rescue / stabilization** | Late, broken, or a team in distress | incident-triage → recon → ci-forensics → verification-plan → stabilize → delivery-plan *(replan honestly)* |
-| **Assessment only** | "Tell us what you think" — no code change expected | recon → feasibility → blast-radius → stakeholder-brief |
-| **Version / EOL upgrade** | External deadline, fixed scope, vendor support ending | recon → dependency-upgrade → blast-radius → characterization → incremental cutover → verify |
-| **Data / analytics** | Pipelines, warehouse, reporting | recon → data-archaeology → data-pipeline-work → test-data-strategy → reconciliation → release |
-| **COTS / package** | SAP, Salesforce, ServiceNow, Workday, Guidewire | recon *(of platform config)* → requirements → cots-configuration → change-control → cutover |
-| **Decommission** | Turning something off | recon → consumer discovery → decommission-plan → staged darkening → archival |
-| **Regulatory / audit-driven** | Obligation or audit finding drives it, date is fixed | requirements *(from the obligation)* → feasibility → nfr-baseline → change-control → evidence pack |
-| **Spike / PoC** | Timeboxed, answer a question, decision is the output | timeboxed feasibility → stakeholder-brief |
+| **Brownfield enhancement** | core | `repo-recon` → `requirements-to-spec` → `feasibility-probe` → `trace-the-flow` → `blast-radius` → `characterization-tests` → `safe-change` → `verification-plan` → `release-readiness` |
+| **Greenfield in an existing org** | core | `repo-recon` *(of the platform)* → `requirements-to-spec` → `nfr-baseline` → `solution-design` → build → `verification-plan` → `deploy-runbook` |
+| **Integration** | **`fde-platform`** | `repo-recon` *(both sides)* → `integration-adapter` → `contract-design` → `blast-radius` → `verification-plan` → `release-readiness` |
+| **Migration / replatform** | **`fde-migration` + `fde-data`** | `repo-recon` → `data-archaeology` → `solution-design` → `cutover-plan` → `refactor-seams` → `post-deploy-watch` |
+| **Rescue / stabilization** | **`fde-operate`** | `incident-triage` → `repo-recon` → `ci-forensics` → `verification-plan` → `delivery-plan` *(replan honestly; do not build until it is stable)* |
+| **Assessment only** | core | `repo-recon` → `feasibility-probe` → `blast-radius` → `stakeholder-brief` |
+| **Version / EOL upgrade** | **`fde-migration`** | `repo-recon` → `dependency-upgrade` → `blast-radius` → `characterization-tests` → `deploy-runbook` *(staged)* → `verification-plan` |
+| **Data / analytics** | **`fde-data`** | `repo-recon` → `data-archaeology` → `data-pipeline-work` → `test-data-strategy` → `release-readiness` |
+| **COTS / package** | **`fde-platform`** | `repo-recon` *(of platform config)* → `requirements-to-spec` → `cots-configuration` → `change-control-navigation` → `cutover-plan` *(if `fde-migration` is also installed)* |
+| **Decommission** | **`fde-migration`** | `repo-recon` → `decommission-plan` |
+| **Regulatory / audit-driven** | core | `requirements-to-spec` *(from the obligation)* → `feasibility-probe` → `nfr-baseline` → `change-control-navigation` → `release-readiness` |
+| **Spike / PoC** | core | timeboxed `feasibility-probe` → `stakeholder-brief` |
 
 Two notes worth carrying: **regulatory work** inverts the usual negotiation — the date is fixed and scope only appears negotiable, so `escalation-and-renegotiation` fires earlier than elsewhere. **COTS work** surprises engineers most: the binding constraint is the vendor's upgrade path, and the right answer is often "don't build that."
 
@@ -98,20 +107,28 @@ Two notes worth carrying: **regulatory work** inverts the usual negotiation — 
 
 Two decisions, both easy now and awkward later:
 
-- **Location** — `.fde/` in the repo root by default. Some organizations won't accept a new top-level directory; then use `../<repo>-fde/`. Record whichever you chose.
+- **Location** — `.fde/` in the repo root by default. Honour `FDE_WORKSPACE` if already set. Some organizations won't accept a new top-level directory; then use `../<repo>-fde/`. Record whichever you chose, and write every later artifact there.
 - **Committed or ignored** — committed artifacts are inheritable and reviewable; ignored ones avoid a hygiene argument with a team you just met. Ask, don't assume.
 
 Then create the workspace and write the charter. See `../_shared/workspace-conventions.md`.
 
-### 7. Sequence the work
+### 7. Sequence the work, and name the pack
 
-Produce a short ordered list of the next three to five skills, each with a reason. Not the whole archetype path — a plan beyond about five steps in an unfamiliar organization is fiction, because step two will change it.
+Produce a short ordered list of the next three to five **installed** skills, each with a reason. Not the whole archetype path — a plan beyond about five steps in an unfamiliar organization is fiction, because step two will change it.
 
 `access-and-onboarding` comes first in almost every engagement, because access lead times are the one constraint you cannot compress later. If it's not first, be able to say why.
 
+If the archetype needs `fde-data`, `fde-migration`, `fde-platform`, or `fde-operate`, tell the user to install that pack before those skills can run:
+
+```bash
+claude plugin install /path/to/FDE-Claude/fde-<pack>
+```
+
+Do not sequence a pack skill that is not installed. Substitute a core skill and record the gap in the charter.
+
 ## Output template
 
-Write to `.fde/00-engagement.md`:
+Write to `<workspace>/00-engagement.md` (the location you just decided):
 
 ```markdown
 # Engagement charter — <name>
@@ -124,9 +141,10 @@ Write to `.fde/00-engagement.md`:
 **Confidence:** <what here is established vs. still assumed>
 
 ## Workspace
-- **Location:** `.fde/`
+- **Location:** `.fde/` | `$FDE_WORKSPACE` | `../<repo>-fde/`
 - **Committed to VCS:** yes | no
 - **Decided by:** <who, when>
+- **Packs needed:** core | + `fde-data` | + `fde-migration` | + `fde-platform` | + `fde-operate`
 
 ## The ask
 **As stated:** <verbatim>
@@ -177,7 +195,9 @@ Write to `.fde/00-engagement.md`:
 
 ## Common traps
 
-**Accepting the stated ask at face value.** The person briefing you is often relaying someone else's request, filtered through their own model of what's possible. Ask what happens if it isn't done.
+**Accepting the stated ask at face value.** The person briefing you is often relaying someone else's request. Flag the difference in one sentence; do not run `requirements-to-spec` inside this skill.
+
+**Sequencing a pack skill that is not installed.** The plan then names a procedure the session cannot load. Install the pack, or substitute a core skill and say so.
 
 **Interrogating on day one.** Six batched questions read as competence; twenty sequential ones read as an audit. Infer everything you can first.
 

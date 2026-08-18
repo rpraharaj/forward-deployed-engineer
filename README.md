@@ -9,7 +9,7 @@ From a vague ask to something running in production — on a stack you didn't ch
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Skills](https://img.shields.io/badge/skills-43-blue)
 ![Packs](https://img.shields.io/badge/packs-5-blue)
-![Cold-start tested](https://img.shields.io/badge/cold--start%20tested-3%20stacks-brightgreen)
+![Cold-start tested](https://img.shields.io/badge/cold--start%20tested-5%20stacks-brightgreen)
 ![Trigger accuracy](https://img.shields.io/badge/trigger%20accuracy-42%2F43-brightgreen)
 
 [Quick start](#quick-start) · [The skills](#whats-in-the-box) · [Why it's tested](#validated-not-vibed) · [Contributing](#contributing)
@@ -125,21 +125,25 @@ The split isn't cosmetic. Skill descriptions load into context **every session**
 
 Most skill collections ship on the author's confidence. This one was pointed at real, unfamiliar codebases to find out where it was wrong. **It was wrong ten times.**
 
-Three cold-start runs, each against a deliberately different stack — and each found a class of assumption more fundamental than the last:
+Six cold-start runs, each against a deliberately different stack — and each found a class of assumption the previous fix did not prevent:
 
 | Run | Subject | What broke |
 |---|---|---|
 | **1** | Rust workspace (`dbt-core`) | Entry-point search found **5** of **61**. Hardcoded Java/JS patterns. → *Don't assume the **language**.* |
 | **2** | .NET monolith (`nopCommerce`) | Framework search found **0** scheduled tasks; the app has **39** behind its own interface. → *Don't assume the codebase uses its **framework's vocabulary**.* |
 | **3** | XML-configured Java (`Apache OFBiz`) | Every route search returned **0**. The system declares **3,113** routes in XML. → *Don't assume the entry points are **in the code at all**.* |
+| **4** | Elixir/Phoenix (`plausible/analytics`) | Stack detected; "generic" greps returned **0**. The app has **216** Phoenix routes and **24** Oban workers. → *Don't assume a **generic grep is stack-neutral**.* |
+| **5** | COBOL / CICS / JCL (`CardDemo`) | No manifest, **0** XML. Procedure reported no entry points. The app has **25** CICS transactions, **55** JCL members, **62** copybooks. → *Don't assume the repository is a **packaged software project**.* |
+| **6** | Generated OpenAPI client (`kubernetes-client/python`) | 1,916 `.py` files, real `setup.py`. **91%** say do not edit. Canonical spec is another repo. → *Don't assume the files in the repository are the **source of truth**.* |
 
 Run 3 tested a prediction written down after run 2. It was correct — **and the fix still couldn't have been written without running the test.** That's the argument for this whole section.
 
 Every fix is a *method*, never a pattern. Adding `IScheduleTask` to a .NET list would have fixed one repo; teaching the skill how to *find* a codebase's own abstraction fixed the class.
 
 **Also measured:**
-- **Triggering** — 54 realistic queries against all 43 descriptions: **42/43** correct first choice, **zero** false fires on near-miss queries like *"help me write a cover letter."*
+- **Triggering** — 54 queries against all 43 descriptions: **42/43** first choice on Claude (run 4). After later description edits: **43/43** plus **10/10** regression probes on Grok (run 8). Claude rematch **blocked** (run 13) — CLI remaps to OpenRouter and OAuth is revoked; not a score. **Zero** false fires on near-miss queries like *"help me write a cover letter."*
 - **Baseline comparison** — same task with and without the skill. The baseline was good, and it claimed the codebase shipped one binary. It declares **nine**.
+- **`env-bootstrap`** — first full build/test/run, on `ripgrep`. The dedicated pin-file grep returned **nothing**; the pin was `rust-version = "1.96"` in `Cargo.toml` and `rust: 1.96.0` in CI. Compile on the machine's `rustc 1.90.0` failed as cargo promised. 1.96.0: **1218** tests passed.
 
 📖 **[VALIDATION.md](VALIDATION.md)** — every run, every defect, and an explicit list of what still isn't tested
 
@@ -153,11 +157,11 @@ Every fix is a *method*, never a pattern. Adding `IScheduleTask` to a .NET list 
 
 ### 🔬 Run a cold-start test (start here)
 
-Every round of testing found something reasoning alone had missed. Three stacks are covered. Many aren't.
+Every round of testing found something reasoning alone had missed. Five languages plus a generated-client tree are covered. Many aren't.
 
-Point `repo-recon` at a real codebase in a stack we haven't tried — **COBOL, mainframe, Salesforce/Apex, low-code, Elixir, embedded C, a code-generated system, anything** — and tell us where it produced a wrong answer. A one-paragraph issue saying *"it found 4 entry points, there are 200, here's why"* is worth more than a new skill.
+Point `repo-recon` at a real codebase in a stack we haven't tried — **Salesforce/Apex, low-code, embedded C, anything where there is no repository** — and tell us where it produced a wrong answer. A one-paragraph issue saying *"it found 4 entry points, there are 200, here's why"* is worth more than a new skill.
 
-Use the [cold-start report template](.github/ISSUE_TEMPLATE/cold-start-report.md). We predict a fourth class of assumption exists. Help us find it.
+Use the [cold-start report template](.github/ISSUE_TEMPLATE/cold-start-report.md). Six classes so far. Low-code with no repo is still open.
 
 ### 🧭 Tell us when a procedure didn't fit
 

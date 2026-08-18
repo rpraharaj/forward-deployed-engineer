@@ -25,8 +25,8 @@ The main discipline: **mitigation and diagnosis are different jobs.** Doing them
 ## When it doesn't
 
 - A bug found in development — that's ordinary debugging, no urgency framing needed
-- A performance concern that isn't an active incident — that's `perf-forensics`
-- Post-incident improvement work — that's `observability-gap`
+- A performance concern that is not an active incident — measure it with `nfr-validation` if NFRs exist, otherwise ordinary debugging. Do not page this skill for "it has been getting slower."
+- Post-incident improvement work — that's `observability-gap` *(fde-operate)*
 
 ## Prerequisites
 
@@ -55,7 +55,15 @@ git log --oneline --since="48 hours ago"
 git log --oneline --merges --since="7 days ago" | head -20
 ```
 
-Also: deployments, config and feature-flag changes, infrastructure changes, certificate expiries, upstream provider incidents, and **scheduled jobs** — a nightly job is a change that happens every night, and "it started at 02:00" is a strong signal.
+Git is the cheapest check, not the only one. Also look, in this order, and write down what you could not reach:
+
+- CI/CD deploy history for the same window (the pipeline that promotes to prod)
+- Feature-flag and config change audit, if a console exists
+- Certificate `Not After` on anything this path calls
+- Scheduled jobs whose run time matches the start
+- Upstream / vendor status pages the team already uses
+
+A nightly job is a change that happens every night, and "it started at 02:00" is a strong signal.
 
 Correlating the start time against a deploy or a schedule solves a large fraction of incidents in the first five minutes.
 
@@ -112,7 +120,9 @@ In order of preference: disable a feature flag, roll back the deploy, scale up, 
 
 Incident notes decay within hours. Capture the timeline, evidence, and what you did — during, if someone else is driving; immediately after if not.
 
-Two things belong in it that people leave out: **what you ruled out**, which saves the next responder repeating it; and **what made this hard to diagnose**, which is the direct input to `observability-gap`. If it took forty minutes to find because a log line was missing, that's a fixable defect and it will recur.
+Two things belong in it that people leave out: **what you ruled out**, which saves the next responder repeating it; and **what made this hard to diagnose**, which is the direct input to `observability-gap` *(fde-operate)*. If it took forty minutes to find because a log line was missing, that's a fixable defect and it will recur.
+
+**Stop diagnosing** once impact is stable and the notes exist. Further root-cause work is post-incident, not this skill.
 
 ## Output template
 

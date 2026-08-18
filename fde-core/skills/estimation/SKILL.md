@@ -69,9 +69,11 @@ Routinely a third to a half of elapsed time, and invisible in a coding estimate:
 Measure rather than guess where you can:
 
 ```bash
-# Rough review latency: time from first commit on a branch to its merge
-git log --merges --format="%ci %s" --since="6 months ago" | head -20
+# PR created → merged, if the host CLI exists. Merge-commit dates alone are not review latency.
+gh pr list --state merged --limit 20 --json createdAt,mergedAt,title 2>/dev/null
 ```
+
+If that is empty (squash history, no `gh`, Azure DevOps), ask someone who merges here, or tag review latency `[unverified]`. Do not invent a number from `git log --merges`.
 
 ### 3. Give a range, and say what drives it
 

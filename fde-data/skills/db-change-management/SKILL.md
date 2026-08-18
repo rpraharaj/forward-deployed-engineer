@@ -31,9 +31,10 @@ The second characteristic incident is ordering. The application deploys before t
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/traces/data-model.md` or `data-archaeology` — you need to know the eras and the real shape
 - `.fde/06-blast-radius-*.md` — ring 5 especially, who else reads this table
-- Row counts and table sizes from the actual production database, not from staging
+- Row counts and table sizes from the actual production database, not from staging. If you cannot get prod numbers, **stop** and put that in `00b-access.md`. Do not classify the lock from staging.
 
 ## Procedure
 

@@ -32,7 +32,7 @@ The mechanism that causes this is worth naming: an FDE working efficiently works
 
 ## Prerequisites
 
-`.fde/09-handover.md` if it exists, and `.fde/02b-ownership.md` — you need to know who's actually inheriting this.
+`.fde/02b-ownership.md`, `.fde/01-environment.md`, and any runbooks — you need to know who is inheriting this and what they must operate. **Do not wait for `09-handover.md`.** Enablement starts at the midpoint; the handover is written at the end and *links* here.
 
 ## Procedure
 
@@ -106,12 +106,16 @@ Where they can't yet, that's information — say so plainly in the handover, wit
 
 ## Output template
 
-A short section in `.fde/09-handover.md`, or its own note:
+Write to `<workspace>/09b-enablement.md`. `handover-pack` links here; do not merge the two templates into one file.
 
 ```markdown
 # Enablement — <engagement>
 
-**Receiving team:** <names> · **Prepared by:** FDE · **Date:** <YYYY-MM-DD>
+**Engagement:** <name>
+**Receiving team:** <names> · **Author:** FDE · **Date:** <YYYY-MM-DD>
+**Status:** in progress | confirmed
+**Source revision:** <repo>@<short SHA>
+**Confidence:** what they have demonstrated vs. what you only discussed
 
 ## Capability checklist
 

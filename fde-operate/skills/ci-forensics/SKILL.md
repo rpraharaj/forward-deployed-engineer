@@ -33,6 +33,7 @@ The main discipline is diagnosing the **class** of failure before fixing anythin
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/01-environment.md` — a working local build, so you can compare against CI
 - Access to CI logs and history. Build history is the primary evidence here.
 
@@ -70,7 +71,7 @@ The most informative source, and routinely skipped in favour of staring at one l
 
 Where it passes locally and fails in CI, something differs. It's almost always in this list:
 
-- Toolchain or runtime version — check the pins (the `stack-detection` reference in `fde-core` lists where each ecosystem records them)
+- Toolchain or runtime version — three-layer survey in `fde-core` `_shared/stack-detection.md`. Do not conclude a pin is missing from dedicated files alone.
 - Environment variables present locally, absent in CI
 - Timezone and locale, which CI usually runs as UTC and `C`
 - Available memory, CPU count, and disk
@@ -104,6 +105,8 @@ Both are legitimate. Conflating them is not.
 Where you take the stopgap, **record it with an owner and a date**. A quarantined test with no removal plan is a permanently reduced test suite, and after enough of them the pipeline is green because it stopped checking.
 
 Never add a blanket retry to make a suite green. It converts a visible flake into an invisible one and destroys the pipeline's value as a signal — the exact failure this skill exists to reverse.
+
+**Stop** when the failure is classified, one class has been treated (fixed or a dated quarantine), and the verification impact is written. A flaky estate can absorb a week; this skill does not.
 
 ### 6. Treat slowness as a correctness problem
 

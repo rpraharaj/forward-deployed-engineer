@@ -31,6 +31,10 @@ You are the person least equipped to tell the difference. The permanent team car
 - You need runtime behavior rather than intent — that's `trace-the-flow`
 - Shallow clone with no history — say so and tag conclusions `[unverified]`
 
+## Prerequisites
+
+Git history you can read. If `git rev-parse --is-shallow-repository` is true, stop and tag any intent claim `[unverified]`. Locate the workspace so the write-up lands with the rest of the engagement.
+
 ## Procedure
 
 ### 1. Blame the specific lines
@@ -54,14 +58,19 @@ The commit message may be useless, but the *other files in the same commit* are 
 
 ### 3. Find the pull request and the ticket
 
+Squash-merge repos often have **no merge commit**. Try, in order:
+
 ```bash
-# Merge commit referencing the PR
-git log --merges --ancestry-path <sha>..HEAD | head -20
-# Ticket references anywhere in the history of this file
-git log --format="%h %s" -- path/to/File.java | grep -oE "[A-Z]+-[0-9]+" | sort -u
+# Message often carries "(#1234)" or a ticket key even when history was squashed
+git log -1 --format="%s%n%b" <sha>
+git log --format="%h %s" -- path/to/File | grep -oE "#[0-9]+|[A-Z]+-[0-9]+" | sort -u
+
+# Host CLIs, if present
+gh pr list --search "<sha>" --state merged 2>/dev/null
+glab api "projects/:id/repository/commits/<sha>/merge_requests" 2>/dev/null
 ```
 
-Where `gh` or `glab` is available, the PR discussion is usually where the real reasoning lives — far more than the commit message:
+Where a PR number exists, the discussion is usually where the real reasoning lives:
 
 ```bash
 gh pr view <n> --comments 2>/dev/null
@@ -105,9 +114,16 @@ Where you find the reason, **write it down in the code** as a comment with the c
 
 ## Output
 
-Usually inline — a comment in the code and a note in whichever artifact prompted the question. Where the finding is significant, append to the relevant trace or feasibility entry:
+Always write `<workspace>/traces/why-<symbol>.md` so the finding survives the session. Also add a comment in the code when you found the reason, and a pointer from whichever artifact prompted the question.
 
 ```markdown
+# Why `MAX_RETRIES = 3` (RefundClient:47)
+
+**Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>
+**Confidence:** history read vs. inferred from accompanying files
+
 ### Why `MAX_RETRIES = 3` (RefundClient:47)
 
 **Verdict:** load-bearing

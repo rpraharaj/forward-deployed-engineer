@@ -1,6 +1,6 @@
 ---
 name: escalation-and-renegotiation
-description: Raise a problem early with evidence and a recommendation, or reopen scope without losing credibility - when the plan is no longer achievable, a dependency is not moving, the requirement turns out to be wrong, or you are being asked to commit to something you believe is not deliverable. Use as soon as you know, not when you are certain, and use when a blocker has passed its expected date. The hardest thing an FDE does, and the one that most determines whether the engagement is judged a success.
+description: Raise a problem early with evidence and a recommendation, or reopen scope without losing credibility - when the plan is no longer achievable, a dependency is not moving, the requirement turns out to be wrong, or you are being asked to commit to something you believe is not deliverable. Use as soon as you know, not when you are certain, and use when a blocker has passed its expected date. This is the conversation and the decision record. For anyone above tech lead, write it as a stakeholder-brief - that skill is the vehicle, this skill is the decision.
 ---
 
 # Escalation and renegotiation
@@ -33,6 +33,15 @@ The FDE's position makes both harder. You have no track record, you're often per
 - Normal in-flight variance you can absorb without affecting anything visible
 - A technical decision within your remit — make it, record it in an ADR
 - You haven't yet done the work to establish what's true. Spend an hour on that first; arriving with evidence is the whole difference.
+- A routine status update with no decision needed — that's `stakeholder-brief`
+
+## Prerequisites
+
+- `.fde/00-engagement.md` — who can actually decide
+- The artifact that holds the evidence (`04-feasibility.md`, `05b-estimate.md`, `00b-access.md`, …)
+- `../_shared/comms-register.md` before writing to anyone above tech lead
+
+If those files are missing, spend the hour gathering evidence first. Do not escalate from an empty workspace.
 
 ## Procedure
 

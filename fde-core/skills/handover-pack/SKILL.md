@@ -92,6 +92,8 @@ Write a plain list. It doesn't need structure; it needs to exist.
 
 This is the inverse of `knowledge-interview` — you're now the person with context nobody else has, and the same problem applies.
 
+Also list **access that dies when you leave**: vault paths, flag consoles, break-glass, vendor portals. Who inherits each grant, and what breaks on Monday if nobody does.
+
 ### 7. Walk someone through it
 
 Live, with the person receiving it, using the document. Not a presentation — have them navigate while you watch.
@@ -158,6 +160,11 @@ Write to `.fde/09-handover.md`:
 | Deploy + rollback | `.fde/runbooks/deploy-refund-currency.md` |
 | Decisions and why | `.fde/adr/` |
 | System map | `.fde/02-system-map.md` |
+| Enablement / can they operate it | `.fde/09b-enablement.md` |
+
+## Access that will be revoked
+| Grant | Location | Inherits | If nobody does |
+|---|---|---|---|
 
 ## Superseded
 <Artifacts no longer accurate, and what replaced them.>

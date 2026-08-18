@@ -35,6 +35,7 @@ Three properties make COTS genuinely different:
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/00-engagement.md` — COTS should be the recorded archetype
 - `.fde/03-requirements.md` — you're assessing these against platform capability
 - Vendor documentation, and access to a non-production instance

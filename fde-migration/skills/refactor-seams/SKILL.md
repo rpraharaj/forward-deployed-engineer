@@ -31,6 +31,7 @@ For an FDE this matters twice over. You may not be here long enough to finish a 
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/06-blast-radius-*.md` — you need to know every caller
 - **`characterization-tests` first.** Restructuring untested code is the single riskiest thing in this portfolio. The tests are what make the refactor verifiable as behavior-preserving.
 - `.fde/adr/` — the target shape should be a recorded decision

@@ -28,7 +28,7 @@ The second reason this skill exists is durability. Every FDE who bootstraps a re
 
 ## Prerequisites
 
-`.fde/00-engagement.md`. Check `00b-access.md` too — a missing registry credential is an access problem wearing a build problem's clothes, and diagnosing it as the latter wastes a day.
+Locate the workspace (`FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/` — see `../_shared/workspace-conventions.md`). Read `00-engagement.md`. Check `00b-access.md` too — a missing registry credential is an access problem wearing a build problem's clothes, and diagnosing it as the latter wastes a day.
 
 ## Procedure
 
@@ -54,26 +54,23 @@ Follow `../_shared/stack-detection.md`. Two things specifically:
 
 **Sub-manifest count.** One root manifest and a hundred below it is a workspace, and building a single module may not be a supported operation. Establish this before trying.
 
-**Version pins.** `.nvmrc`, `.tool-versions`, `rust-toolchain.toml`, `global.json`, `.sdkmanrc`, `requires-python`, the compiler release in the build manifest. Compare each against what's actually installed:
+**Version pins.** Run the three-layer survey in `../_shared/stack-detection.md` (dedicated pin file → manifest field, including the workspace/root hoist → CI toolchain install). Compare each against what's actually installed.
 
-```bash
-# Adapt to the detected stack — the point is comparing installed against pinned
-git ls-files | grep -iE "^\.(nvmrc|node-version|python-version|ruby-version|tool-versions|sdkmanrc|java-version)$|toolchain|global\.json"
-```
+An empty dedicated-file grep is **not** "unpinned." That command is layer 1 only. The version is often a field in the manifest you already opened, or a matrix key in the workflow from step 1.
 
 Version mismatch is the single most common bootstrap failure, and the answer is nearly always already written down.
 
 ### 3. Prefer the repository's own tooling
 
-Use `./gradlew`, `./mvnw`, the version in `.tool-versions`, the lockfile's package manager. On a locked-down machine the global tool is frequently the wrong major version.
+Use the repository's own wrapper and the lockfile's package manager — names and pins live in `../_shared/stack-detection.md`. On a locked-down machine the global tool is frequently the wrong major version.
 
-**Match the package manager to the lockfile.** Running `npm install` in a `pnpm-lock.yaml` repository rewrites the lockfile and produces an enormous, unreviewable diff — a memorable way to introduce yourself.
+**Match the package manager to the lockfile.** Using the wrong one rewrites the lockfile and produces an enormous, unreviewable diff — a memorable way to introduce yourself.
 
 ### 4. Registries and proxies
 
 If dependency resolution fails or hangs, this is usually why. See `../_shared/enterprise-constraints.md`.
 
-Check for internal registry configuration in `.npmrc`, `settings.xml`, `pip.conf`, `nuget.config`, `.cargo/config.toml`. Two failure modes: you lack credentials for the internal registry (an access problem — record it in `00b-access.md`), or the package genuinely isn't mirrored (a request with a lead time).
+Check for internal registry configuration in the files `../_shared/stack-detection.md` lists for this stack. Two failure modes: you lack credentials for the internal registry (an access problem — record it in `00b-access.md`), or the package genuinely isn't mirrored (a request with a lead time).
 
 Never resolve a TLS error by disabling verification. It gets committed, and it's a finding in any subsequent audit.
 
@@ -114,9 +111,11 @@ State explicitly what you got working and what you didn't, so a later reader kno
 
 If the bootstrap took a day and the fix was three lines in a README, contribute the three lines. It's cheap, it's visible, and it's the kind of thing that makes a team glad you're there. Where the gap is bigger — a missing `.env.example`, a broken setup script — raise it rather than silently working around it.
 
+Copy the working build/test/run commands into `CLAUDE.md`. That is what stops the next session rediscovering the flags. A CI-only failure after a local green build is `ci-forensics` *(fde-operate)*.
+
 ## Output template
 
-Write to `.fde/01-environment.md`:
+Write to `<workspace>/01-environment.md`:
 
 ```markdown
 # Environment — <repo>
@@ -168,7 +167,7 @@ Write to `.fde/01-environment.md`:
 ## Workarounds discovered
 | Problem | Symptom | Fix | Why |
 |---|---|---|---|
-| Wrong toolchain | Cryptic compile error | Pin per `rust-toolchain.toml` | Global install was a different major version |
+| Wrong toolchain | Compiler rejects the crate (`rust-version` / `engines` / equivalent) | Install the version the manifest or CI named; do not invent a pin file | Global install was below the floor |
 
 <This table is the most valuable part of this document. Be generous with it.>
 
@@ -184,7 +183,9 @@ Write to `.fde/01-environment.md`:
 
 **Guessing the build command instead of reading CI.** CI is the only statement of the build that's verified daily.
 
-**Fighting a version mismatch you could have read.** Check the pins before debugging the error.
+**Fighting a version mismatch you could have read.** Check all three pin layers before debugging the error.
+
+**Treating a missing `.nvmrc` / `rust-toolchain.toml` as unpinned.** Layer 1 returning nothing is the same silent-zero as searching the wrong extension. Read the manifest field and the CI setup action.
 
 **Wrong package manager for the lockfile.** Rewrites it, produces a huge diff, and is immediately visible.
 

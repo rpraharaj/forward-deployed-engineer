@@ -1,0 +1,1141 @@
+[
+  {
+    "id": "C01",
+    "kind": "collisions",
+    "query": "how long is the refund work going to take",
+    "expect": [
+      "estimation"
+    ],
+    "picked": [
+      "estimation",
+      "feasibility-probe"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "estimation, feasibility-probe",
+    "old_verdict": "pass",
+    "old_picked": [
+      "estimation",
+      "feasibility-probe"
+    ]
+  },
+  {
+    "id": "C02",
+    "kind": "collisions",
+    "query": "are we ready to ship this",
+    "expect": [
+      "release-readiness"
+    ],
+    "picked": [
+      "release-readiness"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full skill list so I can pick the right match.release-readiness",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "C03",
+    "kind": "collisions",
+    "query": "engagement is wrapping up next month",
+    "expect": [
+      "handover-pack"
+    ],
+    "picked": [
+      "handover-pack",
+      "enablement-handoff"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "handover-pack, enablement-handoff",
+    "old_verdict": "pass",
+    "old_picked": [
+      "handover-pack",
+      "enablement-handoff"
+    ]
+  },
+  {
+    "id": "C04",
+    "kind": "collisions",
+    "query": "I don't know this codebase and need to change something in it",
+    "expect": [
+      "repo-recon"
+    ],
+    "picked": [
+      "repo-recon",
+      "feasibility-probe"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skills from the complete list.repo-recon, feasibility-probe",
+    "old_verdict": "fail",
+    "old_picked": [
+      "feasibility-probe"
+    ]
+  },
+  {
+    "id": "C05",
+    "kind": "collisions",
+    "query": "need to tell them the plan has slipped",
+    "expect": [
+      "escalation-and-renegotiation"
+    ],
+    "picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "escalation-and-renegotiation, stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ]
+  },
+  {
+    "id": "N01",
+    "kind": "negatives",
+    "query": "write a function that parses this CSV",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick skills from the complete list.NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "N02",
+    "kind": "negatives",
+    "query": "what's the difference between INNER JOIN and LEFT JOIN",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "N03",
+    "kind": "negatives",
+    "query": "why does this React component re-render twice",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skill names from the complete list.NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "N04",
+    "kind": "negatives",
+    "query": "help me write a cover letter",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "N05",
+    "kind": "negatives",
+    "query": "explain how Kafka consumer groups work",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "N06",
+    "kind": "negatives",
+    "query": "rename this variable from foo to bar",
+    "expect": [],
+    "picked": [],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skill names.NONE",
+    "old_verdict": "pass",
+    "old_picked": []
+  },
+  {
+    "id": "P01",
+    "kind": "positives",
+    "query": "I've been dropped into a payments service I've never seen and don't know where to start",
+    "expect": [
+      "fde-orient"
+    ],
+    "picked": [
+      "fde-orient",
+      "repo-recon"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt first so I can pick the right skill names.fde-orient, repo-recon",
+    "old_verdict": "fail",
+    "old_picked": [
+      "repo-recon"
+    ]
+  },
+  {
+    "id": "P02",
+    "kind": "positives",
+    "query": "I'm still waiting for access to the repo and the prod database",
+    "expect": [
+      "access-and-onboarding"
+    ],
+    "picked": [
+      "access-and-onboarding"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "access-and-onboarding",
+    "old_verdict": "pass",
+    "old_picked": [
+      "access-and-onboarding"
+    ]
+  },
+  {
+    "id": "P03",
+    "kind": "positives",
+    "query": "this monorepo has 30,000 files, where do I even start reading",
+    "expect": [
+      "context-strategy"
+    ],
+    "picked": [
+      "context-strategy",
+      "repo-recon"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "context-strategy, repo-recon",
+    "old_verdict": "pass",
+    "old_picked": [
+      "context-strategy",
+      "repo-recon"
+    ]
+  },
+  {
+    "id": "P04",
+    "kind": "positives",
+    "query": "I can't get this project to build, it works on my machine for everyone else",
+    "expect": [
+      "env-bootstrap"
+    ],
+    "picked": [
+      "env-bootstrap"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skills from the complete list.env-bootstrap",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P05",
+    "kind": "positives",
+    "query": "help me understand this repo",
+    "expect": [
+      "repo-recon"
+    ],
+    "picked": [
+      "repo-recon"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "repo-recon",
+    "old_verdict": "pass",
+    "old_picked": [
+      "repo-recon"
+    ]
+  },
+  {
+    "id": "P06",
+    "kind": "positives",
+    "query": "who do I need to review this PR",
+    "expect": [
+      "ownership-map"
+    ],
+    "picked": [
+      "ownership-map"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "ownership-map",
+    "old_verdict": "pass",
+    "old_picked": [
+      "ownership-map"
+    ]
+  },
+  {
+    "id": "P07",
+    "kind": "positives",
+    "query": "I'm meeting the person who built this for 40 minutes tomorrow",
+    "expect": [
+      "knowledge-interview"
+    ],
+    "picked": [
+      "knowledge-interview"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "knowledge-interview",
+    "old_verdict": "pass",
+    "old_picked": [
+      "knowledge-interview"
+    ]
+  },
+  {
+    "id": "P08",
+    "kind": "positives",
+    "query": "the ticket just says support multi-currency refunds, nobody's defined done",
+    "expect": [
+      "requirements-to-spec"
+    ],
+    "picked": [
+      "requirements-to-spec"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "requirements-to-spec",
+    "old_verdict": "pass",
+    "old_picked": [
+      "requirements-to-spec"
+    ]
+  },
+  {
+    "id": "P09",
+    "kind": "positives",
+    "query": "can we add multi-currency by end of Q3? I haven't looked at their code yet",
+    "expect": [
+      "feasibility-probe"
+    ],
+    "picked": [
+      "feasibility-probe",
+      "estimation"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "feasibility-probe, estimation",
+    "old_verdict": "pass",
+    "old_picked": [
+      "feasibility-probe",
+      "estimation"
+    ]
+  },
+  {
+    "id": "P10",
+    "kind": "positives",
+    "query": "how long will this take, we need to commit to a date",
+    "expect": [
+      "estimation"
+    ],
+    "picked": [
+      "estimation",
+      "feasibility-probe"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full request first so the skill pick is based on the complete prompt, not the truncated excerpt.estimation, feasibility-probe",
+    "old_verdict": "fail",
+    "old_picked": [
+      "feasibility-probe"
+    ]
+  },
+  {
+    "id": "P11",
+    "kind": "positives",
+    "query": "what order should we do this work in",
+    "expect": [
+      "delivery-plan"
+    ],
+    "picked": [
+      "delivery-plan"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "delivery-plan",
+    "old_verdict": "pass",
+    "old_picked": [
+      "delivery-plan"
+    ]
+  },
+  {
+    "id": "P12",
+    "kind": "positives",
+    "query": "what happens when a customer places an order",
+    "expect": [
+      "trace-the-flow"
+    ],
+    "picked": [
+      "trace-the-flow",
+      "repo-recon"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full skill list and the exact question so I can pick the right skills.trace-the-flow, repo-recon",
+    "old_verdict": "fail",
+    "old_picked": [
+      "repo-recon"
+    ]
+  },
+  {
+    "id": "P13",
+    "kind": "positives",
+    "query": "this constant looks pointless, can we just delete it",
+    "expect": [
+      "git-archaeology"
+    ],
+    "picked": [
+      "git-archaeology",
+      "blast-radius"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "git-archaeology, blast-radius",
+    "old_verdict": "pass",
+    "old_picked": [
+      "git-archaeology",
+      "blast-radius"
+    ]
+  },
+  {
+    "id": "P14",
+    "kind": "positives",
+    "query": "what breaks if we touch RefundService",
+    "expect": [
+      "blast-radius"
+    ],
+    "picked": [
+      "blast-radius"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "blast-radius",
+    "old_verdict": "pass",
+    "old_picked": [
+      "blast-radius"
+    ]
+  },
+  {
+    "id": "P15",
+    "kind": "positives",
+    "query": "the spec covers behavior but not performance or security",
+    "expect": [
+      "nfr-baseline"
+    ],
+    "picked": [
+      "nfr-baseline"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can name the right skill(s) from the complete list.nfr-baseline",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P16",
+    "kind": "positives",
+    "query": "how should we build this, there are a few plausible approaches",
+    "expect": [
+      "solution-design"
+    ],
+    "picked": [
+      "solution-design"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can match the question to the exact skill list.solution-design",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P17",
+    "kind": "positives",
+    "query": "no tests here and I need to change it, nobody knows what it does",
+    "expect": [
+      "characterization-tests"
+    ],
+    "picked": [
+      "characterization-tests"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can match the request to the right skills.The characterization-tests trigger matches this almost verbatim. I'll confirm the remaining skill list so I don't miss a close second.characterization-tests",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P18",
+    "kind": "positives",
+    "query": "let's implement the currency field we already scoped in this unfamiliar codebase",
+    "expect": [
+      "safe-change"
+    ],
+    "picked": [
+      "safe-change",
+      "blast-radius"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "safe-change, blast-radius",
+    "old_verdict": "pass",
+    "old_picked": [
+      "safe-change",
+      "blast-radius"
+    ]
+  },
+  {
+    "id": "P19",
+    "kind": "positives",
+    "query": "can we just copy prod data for the tests",
+    "expect": [
+      "test-data-strategy"
+    ],
+    "picked": [
+      "test-data-strategy"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can match the question to the right skills.test-data-strategy",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P20",
+    "kind": "positives",
+    "query": "how do we know this works, map each acceptance criterion to evidence",
+    "expect": [
+      "verification-plan"
+    ],
+    "picked": [
+      "verification-plan"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "verification-plan",
+    "old_verdict": "pass",
+    "old_picked": [
+      "verification-plan"
+    ]
+  },
+  {
+    "id": "P21",
+    "kind": "positives",
+    "query": "someone says performance is fine but there's no measured number",
+    "expect": [
+      "nfr-validation"
+    ],
+    "picked": [
+      "nfr-validation"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "nfr-validation",
+    "old_verdict": "pass",
+    "old_picked": [
+      "nfr-validation"
+    ]
+  },
+  {
+    "id": "P22",
+    "kind": "positives",
+    "query": "this change adds a customer email field to the API, review data handling before release",
+    "expect": [
+      "security-compliance-check"
+    ],
+    "picked": [
+      "security-compliance-check",
+      "contract-design"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "security-compliance-check, contract-design",
+    "old_verdict": "pass",
+    "old_picked": [
+      "security-compliance-check",
+      "contract-design"
+    ]
+  },
+  {
+    "id": "P23",
+    "kind": "positives",
+    "query": "are we ready to ship this, CAB needs a go/no-go",
+    "expect": [
+      "release-readiness"
+    ],
+    "picked": [
+      "release-readiness",
+      "change-control-navigation"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "release-readiness, change-control-navigation",
+    "old_verdict": "pass",
+    "old_picked": [
+      "release-readiness",
+      "change-control-navigation"
+    ]
+  },
+  {
+    "id": "P24",
+    "kind": "positives",
+    "query": "how do we actually ship this, first deploy of something risky",
+    "expect": [
+      "deploy-runbook"
+    ],
+    "picked": [
+      "deploy-runbook",
+      "post-deploy-watch"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt and skill list so I can pick the matching skills.deploy-runbook, post-deploy-watch",
+    "old_verdict": "fail",
+    "old_picked": [
+      "post-deploy-watch"
+    ]
+  },
+  {
+    "id": "P25",
+    "kind": "positives",
+    "query": "it's technically done but we can't ship, there's a CAB and a freeze period",
+    "expect": [
+      "change-control-navigation"
+    ],
+    "picked": [
+      "change-control-navigation",
+      "release-readiness"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skills from the complete list.change-control-navigation, release-readiness",
+    "old_verdict": "fail",
+    "old_picked": [
+      "release-readiness"
+    ]
+  },
+  {
+    "id": "P26",
+    "kind": "positives",
+    "query": "prod is broken, customers are seeing errors",
+    "expect": [
+      "incident-triage"
+    ],
+    "picked": [
+      "incident-triage"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "incident-triage",
+    "old_verdict": "pass",
+    "old_picked": [
+      "incident-triage"
+    ]
+  },
+  {
+    "id": "P27",
+    "kind": "positives",
+    "query": "engagement is wrapping up next month, I need to leave the documents",
+    "expect": [
+      "handover-pack"
+    ],
+    "picked": [
+      "handover-pack"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "The request was truncated, so I\u2019m reading the full skill list and the exact question before answering.handover-pack",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P28",
+    "kind": "positives",
+    "query": "the team has to run this without me, they need to actually operate it",
+    "expect": [
+      "enablement-handoff"
+    ],
+    "picked": [
+      "enablement-handoff",
+      "handover-pack"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "enablement-handoff, handover-pack",
+    "old_verdict": "pass",
+    "old_picked": [
+      "enablement-handoff",
+      "handover-pack"
+    ]
+  },
+  {
+    "id": "P29",
+    "kind": "positives",
+    "query": "I need to give the sponsor a ninety-second update on where we are",
+    "expect": [
+      "stakeholder-brief"
+    ],
+    "picked": [
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "stakeholder-brief"
+    ]
+  },
+  {
+    "id": "P30",
+    "kind": "positives",
+    "query": "the plan isn't achievable, a dependency isn't moving",
+    "expect": [
+      "escalation-and-renegotiation"
+    ],
+    "picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "escalation-and-renegotiation, stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ]
+  },
+  {
+    "id": "P31",
+    "kind": "positives",
+    "query": "the schema is undocumented, I need to know what the data actually looks like",
+    "expect": [
+      "data-archaeology"
+    ],
+    "picked": [
+      "data-archaeology"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "data-archaeology",
+    "old_verdict": "pass",
+    "old_picked": [
+      "data-archaeology"
+    ]
+  },
+  {
+    "id": "P32",
+    "kind": "positives",
+    "query": "the pipeline is still running but the report numbers are wrong",
+    "expect": [
+      "data-pipeline-work"
+    ],
+    "picked": [
+      "data-pipeline-work",
+      "incident-triage"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full skill list and the question so the selection is based on the complete definitions.data-pipeline-work, incident-triage",
+    "old_verdict": "fail",
+    "old_picked": [
+      "incident-triage"
+    ]
+  },
+  {
+    "id": "P33",
+    "kind": "positives",
+    "query": "we need to add a column on a 40 million row production table without downtime",
+    "expect": [
+      "db-change-management"
+    ],
+    "picked": [
+      "db-change-management",
+      "blast-radius"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "db-change-management, blast-radius",
+    "old_verdict": "pass",
+    "old_picked": [
+      "db-change-management",
+      "blast-radius"
+    ]
+  },
+  {
+    "id": "P34",
+    "kind": "positives",
+    "query": "we're replacing the legacy system, both will run for a while, plan the switchover",
+    "expect": [
+      "cutover-plan"
+    ],
+    "picked": [
+      "cutover-plan",
+      "decommission-plan"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skills from the complete list.cutover-plan, decommission-plan",
+    "old_verdict": "fail",
+    "old_picked": [
+      "decommission-plan"
+    ]
+  },
+  {
+    "id": "P35",
+    "kind": "positives",
+    "query": "can we switch the old service off, is anyone still using it",
+    "expect": [
+      "decommission-plan"
+    ],
+    "picked": [
+      "decommission-plan",
+      "blast-radius"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full skill list and the exact question so I can pick the right skills.decommission-plan, blast-radius",
+    "old_verdict": "fail",
+    "old_picked": [
+      "blast-radius"
+    ]
+  },
+  {
+    "id": "P36",
+    "kind": "positives",
+    "query": "Java 8 is going EOL, we have to get to 21 by the vendor deadline",
+    "expect": [
+      "dependency-upgrade"
+    ],
+    "picked": [
+      "dependency-upgrade",
+      "feasibility-probe"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full prompt so I can pick the right skills from the complete list.dependency-upgrade, feasibility-probe",
+    "old_verdict": "fail",
+    "old_picked": [
+      "feasibility-probe"
+    ]
+  },
+  {
+    "id": "P37",
+    "kind": "positives",
+    "query": "someone proposed a rewrite of the pricing module, we should extract it incrementally",
+    "expect": [
+      "refactor-seams"
+    ],
+    "picked": [
+      "refactor-seams",
+      "solution-design"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "The skill list was truncated. I'll read the full prompt so the ranking is based on the complete descriptions.refactor-seams, solution-design",
+    "old_verdict": "fail",
+    "old_picked": [
+      "solution-design"
+    ]
+  },
+  {
+    "id": "P38",
+    "kind": "positives",
+    "query": "tests pass locally but not in CI, people just re-run it",
+    "expect": [
+      "ci-forensics"
+    ],
+    "picked": [
+      "ci-forensics"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "ci-forensics",
+    "old_verdict": "pass",
+    "old_picked": [
+      "ci-forensics"
+    ]
+  },
+  {
+    "id": "P39",
+    "kind": "positives",
+    "query": "the last incident took 40 minutes to find because we had no metric",
+    "expect": [
+      "observability-gap"
+    ],
+    "picked": [
+      "observability-gap"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "observability-gap",
+    "old_verdict": "pass",
+    "old_picked": [
+      "observability-gap"
+    ]
+  },
+  {
+    "id": "P40",
+    "kind": "positives",
+    "query": "we just deployed, what do we watch and for how long",
+    "expect": [
+      "post-deploy-watch"
+    ],
+    "picked": [
+      "post-deploy-watch"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "post-deploy-watch",
+    "old_verdict": "pass",
+    "old_picked": [
+      "post-deploy-watch"
+    ]
+  },
+  {
+    "id": "P41",
+    "kind": "positives",
+    "query": "how should we version this API, we have mobile clients we don't control",
+    "expect": [
+      "contract-design"
+    ],
+    "picked": [
+      "contract-design"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "contract-design",
+    "old_verdict": "pass",
+    "old_picked": [
+      "contract-design"
+    ]
+  },
+  {
+    "id": "P42",
+    "kind": "positives",
+    "query": "can this be configured in Salesforce or do we have to customize it",
+    "expect": [
+      "cots-configuration"
+    ],
+    "picked": [
+      "cots-configuration"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "I'll read the full request first so the skill match is based on the complete question.cots-configuration",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "P43",
+    "kind": "positives",
+    "query": "we have to consume a partner SOAP API, the WSDL doesn't match what it returns",
+    "expect": [
+      "integration-adapter"
+    ],
+    "picked": [
+      "integration-adapter"
+    ],
+    "verdict": "pass",
+    "note": "",
+    "raw": "integration-adapter",
+    "old_verdict": "pass",
+    "old_picked": [
+      "integration-adapter"
+    ]
+  },
+  {
+    "id": "R01",
+    "kind": "regressions",
+    "query": "I need a reviewer for this PR in an unfamiliar repo",
+    "expect": [
+      "ownership-map"
+    ],
+    "picked": [
+      "ownership-map"
+    ],
+    "verdict": "pass",
+    "note": "narrowed ownership-map description",
+    "raw": "I'll read the full skill list and the exact request so I can pick the right skills.Checking the truncated skill list so I don't miss a closer match.ownership-map",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "R02",
+    "kind": "regressions",
+    "query": "implement R1, feasibility already done",
+    "expect": [
+      "safe-change"
+    ],
+    "picked": [
+      "safe-change"
+    ],
+    "verdict": "pass",
+    "note": "narrowed safe-change description",
+    "raw": "I'll read the full prompt so I can answer with the right skill names.safe-change",
+    "old_verdict": "fail",
+    "old_picked": []
+  },
+  {
+    "id": "R03",
+    "kind": "regressions",
+    "query": "help me understand this repo",
+    "expect": [
+      "repo-recon"
+    ],
+    "picked": [
+      "repo-recon"
+    ],
+    "verdict": "pass",
+    "note": "repo-recon must still win after dropping 'or any change'",
+    "raw": "repo-recon",
+    "old_verdict": "pass",
+    "old_picked": [
+      "repo-recon"
+    ]
+  },
+  {
+    "id": "R04",
+    "kind": "regressions",
+    "query": "I can't get into the VPN",
+    "expect": [
+      "access-and-onboarding"
+    ],
+    "picked": [
+      "access-and-onboarding"
+    ],
+    "verdict": "pass",
+    "note": "bounded can't-get-into-X still wins for access",
+    "raw": "access-and-onboarding",
+    "old_verdict": "pass",
+    "old_picked": [
+      "access-and-onboarding"
+    ]
+  },
+  {
+    "id": "R05",
+    "kind": "regressions",
+    "query": "I can't log into the app, the login endpoint returns 401",
+    "expect": [],
+    "picked": [
+      "incident-triage",
+      "trace-the-flow"
+    ],
+    "verdict": "pass",
+    "note": "must not steal app-login bugs as access-and-onboarding",
+    "raw": "incident-triage, trace-the-flow",
+    "old_verdict": "pass",
+    "old_picked": [
+      "incident-triage",
+      "trace-the-flow"
+    ]
+  },
+  {
+    "id": "R06",
+    "kind": "regressions",
+    "query": "the plan is no longer achievable",
+    "expect": [
+      "escalation-and-renegotiation"
+    ],
+    "picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "escalation vs brief split",
+    "raw": "escalation-and-renegotiation, stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ]
+  },
+  {
+    "id": "R07",
+    "kind": "regressions",
+    "query": "give the sponsor a status update, nothing has slipped",
+    "expect": [
+      "stakeholder-brief"
+    ],
+    "picked": [
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "brief without renegotiation",
+    "raw": "stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "stakeholder-brief"
+    ]
+  },
+  {
+    "id": "R08",
+    "kind": "regressions",
+    "query": "what breaks if we add a field to the published refund response",
+    "expect": [
+      "blast-radius"
+    ],
+    "picked": [
+      "blast-radius",
+      "contract-design"
+    ],
+    "verdict": "pass",
+    "note": "blast-radius must not lose to release-readiness",
+    "raw": "blast-radius, contract-design",
+    "old_verdict": "pass",
+    "old_picked": [
+      "blast-radius",
+      "contract-design"
+    ]
+  },
+  {
+    "id": "R09",
+    "kind": "regressions",
+    "query": "can we add multi-currency by end of Q3? I haven't looked at their code yet",
+    "expect": [
+      "feasibility-probe"
+    ],
+    "picked": [
+      "feasibility-probe",
+      "estimation"
+    ],
+    "verdict": "pass",
+    "note": "historic fde-orient steal",
+    "raw": "feasibility-probe, estimation",
+    "old_verdict": "pass",
+    "old_picked": [
+      "feasibility-probe",
+      "estimation"
+    ]
+  },
+  {
+    "id": "R10",
+    "kind": "regressions",
+    "query": "tell the sponsor the reporting piece isn't happening",
+    "expect": [
+      "escalation-and-renegotiation"
+    ],
+    "picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ],
+    "verdict": "pass",
+    "note": "known-acceptable non-first from run 3",
+    "raw": "escalation-and-renegotiation, stakeholder-brief",
+    "old_verdict": "pass",
+    "old_picked": [
+      "escalation-and-renegotiation",
+      "stakeholder-brief"
+    ]
+  }
+]

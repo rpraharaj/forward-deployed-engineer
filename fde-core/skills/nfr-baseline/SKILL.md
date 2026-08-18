@@ -99,6 +99,8 @@ The whole point. Every NFR needs a metric, a target, and a condition.
 
 Apply the same test as acceptance criteria: **could someone else check this and get the same answer?**
 
+**Stop** when every category is either a testable row or a one-line "Not applicable." Do not essay the ones that don't apply.
+
 ### 4. Find who holds each requirement
 
 Many NFRs aren't the sponsor's to set. Security classifications come from security, retention from compliance or legal, availability from whoever owns the SLA.

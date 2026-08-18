@@ -31,7 +31,8 @@ An FDE hits this specifically because you often can't see the consumers. `blast-
 
 ## Prerequisites
 
-- `.fde/06-blast-radius-*.md` — ring 3 and ring 4 especially. **You need the consumer list before designing.**
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
+- `.fde/06-blast-radius-*.md` — ring 3 and ring 4 especially. **You need the consumer list before designing.** If ring 4 was not checked, design as if consumers are uncontrollable.
 - `.fde/03b-nfrs.md` — data classification determines what may cross the boundary
 - `.fde/02b-ownership.md` — who must be coordinated with
 
@@ -114,7 +115,7 @@ A contract is a commitment. Everything in it is something you must keep supporti
 
 For any change requiring consumers to act: what do they do, by when, what happens if they don't, and how do you know who has migrated?
 
-That last one matters and is usually impossible retrospectively. **Build version observability in from the start** — log the version each consumer uses, so "can we retire v1?" is a query rather than a guess. Without it, retiring a version becomes the same consumer-discovery problem as `decommission-plan`.
+That last one matters and is usually impossible retrospectively. **Build version observability in from the start** — log the version each consumer uses, so "can we retire v1?" is a query rather than a guess. Without it, retiring a version becomes a consumer-discovery project — the same problem `decommission-plan` exists for if `fde-migration` is installed.
 
 ### 7. Document it where consumers will look
 

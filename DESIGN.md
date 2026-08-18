@@ -1,6 +1,6 @@
 # FDE Skill Portfolio — Design
 
-**Status:** Complete — all 43 skills built across five packs. Validated in five runs; see [VALIDATION.md](VALIDATION.md).
+**Status:** Complete — all 43 skills built across five packs. Validated in thirteen runs; see [VALIDATION.md](VALIDATION.md).
 **Scope:** A portfolio of Claude Code skills that let one engineer be dropped into any team, in any organization, on any stack, and carry work from *requirement* to *go-live*.
 **How to use what's built:** [USAGE.md](USAGE.md) · **Cold-start test results:** [VALIDATION.md](VALIDATION.md)
 
@@ -278,28 +278,7 @@ Consumed by the skills above, kept in one place so the conventions stay consiste
 
 ### 6.1 The `.fde/` workspace
 
-All artifacts land in a single directory, numbered to give whoever inherits it a natural reading order:
-
-```
-.fde/
-├── 00-engagement.md              # charter: archetype, stakeholders, goal, constraints
-├── 01-environment.md             # how to build, test, run — including the workarounds
-├── 02-system-map.md              # cartography
-├── 02b-ownership.md              # who owns what, who decides
-├── 03-requirements.md            # testable spec with acceptance criteria
-├── 03b-nfrs.md                   # measurable non-functionals
-├── 04-feasibility.md             # requirements grounded in real code
-├── 05-delivery-plan.md           # risk-ordered sequence
-├── 06-blast-radius-<change>.md
-├── 06b-change-log.md
-├── 07-verification.md            # criteria → evidence, and the gap list
-├── 08-release-readiness.md       # go/no-go
-├── 09-handover.md
-├── adr/       NNNN-<title>.md
-├── traces/    <flow>.md
-├── runbooks/  deploy-<svc>.md, cutover-<name>.md
-└── incidents/ <date>-<name>.md
-```
+All artifacts land in a single directory, numbered to give whoever inherits it a natural reading order. The layout lives in `fde-core/skills/_shared/workspace-conventions.md` — that file is the source of truth (including `00b`/`00c`/`03c`/`05b–d`/`07b–c`/`08b`/`09b`, plus `interviews/` and `briefs/`). Do not copy the tree here; it will drift.
 
 **Location is configurable per engagement**, decided in `fde-orient`. Some organizations will not accept a new top-level directory in their repo; the workspace then lives adjacent to the checkout. Skills read the location from `00-engagement.md` rather than hardcoding it.
 
@@ -399,13 +378,13 @@ Forty-three skills is a lot, and skill names and descriptions load into context 
 
 That argues for splitting distribution rather than trimming content:
 
-- **`fde-core`** — Waves 1–3 (27 skills). Always installed. Applies to every engagement.
-- **`fde-data`** — data-pipeline-work, data-archaeology, test-data-strategy, db-change-management
-- **`fde-migration`** — cutover-plan, decommission-plan, dependency-upgrade, refactor-seams
-- **`fde-platform`** — cots-configuration, integration-adapter, contract-design
-- **`fde-operate`** — incident-triage, observability-gap, ci-forensics, post-deploy-watch
+- **`fde-core`** — 30 skills (Waves 1–3, plus `test-data-strategy` and `incident-triage`). Always installed. Those two stay in core because verification-without-data and production incidents happen on every engagement type.
+- **`fde-data`** — `data-pipeline-work`, `data-archaeology`, `db-change-management`
+- **`fde-migration`** — `cutover-plan`, `decommission-plan`, `dependency-upgrade`, `refactor-seams`
+- **`fde-platform`** — `cots-configuration`, `integration-adapter`, `contract-design`
+- **`fde-operate`** — `observability-gap`, `ci-forensics`, `post-deploy-watch`
 
-The FDE installs core plus whichever pack matches the archetype `fde-orient` identified. This keeps the always-on cost near the original thirty while covering far more ground. It depends on the distribution decision in §13.
+The FDE installs core plus whichever pack matches the archetype `fde-orient` identified. `fde-orient` names the pack in the charter and must not sequence a pack skill that is not installed.
 
 ---
 
@@ -464,16 +443,16 @@ Skills with procedural outputs are testable, so we should test them rather than 
 
 ---
 
-## 13. Open questions
+## 13. Decisions that were open at design time
 
-These change the build; worth settling before Wave 1.
+Settled in the skills; left here so we do not re-open them casually.
 
-1. **Workspace location** — can artifacts live in the target repo as `.fde/`, or must they sit outside the checkout? Some organizations will reject a new top-level directory on sight. This affects every skill's output path.
-2. **Artifact format** — markdown in the repo is the default. Do these also need to land in Confluence/SharePoint, i.e. should templates be paste-friendly rather than repo-native?
-3. **Tooling floor** — is it truly filesystem + git + shell, or can we assume a GitHub/GitLab CLI and a ticketing integration are usually present? Affects `ownership-map`, `git-archaeology`, and `release-readiness` most.
-4. **Network** — assume offline by default, or assume internal network with an internal package registry reachable?
-5. **Distribution** — personal `~/.claude/skills/`, or packaged as a plugin so it can be handed to a team? Changes directory layout and whether we build a marketplace manifest.
-6. **Naming prefix** — should skills be namespaced (`fde-recon`, `fde-safe-change`) to avoid colliding with client-repo skills? I lean yes for everything except `fde-orient`, but it makes every invocation wordier.
+1. **Workspace location** — decided: resolve `FDE_WORKSPACE` → charter Location → `.fde/` → sibling `../<repo>-fde/` → ask. Recorded in `fde-orient` and `workspace-conventions.md`.
+2. **Artifact format** — markdown in the workspace is the default. Paste-friendly templates; no Confluence exporter in v1.
+3. **Tooling floor** — filesystem + git + shell. Host CLIs (`gh`, `glab`) are optional accelerators with a filesystem fallback.
+4. **Network** — assume offline / internal-registry by default (`enterprise-constraints.md`).
+5. **Distribution** — Claude Code plugins, one per pack. Path install works. No marketplace manifest yet.
+6. **Naming prefix** — directory names are the skill names. Only the entry point is `fde-orient`. Collision risk is accepted in exchange for shorter invocations.
 
 ---
 
@@ -510,7 +489,7 @@ Forty-three skills. Entries marked **†** were added by the §5.11 gap analysis
 | 25 | **†** `data-pipeline-work` | Build | 4 | data |
 | 26 | **†** `cots-configuration` | Build | 4 | platform |
 | 27 | `verification-plan` | Verify | 2 | core |
-| 28 | **†** `test-data-strategy` | Verify | 2 | data |
+| 28 | **†** `test-data-strategy` | Verify | 2 | core |
 | 29 | `ci-forensics` | Verify | 4 | operate |
 | 30 | `nfr-validation` | Verify | 4 | core |
 | 31 | `security-compliance-check` | Verify | 4 | core |
@@ -520,7 +499,7 @@ Forty-three skills. Entries marked **†** were added by the §5.11 gap analysis
 | 35 | `post-deploy-watch` | Ship | 4 | operate |
 | 36 | **†** `change-control-navigation` | Ship | 3 | core |
 | 37 | **†** `decommission-plan` | Ship | 4 | migration |
-| 38 | `incident-triage` | Sustain | 3 | operate |
+| 38 | `incident-triage` | Sustain | 3 | core |
 | 39 | `observability-gap` | Sustain | 4 | operate |
 | 40 | `handover-pack` | Sustain | 3 | core |
 | 41 | **†** `enablement-handoff` | Sustain | 3 | core |

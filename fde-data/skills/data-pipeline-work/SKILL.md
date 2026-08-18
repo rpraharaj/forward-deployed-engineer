@@ -31,6 +31,7 @@ The second thing that catches service engineers out: pipelines are re-run. Re-ru
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/traces/data-model.md` — the shape and eras of the source data
 - `.fde/02-system-map.md` — where the pipeline sits
 - Access to both source and destination, ideally, plus the orchestrator

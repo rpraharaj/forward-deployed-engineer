@@ -103,7 +103,12 @@ This catches misunderstandings while they're free to fix, and it's the highest-v
 
 Findings go into the relevant artifact — system map, trace, feasibility, ownership — not into a notes file nobody reads again. A finding that stays in your notes has the same durability problem as one that stays in a chat transcript.
 
-Attribute properly: `[confirmed: per J. Okafor, platform team, 2026-03-14]`. Two reasons — it's accurate, and it lets a later reader go back to the source. An FDE who presents a nine-year veteran's knowledge as their own discovery is noticed immediately and doesn't recover from it.
+Attribute with a person+date citation, and tag confidence honestly. A person is never `[confirmed]` — that tag is for code you read or behavior you ran (`../_shared/evidence-discipline.md`).
+
+- What they observed recently: `[inferred: per J. Okafor, platform team, 2026-03-14]` until you check the code
+- What they designed years ago: `[unverified: per J. Okafor, 2026-03-14 — confirm against current code]`
+
+An FDE who presents a nine-year veteran's knowledge as their own discovery is noticed immediately and doesn't recover from it.
 
 ### 7. Close the loop
 
@@ -127,8 +132,8 @@ Findings go into existing artifacts. Keep a session record at `.fde/interviews/<
 ## Must-answer questions
 | # | Question | Answer | Confidence | Verified against code? |
 |---|---|---|---|---|
-| 1 | Who consumes `OrderPlaced`? | Reconciliation job in `finops-batch`, parses positionally | inferred — they see it weekly | ⏳ pending repo access |
-| 2 | Why is retry count 3? | 2021 incident, downstream flapping; 3 was empirical | unverified — from memory | ✅ matches commit `8b21f0` |
+| 1 | Who consumes `OrderPlaced`? | Reconciliation job in `finops-batch`, parses positionally | `[inferred: per J. Okafor, 2026-03-14]` | ⏳ pending repo access |
+| 2 | Why is retry count 3? | 2021 incident, downstream flapping; 3 was empirical | `[unverified]` until checked | ✅ then `[confirmed: commit 8b21f0]` |
 
 ## Volunteered, unprompted
 <Often the most valuable section. What they raised that you didn't ask about.>

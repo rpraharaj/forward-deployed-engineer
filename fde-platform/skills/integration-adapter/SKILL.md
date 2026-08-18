@@ -32,6 +32,7 @@ Two assumptions make this work, and both feel pessimistic until you've been burn
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/02-system-map.md` — where this integration sits
 - `.fde/03b-nfrs.md` — what data may cross the boundary
 - Any existing callers of the same system, which are your best documentation

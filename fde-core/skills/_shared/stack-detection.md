@@ -20,25 +20,34 @@ ls -a && find . -maxdepth 2 \( -name "pom.xml" -o -name "build.gradle*" -o -name
   -not -path "*/node_modules/*" -not -path "*/vendor/*" 2>/dev/null
 ```
 
-Then check the language mix, which catches things the manifests miss:
+Then check the language mix, which catches things the manifests miss. **Fold case** — z/OS and some Windows trees ship `.cbl` and `.CBL` as two extensions:
 
 ```bash
-git ls-files | sed 's/.*\.//' | sort | uniq -c | sort -rn | head -25
+git ls-files | sed 's/.*\.//' | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn | head -25
 ```
 
 Use `git ls-files` rather than `find` — it respects `.gitignore` for free, so build output and vendored dependencies don't drown the signal.
 
 **The language mix outranks the manifest.** A repository whose root manifest says one thing while 90% of its files are another language has usually been migrated, and the manifest is a leftover. Trust the file count and go looking for why they disagree — that discrepancy is often the single most important thing to know about the codebase.
 
+**An empty one-shot survey is not a failed detection.** Mainframe inventories, low-code exports, and some generated-spec trees have no `pom.xml` / `mix.exs` / `package.json`. The language mix *is* the stack. Record "no package manager, no CI" as a finding, then treat the dominant extensions as the declaration surface — see `repo-recon/references/entry-points-by-stack.md` ("When there is no language section" and "are the entry points even in the code?").
+
 ### Count sub-manifests before concluding
 
 The depth-2 survey deliberately finds only top-level manifests, which **undercounts a workspace or monorepo by orders of magnitude**. Always follow up:
 
 ```bash
-for m in Cargo.toml pom.xml package.json go.mod pyproject.toml build.gradle build.gradle.kts *.csproj; do
+# Same names as the one-shot survey. Omitting a detected stack here
+# makes a polyglot repo look like only the stacks in this list.
+for m in Cargo.toml pom.xml package.json go.mod pyproject.toml build.gradle \
+         build.gradle.kts mix.exs Gemfile composer.json pubspec.yaml \
+         CMakeLists.txt Makefile; do
   n=$(find . -name "$m" -not -path "./.git/*" -not -path "*/node_modules/*" -not -path "./target/*" 2>/dev/null | wc -l)
   [ "$n" -gt 0 ] && echo "$m: $n"
 done
+# .csproj / .sln are globs
+n=$(find . -name "*.csproj" -o -name "*.sln" | grep -vc node_modules)
+[ "$n" -gt 0 ] && echo "*.csproj/*.sln: $n"
 ```
 
 One root manifest and 124 below it is a workspace, not a project. That single fact changes how you build it, how you scope a change, and what "the repo" even means in every artifact you write.
@@ -86,7 +95,7 @@ These change *how you build*, not what the language is. Miss them and you'll try
 
 Presence tells you the package manager exactly; absence is itself a finding worth recording.
 
-`package-lock.json` → npm · `yarn.lock` → Yarn · `pnpm-lock.yaml` → pnpm · `bun.lockb` → Bun · `poetry.lock` → Poetry · `uv.lock` → uv · `Pipfile.lock` → Pipenv · `Gemfile.lock` → Bundler · `composer.lock` → Composer · `go.sum` → Go modules · `Cargo.lock` → Cargo · `packages.lock.json` → NuGet
+`package-lock.json` → npm · `yarn.lock` → Yarn · `pnpm-lock.yaml` → pnpm · `bun.lockb` → Bun · `poetry.lock` → Poetry · `uv.lock` → uv · `Pipfile.lock` → Pipenv · `Gemfile.lock` → Bundler · `composer.lock` → Composer · `go.sum` → Go modules · `Cargo.lock` → Cargo · `packages.lock.json` → NuGet · `mix.lock` → Hex/Mix
 
 Using the wrong package manager on a locked repo rewrites the lockfile and produces an enormous, unreviewable diff — a memorable way to introduce yourself to a new team.
 
@@ -106,7 +115,7 @@ grep -l "pull_request" .github/workflows/*.y*ml 2>/dev/null
 
 # Rank by whether they actually build or test anything
 for f in .github/workflows/*.y*ml; do
-  n=$(grep -cE "cargo |mvn |gradle|npm |pnpm |yarn |dotnet |pytest|go test|make " "$f" 2>/dev/null)
+  n=$(grep -cE "cargo |mvn |gradle|npm |pnpm |yarn |dotnet |pytest|tox |python |go test|mix |elixir|make " "$f" 2>/dev/null)
   [ "$n" -gt 0 ] && echo "$n $f"
 done | sort -rn | head -5
 ```
@@ -140,13 +149,42 @@ Read it for:
 
 ## Version pinning
 
-Check these before running anything. Version mismatch is the most common bootstrap failure, and the answer is nearly always written down somewhere:
+Version mismatch is the most common bootstrap failure. Search **three layers**. An empty result in one layer is not evidence the version is unpinned — that is the same silent-zero as grepping the wrong extension.
 
-`.nvmrc` · `.node-version` · `.python-version` · `.ruby-version` · `.tool-versions` (asdf/mise) · `.sdkmanrc` · `rust-toolchain.toml` · `global.json` (.NET) · `.java-version` · `engines` in `package.json` · `<maven.compiler.release>` in `pom.xml` · `requires-python` in `pyproject.toml`
+### 1. Dedicated pin files
 
-**Check for centralized build configuration before grepping per-project files.** Many ecosystems hoist shared settings out of individual manifests, so a per-project search returns nothing while the setting is defined once at the root:
+`.nvmrc` · `.node-version` · `.python-version` · `.ruby-version` · `.tool-versions` (asdf/mise) · `.sdkmanrc` · `rust-toolchain.toml` / `rust-toolchain` · `global.json` (.NET) · `.java-version`
 
-`Directory.Build.props` / `Directory.Packages.props` (.NET) · `gradle/libs.versions.toml` (Gradle version catalogs) · `<dependencyManagement>` in a parent `pom.xml` · `[workspace.dependencies]` in a root `Cargo.toml` · `pnpm-workspace.yaml` catalogs
+```bash
+git ls-files | grep -iE "^\.(nvmrc|node-version|python-version|ruby-version|tool-versions|sdkmanrc|java-version)$|toolchain|global\.json"
+```
+
+### 2. Version fields in the manifests you already found
+
+After detection, read the field **this stack** uses — including the workspace/root hoist. A per-package search returns nothing while the language version is defined once:
+
+| Stack signal | Language / compiler field | Common hoist |
+|---|---|---|
+| `Cargo.toml` | `rust-version`, `edition` | `[workspace.package]` |
+| `package.json` | `engines` | workspace root `package.json` |
+| `pom.xml` | `<maven.compiler.release>` / `<java.version>` | parent POM |
+| `*.csproj` | `TargetFramework` | `Directory.Build.props` |
+| `pyproject.toml` | `requires-python` | — |
+| `go.mod` | `go` directive | `go.work` |
+| `mix.exs` | Elixir / OTP | `.tool-versions`, CI |
+| `build.gradle*` | toolchain / `sourceCompatibility` | `gradle/libs.versions.toml` |
+
+`[workspace.dependencies]`, `Directory.Packages.props`, and parent-POM `<dependencyManagement>` pin *libraries*. `[workspace.package]` and `Directory.Build.props` pin *the language*. Look at both.
+
+### 3. CI toolchain install
+
+The build workflow from the triage above. The version is often only here: a matrix key (`rust:`, `node-version:`, `go-version:`, `java-version:`) or a setup action (`*-toolchain`, `setup-node`, `setup-java`, `setup-python`, `setup-beam`).
+
+**When layers disagree**, record all three. The CI job that matches this OS is what the PR will run. The manifest field is usually the floor (minimum supported). A dedicated pin file is what local tools auto-select. Do **not** invent a pin file the repo does not ship — install the version the manifest or CI named, and record that as a workaround.
+
+**Check for centralized build configuration before grepping per-project files.** Many ecosystems hoist shared settings out of individual manifests:
+
+`Directory.Build.props` / `Directory.Packages.props` (.NET) · `gradle/libs.versions.toml` (Gradle version catalogs) · `<dependencyManagement>` in a parent `pom.xml` · `[workspace.package]` / `[workspace.dependencies]` in a root `Cargo.toml` · `pnpm-workspace.yaml` catalogs
 
 If a version or dependency you expect to find isn't in the project file, it's almost certainly in one of these.
 
@@ -185,3 +223,20 @@ Do not pick one and proceed. Record all of them with their roots, then scope to 
 ```
 
 Stating the scope is what stops a later reader assuming the map covers the whole tree — and stops you quietly wandering into a component nobody asked you to touch.
+
+## Searching after detection
+
+Skills that grep the tree (`repo-recon`, `feasibility-probe`, `blast-radius`, `context-strategy`) **bind file extensions from this detection**, never from an example in a SKILL.md. A search locked to `*.java` on a C# or Rust repository returns near-zero hits and that silence reads as "doesn't exist."
+
+1. Take the top extensions from `git ls-files` (step above), **case-folded**, minus lockfiles, generated code, and vendored trees.
+2. Restrict greps to those extensions. Include SQL, DDL, and the declaration artifacts you counted (copybooks, maps, JCL, CSD, scheduler exports) when the question is data or wiring.
+3. Match both cases of each extension (`*.cbl` and `*.CBL`). A case-sensitive `--include` on a z/OS tree returns a confident zero.
+4. If a capability the system obviously must have returns near-zero hits, the search is wrong — switch extension, then look for a house abstraction or a declaration artifact (see `repo-recon/references/entry-points-by-stack.md`).
+
+```bash
+# After detection — EXT is what you found, not a guess
+# Example only: rs, cs, ts, py, go, java, cbl, jcl
+grep -rl "<domain-term>" --include="*.$EXT" --include="*.$(echo "$EXT" | tr '[:lower:]' '[:upper:]')" --include="*.sql" --include="*.ddl" . | wc -l
+```
+
+Dependency trees follow the same rule: use the tool this file's manifest table named for the detected stack (`cargo tree`, `dotnet list package --include-transitive`, `npm ls --all`, and so on). Do not paste every ecosystem's command into a SKILL.md body.

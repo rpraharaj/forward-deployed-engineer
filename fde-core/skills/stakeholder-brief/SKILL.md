@@ -1,6 +1,6 @@
 ---
 name: stakeholder-brief
-description: Translate the current technical position into something a busy non-engineer reads in ninety seconds - what changed, what it means, what decision is needed, what the risk is - pitched at the right register for the reader. Use at every phase boundary rather than only at the end, when a sponsor or delivery lead needs an update, when a decision is required from someone outside the team, when presenting findings from an assessment, or when technical facts need to reach people who will not read the artifacts. Recommendation first, detail second.
+description: Translate the current technical position into something a busy non-engineer reads in ninety seconds - what changed, what it means, what decision is needed, what the risk is - pitched at the right register for the reader. Use at every phase boundary rather than only at the end, when a sponsor or delivery lead needs an update, when presenting findings from an assessment, or when technical facts need to reach people who will not read the artifacts. Recommendation first, detail second. If the content is "the plan is no longer achievable," run escalation-and-renegotiation and use this format as the vehicle.
 ---
 
 # Stakeholder brief

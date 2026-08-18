@@ -29,7 +29,7 @@ The good news: it's discoverable in about an hour, and knowing it early is close
 
 - Nothing reaching production this engagement
 - A mature continuous-delivery pipeline where the process is the pipeline. Confirm that's genuinely true rather than assuming it.
-- Emergency change during an incident — there's usually a separate expedited path, and finding it is part of this skill
+- Executing an emergency change during an incident — follow the emergency path you already recorded; do not discover process under fire. Finding that path *before* you need it is part of this skill.
 
 ## Prerequisites
 
@@ -41,7 +41,15 @@ The good news: it's discoverable in about an hour, and knowing it early is close
 
 This is not usually discoverable from the repository. It's a conversation, and it's a good early use of a `knowledge-interview` slot — or simply a direct question to a release manager or delivery lead.
 
-Ask specifically:
+This is usually a conversation. If no one is available, **do not stall** — reconstruct a first draft from the repo and tag it `[inferred]`:
+
+- The deploy job in CI (who it requires, which branches, which environments)
+- `CODEOWNERS` and branch-protection docs
+- The last production release PR and any linked change ticket
+- Existing runbooks and `CHANGELOG` / release calendar files
+- ServiceNow / Jira / Azure Boards templates named `change`, `CAB`, `release`
+
+Then ask to confirm. Ask specifically:
 
 - What does a change like this need before it can go to production?
 - Is there a CAB or equivalent? How often does it meet, and what's the submission deadline?
@@ -117,8 +125,9 @@ Write to `.fde/08b-change-control.md`:
 **Engagement:** <name>
 **Author:** FDE
 **Date:** <YYYY-MM-DD>
-**Source:** <who told you, when>
-**Confidence:** <confirmed with a release manager vs. inferred>
+**Status:** draft
+**Source revision:** <repo>@<short SHA> · **Source:** <who told you, when>
+**Confidence:** <confirmed with a release manager vs. inferred from CI / last release PR>
 
 ## Applicable path
 **Classification:** normal change *(pursuing reclassification to standard — see below)*

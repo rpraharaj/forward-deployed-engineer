@@ -34,6 +34,7 @@ The compensating advantage: it's unusually amenable to systematic treatment. The
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/02-system-map.md`
 - `.fde/01-environment.md` — you need a working build before changing what it builds with
 - `characterization-tests` where coverage is thin. An upgrade with no tests is a rewrite you can't verify.
@@ -58,10 +59,11 @@ The step that determines whether this goes well.
 List every dependency, its current version, the version required for the target, and whether that version exists. You are looking specifically for **blockers**: dependencies with no compatible version, abandoned libraries, and internal shared libraries owned by another team.
 
 ```bash
-# Whatever the ecosystem provides — the point is the full transitive tree
-# Maven: mvn dependency:tree | npm: npm ls --all | Cargo: cargo tree
-# .NET: dotnet list package --include-transitive | Python: pip list / poetry show --tree
+# Use the tree command for the stack you detected (see fde-core stack-detection
+# if that pack is installed). Do not run every ecosystem's tool.
 ```
+
+If you cannot find the tree command, record the direct dependencies from the manifest and tag transitives `[unverified]`.
 
 Three findings matter most:
 

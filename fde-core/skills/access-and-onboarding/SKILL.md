@@ -1,6 +1,6 @@
 ---
 name: access-and-onboarding
-description: Turn getting access into a tracked critical path instead of a passive wait. Enumerate every credential, permission, environment, and account the engagement needs, identify who approves each and its lead time, request long-lead items first, find workarounds for what is blocked, and keep a queue of useful work that does not depend on the blocker. Use in the first days at a new organization, whenever you are blocked on permissions, VPN, repository access, database grants, pipeline rights, or environment credentials, or when someone says "I'm still waiting for access" or "I can't get into X". Run this early - access lead times are the one constraint that cannot be compressed later.
+description: Turn getting access into a tracked critical path instead of a passive wait. Enumerate every credential, permission, environment, and account the engagement needs, identify who approves each and its lead time, request long-lead items first, find workarounds for what is blocked, and keep a queue of useful work that does not depend on the blocker. Use in the first days at a new organization, whenever you are blocked on permissions, VPN, repository access, database grants, pipeline rights, or environment credentials, or when someone says "I'm still waiting for access". Use for access and permissions, not a failing login in application code and not a CAB that will not approve a deploy.
 ---
 
 # Access and onboarding
@@ -118,6 +118,10 @@ Give every pending request an **expected-by date**. When it passes, chase — on
 
 A blocker without a date is invisible and drifts indefinitely. A blocker with a date, an owner, and a record of two chases is a fact you can escalate with, and it makes the eventual conversation about a slipped timeline a matter of record rather than opinion.
 
+**Stop for today** when every *needed* item has an approver, a request path, a request reference or a reason it cannot be filed yet, and an expected-by date. Granted is not the stop — requested-and-tracked is.
+
+If `00-engagement.md` is missing, offer `fde-orient` first. Without the archetype you will request too much or too little.
+
 ## Output template
 
 Write to `.fde/00b-access.md`:
@@ -137,11 +141,11 @@ Write to `.fde/00b-access.md`:
 
 ## Register
 
-| # | Access | Why needed | Status | Approver | Requested | Expected | Lead time | Workaround |
-|---|---|---|---|---|---|---|---|---|
-| 1 | Repo read: `billing-service` | Primary system | granted | J. Okafor | 03-02 | 03-04 | 2d | — |
-| 2 | Prod DB read-only | Verify data shape | pending | DBA team | 03-02 | 03-12 | ~10d | Staging replica, stale by 24h |
-| 3 | Deploy rights, staging | Test the release path | blocked | Platform lead | 03-03 | — | — | Pair with T. Nakamura |
+| # | Access | Why needed | Status | Approver | Request ref | Requested | Expected | Lead time | Workaround |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | Repo read: `billing-service` | Primary system | granted | J. Okafor | JIRA-102 | 03-02 | 03-04 | 2d | — |
+| 2 | Prod DB read-only | Verify data shape | pending | DBA team | DBA-441 | 03-02 | 03-12 | ~10d | Staging replica, stale by 24h |
+| 3 | Deploy rights, staging | Test the release path | blocked | Platform lead | — | 03-03 | — | — | Pair with T. Nakamura |
 
 **Status:** `granted` · `pending` · `blocked` · `not needed` · `workaround in use`
 

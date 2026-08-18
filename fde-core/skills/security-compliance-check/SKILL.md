@@ -36,6 +36,8 @@ There's a narrower reason too. The most common data-handling defects are not sop
 
 Know the organization's own review process and its lead time before starting. See `change-control-navigation`.
 
+**First action, not last:** file the formal review (or `/security-review` plus this pack) as soon as you know the data classification. The rest of this skill is so that review finds nothing surprising. Starting it at go-live is the failure the why-section describes.
+
 ## Procedure
 
 ### 1. Establish what data is actually in scope
@@ -51,6 +53,7 @@ Where the classification isn't yours to make — and it usually isn't — record
 The core of the check. For each sensitive field, trace where the change causes it to travel:
 
 - **Logs** — application, access, audit, error. Including exception messages and stack traces, which frequently carry the payload that caused them.
+- **Metrics, traces, and support-ticket payloads** — the same leak class as logs, often missed.
 - **Caches** — in-memory, Redis, CDN, browser. What's the TTL, and is it encrypted?
 - **Messages and events** — a published event is a copy of the data in a system with different retention and different consumers
 - **External calls** — including monitoring, analytics, and error-reporting services. Third-party error trackers ingesting a full request body is a very common and easily-missed leak.

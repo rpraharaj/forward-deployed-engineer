@@ -27,7 +27,7 @@ This skill's real output is not the coverage table. It's the **gap list** — th
 
 - No acceptance criteria exist yet — run `requirements-to-spec` first, or you're verifying against nothing
 - Pure spike or throwaway work
-- Diagnosing a broken pipeline — that's `ci-forensics`
+- Diagnosing a broken pipeline — that's `ci-forensics` *(fde-operate)*
 
 ## Prerequisites
 
@@ -78,11 +78,11 @@ Verification covers two questions: does the new thing work, and did anything els
 
 The second is answered by the blast-radius verification list. Each identified consumer needs a specific check — the full suite passing is necessary and rarely sufficient, particularly for consumers outside this repository, which the suite by definition cannot cover.
 
-### 5. Verify the non-functionals as measurements
+### 5. Cite NFR measurements — do not re-measure here
 
-An NFR verified by assertion isn't verified. "Performance is fine" is not evidence; "p95 measured at 0.9s in staging on 03-19 against a 1.0s target" is.
+If `03b-nfrs.md` exists, run `nfr-validation` (or cite its table if it already ran). Do not write a second NFR table into this file. An NFR verified by assertion isn't verified; that skill is what produces the numbers.
 
-Where a measurement is impossible in the environments you have — no prod-scale load environment, common in enterprise — that is a **gap**, not a pass. Record what you couldn't measure and what would be needed. `release-readiness` will surface it as residual risk, which is exactly where it belongs.
+Where a measurement is impossible, that is a **gap** in the validation table, not a pass here. `release-readiness` will surface it as residual risk.
 
 ### 6. Produce the gap list
 
@@ -122,12 +122,12 @@ Write to `.fde/07-verification.md`:
 
 ## Criteria → evidence
 
-| ID | Criterion | Evidence | Type | Confirmed | Date |
-|---|---|---|---|---|---|
-| AC-1 | EUR refund stores currency | `RefundServiceTest#eurRefundStoresCurrency` | automated | ✅ | CI @ `a3f9c1` |
-| AC-2 | Unsupported currency rejected | `RefundServiceTest#unsupportedCurrencyRejected` | automated | ✅ | CI @ `a3f9c1` |
-| AC-3 | Pre-migration orders still refundable | manual, staging, T. Nakamura | manual | ✅ | 03-19 |
-| AC-4 | Refund appears in daily report | **none** | — | ❌ | — |
+| ID | Criterion | Evidence | Type | Runs in CI? | Confirmed | Date |
+|---|---|---|---|---|---|---|
+| AC-1 | EUR refund stores currency | `RefundServiceTest#eurRefundStoresCurrency` | automated | yes | ✅ | CI @ `a3f9c1` |
+| AC-2 | Unsupported currency rejected | `RefundServiceTest#unsupportedCurrencyRejected` | automated | yes | ✅ | CI @ `a3f9c1` |
+| AC-3 | Pre-migration orders still refundable | manual, staging, T. Nakamura | manual | n/a | ✅ | 03-19 |
+| AC-4 | Refund appears in daily report | **none** | — | — | ❌ | — |
 
 ## Regression surface
 | Consumer (from blast radius) | Check | Result |
@@ -136,10 +136,7 @@ Write to `.fde/07-verification.md`:
 | Nightly warehouse sync | asked data team to confirm | ⏳ no response since 03-12 |
 
 ## Non-functional
-| NFR | Target | Measured | Where | Result |
-|---|---|---|---|---|
-| Refund p95 | < 1.0s | 0.9s | staging, 03-19 | ✅ |
-| Under prod volume | < 1.0s | **not measured** | — | ❌ gap |
+Cite `nfr-validation` — do not duplicate its table. If it has not run: "not yet measured — run `nfr-validation`."
 
 ## Gap list
 

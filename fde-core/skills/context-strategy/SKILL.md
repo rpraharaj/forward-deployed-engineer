@@ -1,6 +1,6 @@
 ---
 name: context-strategy
-description: Work effectively in a codebase far larger than any context window, across an engagement that spans many sessions. Decide what to read versus search versus script versus delegate, build a durable CLAUDE.md so each session does not re-derive the same map, define a working set, and hand off cleanly when context runs low. Use when a repository is too large to explore file-by-file, when context is filling up mid-task, when starting a multi-session engagement, when you catch yourself re-discovering something you already worked out, or when someone says "this repo is huge" or "where do I even start reading". Especially important in monorepos and legacy enterprise systems.
+description: Work effectively in a codebase far larger than any context window, across an engagement that spans many sessions. Decide what to read versus search versus script versus delegate, build a durable CLAUDE.md so each session does not re-derive the same map, define a working set, and hand off cleanly when context runs low. Use when a repository is too large to explore file-by-file, when context is filling up mid-task, when starting a multi-session engagement, when you catch yourself re-discovering something you already worked out, or when someone says "this repo is huge". Run before repo-recon when the tree is large; this sets the budget, it does not replace the system map.
 ---
 
 # Context strategy
@@ -25,17 +25,21 @@ The fix isn't reading faster. It's deciding, deliberately and repeatedly, **what
 
 - Small, well-understood repository, single session — just work
 - A one-off question with a known answer location
+- "Help me understand this repo" when you need a map — that is `repo-recon`. Run this first only to set a budget on a large tree.
+
+## Prerequisites
+
+Locate the workspace (`../_shared/workspace-conventions.md`). `00-engagement.md` if it exists — it scopes which subtree matters. If there is no workspace yet, still set the budget, write `00c-context.md` next to the checkout or after `fde-orient` creates the workspace, and do not invent a system map.
 
 ## Procedure
 
 ### 1. Size the problem before entering it
 
-Thirty seconds, and it determines everything downstream:
+Thirty seconds, and it determines everything downstream. **Do not** `xargs wc` the tree or run `git log` once per file — those hang on the repositories this skill is for.
 
 ```bash
 git ls-files | wc -l
 git ls-files | sed 's/.*\.//' | sort | uniq -c | sort -rn | head -15
-git ls-files | xargs wc -l 2>/dev/null | tail -1
 du -sh .git
 ```
 
@@ -46,7 +50,7 @@ du -sh .git
 | **5,000 – 50,000** | Never read broadly. Search and script first, read only the working set. `CLAUDE.md` becomes essential. |
 | **> 50,000** | Treat subdirectories as separate repositories. Scope hard to one, and say so in every artifact. |
 
-Record the number in `02-system-map.md`. It calibrates every claim you'll make about coverage.
+Record the file count in `00c-context.md`. When `repo-recon` runs, it copies that number into the system map. It calibrates every claim you'll make about coverage.
 
 ### 2. Choose the cheapest tool that answers the question
 
@@ -64,7 +68,8 @@ The core discipline. Before opening a file, ask what kind of question this is.
 **The counting habit is worth building.** Before reading any grep result, count it:
 
 ```bash
-grep -rl "PaymentProcessor" --include="*.java" . | wc -l
+# Bind EXT from stack-detection / the extension counts in step 1
+grep -rl "<SymbolOrTerm>" --include="*.$EXT" . | wc -l
 ```
 
 Three hits: read them. Two hundred: you asked the wrong question — narrow it, or you're about to spend most of your context on one term.
@@ -74,22 +79,16 @@ Three hits: read them. Two hundred: you asked the wrong question — narrow it, 
 If a question is "the same lookup, many times," writing ten lines of shell or Python is dramatically cheaper than reading files, and it produces a **checkable, re-runnable** answer rather than an impression. This is the highest-leverage habit in the skill and the most consistently underused.
 
 ```bash
-# Which modules import the legacy client?
-grep -rl "com.acme.legacy.Client" --include="*.java" src/ \
-  | cut -d/ -f1-3 | sort -u
-
-# Endpoints, in one pass
-grep -rhoE "@(Get|Post|Put|Delete)Mapping\([^)]*\)" --include="*.java" src/ | sort -u
+# Which modules mention the legacy client? Bind EXT from detection.
+grep -rl "<LegacyClientName>" --include="*.$EXT" . \
+  | awk -F/ '{print $1"/"$2"/"$3}' | sort -u
 
 # Where does churn concentrate? (the files that will bite you)
 git log --format= --name-only --since="12 months ago" \
   | grep -v '^$' | sort | uniq -c | sort -rn | head -30
-
-# Anything not touched in two years — candidate dead zones
-git ls-files | while read f; do
-  echo "$(git log -1 --format=%ad --date=short -- "$f") $f"
-done | sort | head -30
 ```
+
+Do **not** loop `git log -1` over every file to find dead zones. That is one process per path and will consume the session. If you need untouched areas, sample top-level directories (`git log -1 --format=%ad -- <dir>`) or ask `repo-recon` step 6, which already filters noise.
 
 Put anything you'll re-run into the scratchpad, and mention the useful ones in `CLAUDE.md` so the next session doesn't reinvent them.
 
@@ -111,11 +110,11 @@ For any given task, name the files that actually matter — typically five to fi
 
 ```markdown
 ## Working set — add currency to refund flow
-- src/refunds/RefundService.java:88-160   ← the change lands here
-- src/refunds/RefundRequest.java          ← DTO, needs the field
-- src/payments/CurrencyConverter.java     ← existing helper, reuse
-- db/migration/V218__refunds.sql          ← schema
-- src/refunds/RefundServiceTest.java      ← characterization target
+- <module>/RefundService:88-160   ← the change lands here
+- <module>/RefundRequest          ← DTO, needs the field
+- <module>/CurrencyConverter      ← existing helper, reuse
+- db/migration/…                  ← schema
+- <module>/RefundServiceTest      ← characterization target
 ```
 
 Everything else is reference, reachable by grep when needed. When the working set grows past about twenty files, the task is too big — split it. That's a useful signal rather than an inconvenience.
@@ -163,6 +162,46 @@ The test: **if this session ended right now, could a fresh session pick up from 
 Across weeks, the `.fde/` workspace is the engagement's memory and each session is stateless. Start a session by reading the artifacts relevant to today's task — not by re-exploring — and end it by updating them.
 
 An FDE re-deriving the system map in week three has a workspace problem, not a memory problem.
+
+### 9. Stop
+
+You have enough when all of these are true:
+
+1. File count and scale band are recorded
+2. A working set of at most fifteen files is named (or explicitly "none yet — waiting on recon")
+3. `CLAUDE.md` is updated, or you wrote down why it was deferred
+4. The next step is written so a fresh session can start
+
+Do not keep surveying. Breadth belongs to `repo-recon`.
+
+## Output template
+
+Write to `<workspace>/00c-context.md`:
+
+```markdown
+# Context strategy
+
+**Engagement:** <name>
+**Author:** FDE
+**Date:** <YYYY-MM-DD>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>
+**Confidence:** scale is confirmed from `git ls-files`; working set is a judgment
+
+## Scale
+- **Files:** <n> · **Band:** <500 | 5k | 50k | above>
+- **Scope:** <subtree, or whole repo>
+- **Approach:** <from the table in step 1>
+
+## Working set
+<the 5–15 files for the current task, or "none — recon not run">
+
+## CLAUDE.md
+<updated | deferred because …>
+
+## Next step
+<one sentence a fresh session can execute>
+```
 
 ## Common traps
 

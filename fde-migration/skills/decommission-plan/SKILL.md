@@ -31,6 +31,7 @@ The second reason this matters: leaving systems running has real costs — licen
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/02-system-map.md` and `.fde/02b-ownership.md`
 - `.fde/runbooks/cutover-*.md` if this follows a migration
 - Access to logs, monitoring, and network data covering **at least a full business cycle**

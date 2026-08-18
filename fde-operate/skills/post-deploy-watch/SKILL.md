@@ -30,6 +30,7 @@ This skill exists to close the loop that `release-readiness` opened. Every item 
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/08-release-readiness.md` — **the residual unknowns are your watch list**
 - `.fde/runbooks/deploy-*.md` — rollback triggers and procedure
 - `.fde/03b-nfrs.md` — the targets you're watching against

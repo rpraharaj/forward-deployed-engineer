@@ -60,24 +60,25 @@ The failure mode of synthetic data is that it's too clean. To generate data that
 Query for shape, never content:
 
 ```sql
--- Distributions and boundaries, no personal data returned
+-- ANSI-shaped aggregates. No personal data returned.
+-- Some engines want FILTER (WHERE …); if that fails, use the SUM(CASE) form.
 SELECT COUNT(*), COUNT(DISTINCT customer_id),
-       MIN(created_at), MAX(created_at),
-       AVG(LENGTH(name)), MAX(LENGTH(name))
+       MIN(created_at), MAX(created_at)
 FROM orders;
 
--- Null rates reveal which "required" fields are really optional
-SELECT COUNT(*) FILTER (WHERE postcode IS NULL) * 100.0 / COUNT(*) AS pct_null_postcode
+SELECT
+  SUM(CASE WHEN postcode IS NULL THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS pct_null_postcode,
+  SUM(CASE WHEN postcode = '' THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS pct_empty_postcode
 FROM addresses;
 
--- Categorical spread, including the values nobody documented
 SELECT status, COUNT(*) FROM orders GROUP BY status ORDER BY 2 DESC;
 
--- Cardinality per parent — the distribution that breaks pagination and N+1 assumptions
 SELECT n_orders, COUNT(*) FROM (
   SELECT customer_id, COUNT(*) AS n_orders FROM orders GROUP BY customer_id
-) t GROUP BY n_orders ORDER BY 1 DESC LIMIT 20;
+) t GROUP BY n_orders ORDER BY 1 DESC;
 ```
+
+These queries are the home for shape analysis. `data-archaeology` points here rather than pasting a second copy.
 
 Aggregate queries are usually permitted where row access isn't, and they tell you what matters: null rates, value distributions, the long tail, the enum values still in the data that the code no longer produces.
 
@@ -210,3 +211,5 @@ Write to `.fde/03c-test-data.md`:
 **Overstating coverage.** If there's no pre-migration data, the migration path isn't verified. Say so — `verification-plan` needs it in the gap list.
 
 **Building a masking pipeline that already exists.** Ask first.
+
+**Stop** when one generator (or fixture set) exists, the awkward-case table is filled, and "What this does NOT represent" is written. Do not keep generating.

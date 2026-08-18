@@ -33,6 +33,7 @@ The other half is prospective: before shipping, asking whether this change's fai
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/incidents/*.md` — specifically the "what made this hard" section
 - `.fde/03b-nfrs.md` — the silent-failure analysis
 - `.fde/08-release-readiness.md` — the observability dimension

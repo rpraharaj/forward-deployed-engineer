@@ -10,7 +10,7 @@ Thanks for considering it. This project improves fastest through a specific kind
 
 Every round of testing found something reasoning alone had missed — ten defects across three runs, each a more fundamental assumption than the last. The pattern is unmistakable: **the skills are wrong in ways nobody can predict from a desk.**
 
-Three stacks are covered (Rust workspace, .NET monolith, XML-configured Java). Many aren't.
+Five stacks are covered (Rust workspace, .NET monolith, XML-configured Java, Elixir/Phoenix, COBOL/CICS/JCL). Many aren't.
 
 ### How
 
@@ -29,9 +29,9 @@ That one paragraph is worth more than a new skill.
 
 ### Stacks we'd especially like
 
-COBOL / mainframe · Salesforce Apex · Low-code platforms (OutSystems, Mendix, Power Platform) · Embedded C/C++ · Elixir/Erlang · Code-generated systems where the source is a build artifact · Anything where the repository isn't the source of truth
+Salesforce Apex · Low-code platforms (OutSystems, Mendix, Power Platform) · Embedded C/C++ · Erlang (OTP without Phoenix) · Anything where there is no repository at all
 
-**We predict a fourth class of assumption exists.** Three runs found three, each invisible until a repository violated it. Help us find the next one.
+**Six classes so far.** The latest: don't assume the files in the repository are the source of truth (`kubernetes-client/python` — 91% generated). Still open: low-code with no repo.
 
 ---
 
@@ -51,7 +51,9 @@ You don't need a fix. Describing the mismatch is the contribution.
 
 Full detail in [DESIGN.md §8](DESIGN.md). The rules that matter most:
 
-**No stack specifics in a `SKILL.md` body.** Maven, npm, `pytest`, `@RestController` — none of it belongs in the main file. Stack knowledge goes in `references/`, loaded only when detection matches. *Three of our ten defects were violations of exactly this*, so it's enforced rather than preferred.
+**No stack specifics in a `SKILL.md` body.** Maven, npm, `pytest`, `@RestController`, `--include="*.java"` — none of it belongs in the main file. Bind search extensions from `stack-detection.md` after detection. Stack knowledge goes in `references/`, loaded only when detection matches. *Three of our ten defects were violations of exactly this*, so it's enforced rather than preferred.
+
+**Qualify pack skill names.** If a core skill mentions `cutover-plan` or `db-change-management`, say which pack it lives in so a core-only install does not invoke a missing skill.
 
 **Explain why, don't issue rules.** A skill that says "ALWAYS do X" gets followed mechanically. One that explains what goes wrong without X gets applied with judgment — which matters, because these run in environments we can't anticipate.
 
@@ -89,6 +91,17 @@ Lean slightly assertive — under-triggering is the common failure. But bound it
 Before opening a PR, check your skill doesn't steal queries from existing ones:
 
 ```bash
+# Re-run the stored suite (64 queries). Requires `grok` on PATH.
+python3 eval/run-trigger-eval.py
+
+# Claude rematch (needs a working Anthropic path — not an OpenRouter remap).
+# Writes eval/trigger-results-claude.json so it does not overwrite the Grok run.
+python3 eval/run-trigger-eval.py --judge claude
+```
+
+Or a single ad-hoc query:
+
+```bash
 # 1. Build the description list
 for f in fde-*/skills/*/SKILL.md; do
   echo "- $(sed -n '2s/^name: //p' "$f"): $(sed -n '3s/^description: //p' "$f")"
@@ -96,7 +109,7 @@ done > /tmp/skills.txt
 
 # 2. Ask which skill fires for a realistic query
 printf 'You are Claude Code. These skills are available:\n\n%s\n\nA user says:\n"%s"\n\nWhich skill(s) would you invoke? Reply with ONLY skill names, comma-separated, most relevant first (max 2). If none apply, reply exactly NONE. No explanation.' \
-  "$(cat /tmp/skills.txt)" "your realistic test query here" | claude -p
+  "$(cat /tmp/skills.txt)" "your realistic test query here" | grok --single --output-format plain
 ```
 
 Test both directions: your skill wins its own queries, **and** neighbouring skills still win theirs. Include the results in your PR.

@@ -29,12 +29,12 @@ The other half of this skill is failure behavior. Systems are almost never teste
 
 - No NFRs declared — run `nfr-baseline` first, or you're measuring against nothing
 - Genuinely trivial internal tooling
-- Diagnosing a live performance problem — that's `incident-triage`
+- Production is down or customers are failing *now* — that's `incident-triage`. Coming back later to measure a slow path is this skill.
 
 ## Prerequisites
 
 - `.fde/03b-nfrs.md` — **required.** The targets and the baseline.
-- `.fde/07-verification.md` — this appends to it
+- `.fde/07-verification.md` — this appends to it. If the file does not exist, create it with the standard header and say so in Confidence; do not pretend `verification-plan` already ran.
 - Access to a realistic environment, or an honest statement that you don't have one
 
 ## Procedure

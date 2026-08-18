@@ -34,6 +34,7 @@ For an FDE there's a second reason. Your credibility rests on being predictable.
 - `.fde/05b-estimate.md` — sizing, if it exists
 - `.fde/06-blast-radius-*.md` — coordination needs
 - `.fde/00b-access.md` — blocked access is a dependency with a lead time
+- `.fde/08b-change-control.md` — **the calendar and gates.** If missing, offer `change-control-navigation`; do not invent CAB dates. If you proceed anyway, every window is `[unverified]`.
 
 ## Procedure
 
@@ -103,7 +104,9 @@ Write to `.fde/05-delivery-plan.md`:
 **Author:** FDE
 **Date:** <YYYY-MM-DD>
 **Status:** draft
-**Basis:** `04-feasibility.md`, `05b-estimate.md`
+**Basis:** `04-feasibility.md`, `05b-estimate.md`, `08b-change-control.md`
+**Source revision:** <repo>@<short SHA>
+**Confidence:** <calendar confirmed vs. inferred>
 **Next re-plan:** <when, and what triggers it>
 
 ## Approach

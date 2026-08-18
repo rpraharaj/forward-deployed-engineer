@@ -1,6 +1,6 @@
 ---
 name: blast-radius
-description: Map everything a proposed change could break before making it - direct callers, cross-repository consumers, published contracts, event subscribers, feature flags, shared database objects, and config coupling - ending with a risk rating and the specific things to verify. Use before any non-trivial change, when asked "what breaks if we touch this", before modifying anything shared or published, before a schema change, or when a change looks small but touches something widely used. Also use when assembling evidence for a release decision or a change board submission.
+description: Map everything a proposed change could break before making it - direct callers, cross-repository consumers, published contracts, event subscribers, feature flags, shared database objects, and config coupling - ending with a risk rating and the specific things to verify. Use before any non-trivial change, when asked "what breaks if we touch this", before modifying anything shared or published, or before a schema change. Do not use for a release go/no-go - that is release-readiness; this skill supplies the consumer list.
 ---
 
 # Blast radius
@@ -19,7 +19,7 @@ An FDE is unusually exposed here. An engineer who has worked on a system for fiv
 - Modifying anything shared, published, or widely called
 - Any schema change
 - "What breaks if we touch this?"
-- Assembling evidence for `release-readiness` or a change board
+- Feeding `release-readiness` — this skill is the consumer list, not the go/no-go
 
 ## When it doesn't
 
@@ -45,7 +45,7 @@ grep -rl "<SymbolName>" --include="*.<ext>" . | wc -l
 grep -rn "<SymbolName>" --include="*.<ext>" . | head -40
 ```
 
-Where the count is large, that is itself the finding: a symbol with sixty callers is not a local change regardless of how small the diff is.
+Where the count is large, that is itself the finding: a symbol with sixty callers is not a local change regardless of how small the diff is. **Stop reading ring-1 hits after about forty.** Record the count, sample the rest, and move out — rings 3–6 are where incidents come from.
 
 **Grep is necessary and not sufficient.** It cannot see dynamic dispatch, reflection, config-driven wiring, or string-built queries. Where the codebase uses those — see `../trace-the-flow/references/following-indirection.md` — any "nothing else calls this" conclusion is `[inferred]`, and must be labelled that way. Say what you searched and what the search can't see.
 
@@ -93,7 +93,7 @@ Database objects are frequently shared with systems nobody remembers.
 - Is the table, view, or column read by anything other than this application — a report, an ETL job, a warehouse sync, a partner extract, an ops query?
 - Are there triggers, materialized views, or downstream replicas?
 - Does anything parse the data positionally, or by column order?
-- Is the table large enough that a migration takes a lock that matters? See `db-change-management`.
+- Is the table large enough that a migration takes a lock that matters? See `db-change-management` *(fde-data)*.
 
 Reporting and analytics consumers are the classic blind spot: they read the production schema directly, they're owned by a different team, and they discover breakage a day later in a dashboard.
 
@@ -122,6 +122,8 @@ Combine **reach** (how many things are affected) with **detectability** (how fas
 **Unknown consumers means Critical, not Low.** Absence of evidence is not evidence of absence, and this is the single most important judgment in the skill.
 
 Then — the part that makes the artifact actionable — list the **specific things to verify** for each ring. That list flows directly into `verification-plan` and `release-readiness`.
+
+**Stop** when every ring has a row, including `not checked` / `[unverified]`, and the verification list is written. Unknown consumers stay Critical. See `db-change-management` *(fde-data)* for ring 5 lock behavior if that pack is installed.
 
 ## Output template
 

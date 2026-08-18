@@ -31,8 +31,11 @@ There's a second, sharper reason. **A rollback plan that has never been executed
 - `.fde/06-blast-radius-*.md` — determines how careful the procedure must be
 - `.fde/07-verification.md` — what's proven and what's a gap
 - `.fde/01-environment.md` — the deploy commands, usually discoverable from CI
+- `.fde/08b-change-control.md` — who may press the button, freeze windows, CAB ref. If missing, offer `change-control-navigation` rather than inventing SoD.
 
 Read the CI/CD configuration before writing anything. The existing pipeline is the real deploy path, and a runbook that contradicts it is worse than none.
+
+A cutover window is `cutover-plan` *(fde-migration)*. The observation window after a routine deploy is `post-deploy-watch` *(fde-operate)*. If those packs are not installed, keep rollback and watch sections in this runbook and say so.
 
 ## Procedure
 

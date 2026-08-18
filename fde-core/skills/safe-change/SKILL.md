@@ -1,6 +1,6 @@
 ---
 name: safe-change
-description: Implement a change in an unfamiliar or high-stakes codebase with the smallest viable diff - establish a green baseline first, match the surrounding idiom rather than importing your own, separate refactor commits from behavior commits, gate behind a flag where blast radius warrants it, and draft the rollback before executing the change. Use whenever writing or modifying code in a system you did not build, in legacy code, in anything touching money, data, auth, or a published contract, or when a change must be reviewed by a team that does not know you yet. Prefer this over ad-hoc implementation any time being wrong is expensive.
+description: Implement an already-specified change in an unfamiliar or high-stakes codebase with the smallest viable diff - establish a green baseline first, match the surrounding idiom rather than importing your own, separate refactor commits from behavior commits, gate behind a flag where blast radius warrants it, and draft the rollback before executing the change. Use when implementing a change that feasibility-probe already grounded, in legacy code, in anything touching money, data, auth, or a published contract, or when a change must be reviewed by a team that does not know you yet. Do not use to decide what to build, to pin untested legacy behavior (characterization-tests), or for a large extraction (refactor-seams).
 ---
 
 # Safe change

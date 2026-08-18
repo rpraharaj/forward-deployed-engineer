@@ -30,6 +30,7 @@ Most failed cutovers were not failures of the new system. They were failures to 
 
 ## Prerequisites
 
+- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
 - `.fde/traces/data-model.md` — you must know the eras and shapes before moving data
 - `.fde/06-blast-radius-*.md` — every consumer of both systems
 - `.fde/07-verification.md` — the new system proven on its own before you plan the swap
