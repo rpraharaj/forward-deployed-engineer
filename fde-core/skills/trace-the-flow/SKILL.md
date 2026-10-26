@@ -27,13 +27,15 @@ A trace with a citation at every hop is the antidote. Where you can't establish 
 
 - You need breadth, not depth — run `repo-recon`
 - The system is small enough to read outright
-- You need the data model rather than the control flow — that's `data-archaeology`
+- You need the data model rather than the control flow — that's `data-archaeology` *(fde-data)*; if unavailable, record the data-model gap rather than claiming a complete analysis.
 - You need to know *why* the code is shaped this way — that's `git-archaeology`
 
 ## Prerequisites
 
-- `.fde/02-system-map.md` — you need to know the entry points before following one
-- Ideally `.fde/01-environment.md` — being able to *run* the flow turns `[inferred]` hops into `[confirmed]` ones cheaply
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` — you need to know the entry points before following one
+- Ideally `<workspace>/01-environment.md` — being able to *run* the flow turns `[inferred]` hops into `[confirmed]` ones cheaply
 
 ## Procedure
 
@@ -104,7 +106,7 @@ If a downstream turns out to be where the interesting behavior is, that's a *sec
 
 ## Output template
 
-Write to `.fde/traces/<business-operation>.md`:
+Write to `<workspace>/traces/<business-operation>.md`:
 
 ```markdown
 # Trace — <operation in business terms>

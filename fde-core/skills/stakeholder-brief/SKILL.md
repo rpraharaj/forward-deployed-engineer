@@ -31,6 +31,8 @@ There's a second function. An FDE has no track record here, and people calibrate
 
 ## Prerequisites
 
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
 Whichever artifacts hold the current position. Read `../_shared/comms-register.md` before writing — the register for each reader type is the substance of this skill.
 
 ## Procedure
@@ -95,12 +97,18 @@ The discipline of fitting one screen also forces you to decide what actually mat
 
 ## Output template
 
-Write to `.fde/briefs/<date>-<topic>.md`, or send directly:
+Write to `<workspace>/briefs/<date>-<topic>.md`, or send directly:
 
 ```markdown
 # <Topic> — <date>
 
 **For:** <name, role> · **From:** FDE · **Read time:** ~90 seconds
+**Engagement:** <name>
+**Author:** FDE
+**Date:** <YYYY-MM-DD>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Recommendation
 <One or two sentences. The decision you're asking for, or the position you're taking. If the reader stops here, this must be enough.>

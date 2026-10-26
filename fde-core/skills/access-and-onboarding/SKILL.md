@@ -29,7 +29,9 @@ This skill front-loads the discovery, so the waiting overlaps instead of stackin
 
 ## Prerequisites
 
-`.fde/00-engagement.md` — the archetype determines what access is actually needed. Without it, you'll request either too much (which slows every approval and makes you look careless with privilege) or too little.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`<workspace>/00-engagement.md` — the archetype determines what access is actually needed. Without it, you'll request either too much (which slows every approval and makes you look careless with privilege) or too little.
 
 ## Procedure
 
@@ -124,7 +126,7 @@ If `00-engagement.md` is missing, offer `fde-orient` first. Without the archetyp
 
 ## Output template
 
-Write to `.fde/00b-access.md`:
+Write to `<workspace>/00b-access.md`:
 
 ```markdown
 # Access register
@@ -134,6 +136,7 @@ Write to `.fde/00b-access.md`:
 **Date:** <YYYY-MM-DD>
 **Status:** live *(update as items land)*
 **Confidence:** <what's confirmed granted vs. believed pending>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Summary
 - **Granted:** <n> · **Pending:** <n> · **Blocked:** <n> · **Not needed:** <n>

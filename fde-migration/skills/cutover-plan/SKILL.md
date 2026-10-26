@@ -30,10 +30,11 @@ Most failed cutovers were not failures of the new system. They were failures to 
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/traces/data-model.md` — you must know the eras and shapes before moving data
-- `.fde/06-blast-radius-*.md` — every consumer of both systems
-- `.fde/07-verification.md` — the new system proven on its own before you plan the swap
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/traces/data-model.md` — you must know the eras and shapes before moving data
+- `<workspace>/06-blast-radius-*.md` — every consumer of both systems
+- `<workspace>/07-verification.md` — the new system proven on its own before you plan the swap
 - `db-change-management` where schema changes are involved
 
 ## Procedure
@@ -49,7 +50,7 @@ The single most consequential decision, and it should be explicit rather than de
 | **Phased by segment** | Migrate tenants, regions, or product lines in tranches | Data partitions cleanly; blast radius must stay small |
 | **Strangler** | Route by route, over months | Long-lived, low-risk, no single moment |
 
-**Parallel run is under-used and usually right** when the new system's correctness is the main risk. Running both with the old one authoritative, comparing outputs, and switching only once they agree for a stated period converts a leap into a measurement. It costs double-writing and reconciliation effort, and it is almost always cheaper than being wrong.
+**Parallel run requires isolated effects.** Keep the old system authoritative; route shadow writes to separate storage and suppress or sandbox notifications, payments, events, and external mutations. Define which system alone may perform each real-world action, how retries are deduplicated, and how extra load is bounded. Only compare live traffic after verifying those controls; otherwise rehearse with policy-approved inputs in a lower environment. Switch only after reconciliation succeeds for a stated period.
 
 Where data partitions cleanly, phased is the safest real option: the first tranche is a genuine rehearsal with real data and bounded consequences.
 
@@ -118,7 +119,7 @@ Leaving the old system running indefinitely because nobody decided is the standa
 
 ## Output
 
-Write to `.fde/runbooks/cutover-<name>.md`:
+Write to `<workspace>/runbooks/cutover-<name>.md`:
 
 ```markdown
 # Cutover — <old> → <new>
@@ -126,6 +127,11 @@ Write to `.fde/runbooks/cutover-<name>.md`:
 **Engagement:** <name> · **Date planned:** <date> · **Window:** <start>–<end>
 **Shape:** phased by region · **Rehearsed:** <date>, <duration>
 **Decision owner:** <name> · **Operators:** <names>
+**Author:** FDE
+**Date:** <YYYY-MM-DD>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Summary
 <One sentence a release manager understands.>

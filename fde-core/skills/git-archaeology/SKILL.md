@@ -33,7 +33,9 @@ You are the person least equipped to tell the difference. The permanent team car
 
 ## Prerequisites
 
-Git history you can read. If `git rev-parse --is-shallow-repository` is true, stop and tag any intent claim `[unverified]`. Locate the workspace so the write-up lands with the rest of the engagement.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+Git history you can read. If `git rev-parse --is-shallow-repository` is true, stop and tag any intent claim `[unverified]`.
 
 ## Procedure
 

@@ -30,10 +30,11 @@ This skill exists to close the loop that `release-readiness` opened. Every item 
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/08-release-readiness.md` — **the residual unknowns are your watch list**
-- `.fde/runbooks/deploy-*.md` — rollback triggers and procedure
-- `.fde/03b-nfrs.md` — the targets you're watching against
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/08-release-readiness.md` — **the residual unknowns are your watch list**
+- `<workspace>/runbooks/deploy-*.md` — rollback triggers and procedure
+- `<workspace>/03b-nfrs.md` — the targets you're watching against
 
 ## Procedure
 
@@ -101,9 +102,11 @@ Close the loop in writing, however briefly.
 
 That third point is the substance. `release-readiness` accepted specific risks; this is where they get closed or carried forward. An unresolved item that nobody carried forward is one that quietly became permanent — and it belongs in `handover-pack` under open risks if it's still open when you leave.
 
+After release health is established, core `outcome-measurement` compares business results with the original baseline and its attribution limits. Core `adoption-plan` handles low successful use or a return to old workarounds. Stable metrics alone do not establish business benefit or adoption.
+
 ## Output
 
-Append to the deploy runbook, or `.fde/runbooks/deploy-<change>.md`:
+Append to the deploy runbook, or `<workspace>/runbooks/deploy-<change>.md`:
 
 ```markdown
 ## Post-deploy watch

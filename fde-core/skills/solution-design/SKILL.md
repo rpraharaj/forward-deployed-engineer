@@ -32,9 +32,11 @@ The defence for both is the same: generate real alternatives, evaluate against *
 
 ## Prerequisites
 
-- `.fde/03-requirements.md` — what must be true
-- `.fde/04-feasibility.md` — what the code can actually support, and the alternatives it spotted
-- `.fde/03b-nfrs.md` if it exists, `.fde/02b-ownership.md` for who must agree
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03-requirements.md` — what must be true
+- `<workspace>/04-feasibility.md` — what the code can actually support, and the alternatives it spotted
+- `<workspace>/03b-nfrs.md` if it exists, `<workspace>/02b-ownership.md` for who must agree
 
 ## Procedure
 
@@ -96,7 +98,7 @@ Where you can't get a response — common — say so in the ADR, note whom you a
 
 ## Output template
 
-Write to `.fde/adr/NNNN-<slug>.md`:
+Write to `<workspace>/adr/NNNN-<slug>.md`:
 
 ```markdown
 # ADR-NNNN — <decision as a statement>
@@ -107,6 +109,8 @@ Write to `.fde/adr/NNNN-<slug>.md`:
 **Status:** proposed | accepted | superseded by ADR-NNNN
 **Deciders:** <who agreed, and when>
 **Consulted:** <who was asked; note non-responses>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Decision
 <One sentence: what we are doing. State it first — the reader may stop here.>

@@ -31,7 +31,9 @@ The repository will tell you, though. Commit history, review patterns, and direc
 
 ## Prerequisites
 
-`.fde/00-engagement.md`, and `.fde/02-system-map.md` if it exists — you map ownership *of* components, so it helps to know what they are.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`<workspace>/00-engagement.md`, and `<workspace>/02-system-map.md` if it exists — you map ownership *of* components, so it helps to know what they are.
 
 ## Procedure
 
@@ -114,7 +116,7 @@ Map the components in **engagement scope** (from the charter or system map), not
 
 ## Output template
 
-Write to `.fde/02b-ownership.md`:
+Write to `<workspace>/02b-ownership.md`:
 
 ```markdown
 # Ownership map
@@ -124,6 +126,7 @@ Write to `.fde/02b-ownership.md`:
 **Date:** <YYYY-MM-DD>
 **Status:** draft
 **Confidence:** <derived from history vs. confirmed with people>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## By component
 

@@ -37,7 +37,9 @@ The FDE's position makes both harder. You have no track record, you're often per
 
 ## Prerequisites
 
-- `.fde/00-engagement.md` — who can actually decide
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/00-engagement.md` — who can actually decide
 - The artifact that holds the evidence (`04-feasibility.md`, `05b-estimate.md`, `00b-access.md`, …)
 - `../_shared/comms-register.md` before writing to anyone above tech lead
 
@@ -70,7 +72,7 @@ Always arrive with at least two paths, with consequences attached. The standard 
 | **Reduce scope** | Something doesn't get built. Name which, and what's lost. |
 | **Move the date** | Downstream commitments shift. Name them. |
 | **Add people** | Rarely helps quickly, and costs the existing team's time. Say so honestly. |
-| **Accept lower quality** | Skip verification, defer tests. Name the specific risk being accepted. |
+| **Defer non-mandatory work** | Name the tests or checks deferred, the uncovered behavior, and the risk owner. Required controls and must-have criteria remain gates unless their authorized owner grants a permitted exception. |
 | **Remove the blocker** | Escalate the dependency, buy access, get a decision made faster. |
 | **Change approach** | A cheaper design that meets the real need. Usually the best option and the least considered. |
 
@@ -106,15 +108,15 @@ Record it as fact, never as evidence. The moment it reads defensive, it costs mo
 
 ### 7. If overridden, proceed properly
 
-Sometimes you'll be told to continue anyway. That's legitimate — it's their call, and they may have context you don't.
+Sometimes you'll be told to continue anyway. First establish whether the person has authority to accept this particular risk; delivery authority does not automatically include authority over security, safety, or data protection controls.
 
 Note the decision and who made it, then commit to the chosen path properly. Half-hearted execution of a decision you disagreed with is worse than either alternative, and visibly so.
 
-Where the concern is genuinely serious — safety, legal, data protection — and it's overridden, say so once more in writing, plainly, and escalate one level if the matter warrants it. Then follow the decision.
+For safety, legal, data protection, or other mandatory controls, pause the affected action and escalate to the relevant control owner. Proceed only when the concern is resolved or that owner grants an exception permitted by policy, with scope, conditions, and expiry recorded. If an exception is prohibited or authority is unclear, do not carry out the affected action. Continue independent work that does not cross that boundary.
 
 ## Output template
 
-Usually a conversation, backed by a short written record. Use `stakeholder-brief` format, or log in `.fde/00-engagement.md`:
+Usually a conversation, backed by a short written record. Use `stakeholder-brief` format, or log in `<workspace>/00-engagement.md`:
 
 ```markdown
 ## Escalation — <date>

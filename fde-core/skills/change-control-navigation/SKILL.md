@@ -33,7 +33,9 @@ The good news: it's discoverable in about an hour, and knowing it early is close
 
 ## Prerequisites
 
-`.fde/00-engagement.md`, and `.fde/02b-ownership.md` for who holds each gate.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`<workspace>/00-engagement.md`, and `<workspace>/02b-ownership.md` for who holds each gate.
 
 ## Procedure
 
@@ -117,7 +119,7 @@ Write it down once. It's stable, it applies to every subsequent change in the en
 
 ## Output template
 
-Write to `.fde/08b-change-control.md`:
+Write to `<workspace>/08b-change-control.md`:
 
 ```markdown
 # Change control

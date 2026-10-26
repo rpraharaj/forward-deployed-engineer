@@ -31,9 +31,10 @@ The second reason this matters: leaving systems running has real costs — licen
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/02-system-map.md` and `.fde/02b-ownership.md`
-- `.fde/runbooks/cutover-*.md` if this follows a migration
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` and `<workspace>/02b-ownership.md`
+- `<workspace>/runbooks/cutover-*.md` if this follows a migration
 - Access to logs, monitoring, and network data covering **at least a full business cycle**
 
 ## Procedure
@@ -114,13 +115,16 @@ Not defensively — because when someone appears in month three saying they need
 
 ## Output
 
-Write to `.fde/runbooks/decommission-<system>.md`:
+Write to `<workspace>/runbooks/decommission-<system>.md`:
 
 ```markdown
 # Decommission — <system>
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
 **Replaced by:** <system>, live since <date> · **Decision owner:** <name>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Consumer discovery
 | Method | Coverage | Found | Confidence |

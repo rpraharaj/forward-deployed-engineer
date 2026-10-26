@@ -1,0 +1,16 @@
+{
+  "name": "fde-skills",
+  "owner": { "name": "FDE Portfolio" },
+  "metadata": {
+    "description": "Seven skill packs for forward deployed engineers delivering in unfamiliar organizations and systems."
+  },
+  "plugins": [
+    { "name": "fde-core", "source": "./fde-core" },
+    { "name": "fde-data", "source": "./fde-data" },
+    { "name": "fde-migration", "source": "./fde-migration" },
+    { "name": "fde-platform", "source": "./fde-platform" },
+    { "name": "fde-operate", "source": "./fde-operate" },
+    { "name": "fde-product", "source": "./fde-product" },
+    { "name": "fde-ai", "source": "./fde-ai" }
+  ]
+}

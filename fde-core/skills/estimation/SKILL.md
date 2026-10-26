@@ -32,10 +32,12 @@ An FDE is exposed on both counts, plus a third: you don't know this organization
 
 ## Prerequisites
 
-- `.fde/04-feasibility.md` — **required.** The change shapes, sites, and deceptive costs are the input.
-- `.fde/06-blast-radius-*.md` — coordination cost lives here
-- `.fde/00b-access.md` — blocked access is calendar time
-- `.fde/02b-ownership.md` — review and approval paths
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/04-feasibility.md` — **required.** The change shapes, sites, and deceptive costs are the input.
+- `<workspace>/06-blast-radius-*.md` — coordination cost lives here
+- `<workspace>/00b-access.md` — blocked access is calendar time
+- `<workspace>/02b-ownership.md` — review and approval paths
 
 ## Procedure
 
@@ -118,7 +120,7 @@ A delivery lead who learns about a two-week slip four weeks late has lost the op
 
 ## Output template
 
-Write to `.fde/05b-estimate.md`, or a section of the delivery plan:
+Write to `<workspace>/05b-estimate.md`, or a section of the delivery plan:
 
 ```markdown
 # Estimate — <scope>
@@ -128,6 +130,8 @@ Write to `.fde/05b-estimate.md`, or a section of the delivery plan:
 **Date:** <YYYY-MM-DD>
 **Basis:** `04-feasibility.md` @ `<SHA>`
 **Confidence:** <and where the uncertainty concentrates>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Headline
 **Effort: <n>–<n> person-days · Elapsed: <n>–<n> working days**

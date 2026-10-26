@@ -24,11 +24,13 @@ The second reason this skill exists is durability. Every FDE who bootstraps a re
 
 - The build already works and you can run the tests
 - You only need to read code, not run it — `repo-recon` doesn't require a working build
-- The failure is in CI rather than locally — that's `ci-forensics`
+- The failure is in CI rather than locally — that's `ci-forensics` *(fde-operate)*
 
 ## Prerequisites
 
-Locate the workspace (`FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/` — see `../_shared/workspace-conventions.md`). Read `00-engagement.md`. Check `00b-access.md` too — a missing registry credential is an access problem wearing a build problem's clothes, and diagnosing it as the latter wastes a day.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+Read `00-engagement.md`. Check `00b-access.md` too — a missing registry credential is an access problem wearing a build problem's clothes, and diagnosing it as the latter wastes a day.
 
 ## Procedure
 

@@ -31,8 +31,9 @@ The gap between them is where migrations fail and reports go quietly wrong.
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter's Location, else `.fde/`, else `../<repo>-fde/`. Do not invent a second workspace.
-- `.fde/02-system-map.md` — where data lives
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` — where data lives
 - Read access to a database, ideally. Where you have none, this skill still works from migrations and code, at reduced confidence — say so.
 - Understand the organization's data policy before running aggregates. Shape queries live in core `test-data-strategy` step 2 — run those, do not paste a second dialect-specific copy.
 
@@ -100,7 +101,7 @@ This flows straight into `blast-radius` ring 5. Where you can't establish the co
 
 ## Output
 
-Write to `.fde/traces/data-model.md`:
+Write to `<workspace>/traces/data-model.md`:
 
 ```markdown
 # Data model — <area>

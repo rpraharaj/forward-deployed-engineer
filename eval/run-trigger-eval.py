@@ -18,6 +18,8 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 QUERIES = Path(__file__).resolve().parent / "trigger-queries.json"
 SKILL_GLOB = "fde-*/skills/*/SKILL.md"
@@ -26,16 +28,33 @@ KNOWN = set()
 
 def load_skills() -> str:
     lines = []
+    KNOWN.clear()
     for f in sorted(ROOT.glob(SKILL_GLOB)):
-        name = desc = None
-        for line in f.read_text().splitlines()[:8]:
-            if line.startswith("name: "):
-                name = line[6:].strip()
-            if line.startswith("description: "):
-                desc = line[13:].strip()
-        if name and desc:
-            KNOWN.add(name)
-            lines.append(f"- {name}: {desc}")
+        source = f.read_text(encoding="utf-8").splitlines()
+        label = f.relative_to(ROOT)
+        if not source or source[0] != "---":
+            raise ValueError(f"{label}: missing YAML frontmatter")
+        try:
+            end = source.index("---", 1)
+        except ValueError as exc:
+            raise ValueError(f"{label}: missing YAML frontmatter closing delimiter") from exc
+        try:
+            metadata = yaml.safe_load("\n".join(source[1:end]))
+        except yaml.YAMLError as exc:
+            raise ValueError(f"{label}: invalid YAML frontmatter") from exc
+        if not isinstance(metadata, dict):
+            raise ValueError(f"{label}: frontmatter must be a mapping")
+        name, desc = metadata.get("name"), metadata.get("description")
+        if not isinstance(name, str) or name != f.parent.name:
+            raise ValueError(f"{label}: name must match the skill directory")
+        if not isinstance(desc, str) or not desc.strip():
+            raise ValueError(f"{label}: description must be a nonempty string")
+        if name in KNOWN:
+            raise ValueError(f"{label}: duplicate skill name {name}")
+        KNOWN.add(name)
+        lines.append(f"- {name}: {' '.join(desc.split())}")
+    if not lines:
+        raise ValueError("No skills found")
     return "\n".join(lines)
 
 
@@ -52,22 +71,16 @@ def build_prompt(skills: str, query: str) -> str:
 
 
 def parse_reply(raw: str) -> list[str]:
-    """Answers sit at the end. Judges often prepend a sentence on the same line,
-    so take known skill names from the last ~160 characters, in order."""
-    if not raw:
+    """Require the answer format requested by build_prompt; never guess from prose."""
+    text = re.sub(r"[*`]", "", raw).strip()
+    if text.upper() == "NONE":
         return []
-    text = re.sub(r"[*`]", "", raw)
-    tail = text[-160:]
-    found = []
-    for m in re.finditer(r"[a-z][a-z0-9-]{2,}", tail.lower()):
-        tok = m.group(0)
-        if tok in KNOWN and tok not in found:
-            found.append(tok)
-    if found:
-        return found[:2]
-    if re.search(r"\bNONE\b", text, re.I):
-        return []
-    return []
+    picked = [part.strip() for part in text.split(",")]
+    if not 1 <= len(picked) <= 2 or len(set(picked)) != len(picked):
+        raise ValueError("Judge must return at most two distinct skill names or NONE")
+    if any(name not in KNOWN for name in picked):
+        raise ValueError("Judge returned an empty, unknown, or malformed answer")
+    return picked
 
 
 def ask_grok(prompt: str) -> tuple[str, str]:
@@ -86,10 +99,10 @@ def ask_grok(prompt: str) -> tuple[str, str]:
         capture_output=True,
         text=True,
         timeout=180,
+        check=True,
     )
     stdout = proc.stdout or ""
-    raw = stdout + (("\n" + proc.stderr) if proc.returncode else "")
-    return raw, stdout
+    return stdout, stdout
 
 
 def ask_claude(prompt: str) -> tuple[str, str]:
@@ -110,10 +123,10 @@ def ask_claude(prompt: str) -> tuple[str, str]:
         text=True,
         timeout=180,
         env=os.environ.copy(),
+        check=True,
     )
     stdout = proc.stdout or ""
-    raw = stdout + (("\n" + proc.stderr) if proc.returncode else "")
-    return raw, stdout
+    return stdout, stdout
 
 
 def ask(skills: str, query: str, judge: str) -> tuple[str, list[str]]:
@@ -172,7 +185,10 @@ def main() -> int:
     )
 
     spec = json.loads(QUERIES.read_text())
-    skills = load_skills()
+    try:
+        skills = load_skills()
+    except (OSError, ValueError) as exc:
+        ap.error(str(exc))
     jobs = []
     for kind in ("positives", "negatives", "collisions", "regressions"):
         for item in spec[kind]:
@@ -198,14 +214,23 @@ def main() -> int:
             try:
                 row = fut.result()
             except Exception as e:
+                # Subprocess exceptions include command arguments and may include
+                # credentials in stderr. Persist only the failure class and status.
+                if isinstance(e, subprocess.CalledProcessError):
+                    note = f"Judge exited with status {e.returncode}"
+                elif isinstance(e, subprocess.TimeoutExpired):
+                    note = "Judge timed out"
+                else:
+                    note = str(e)
                 row = {
                     "id": item["id"],
                     "kind": kind,
                     "query": item["query"],
                     "expect": item.get("expect") or [],
                     "picked": [],
+                    "judge": args.judge,
                     "verdict": "error",
-                    "note": str(e),
+                    "note": note,
                     "raw": "",
                 }
             results.append(row)
@@ -248,7 +273,7 @@ def main() -> int:
             print(f"{r['id']} expect={r['expect'] or ['NONE']} got={r['picked'] or ['NONE']}")
             print(f"  {r['query']}")
     print(f"\nWrote {out}")
-    return 0 if not any(r["verdict"] == "error" for r in results) else 1
+    return 1 if fails else 0
 
 
 if __name__ == "__main__":

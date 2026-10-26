@@ -1,7 +1,7 @@
 # FDE Skill Portfolio — Design
 
-**Status:** Complete — all 43 skills built across five packs. Validated in thirteen runs; see [VALIDATION.md](VALIDATION.md).
-**Scope:** A portfolio of Claude Code skills that let one engineer be dropped into any team, in any organization, on any stack, and carry work from *requirement* to *go-live*.
+**Status:** 50 skills built across seven packs. The seven Wave 5 additions are experimental; validation and its limits are recorded in [VALIDATION.md](VALIDATION.md).
+**Scope:** A portfolio of Claude Code skills for an engineer entering an unfamiliar organization: discover the right problem, deliver a safe system, support adoption, measure outcomes, and carry permitted field lessons into shared products.
 **How to use what's built:** [USAGE.md](USAGE.md) · **Cold-start test results:** [VALIDATION.md](VALIDATION.md)
 
 ---
@@ -36,7 +36,7 @@ These are not incidental. Each one changes how the skills must be written.
 
 ## 3. Design principles
 
-These are the things that make forty-three separate skills feel like one system.
+These are the things that make fifty separate skills feel like one system.
 
 ### 3.1 Artifact-first
 Every skill produces a **named file in a known location**, not just an answer in the terminal. This is what makes the FDE's work legible to the team, reviewable by a lead, and inheritable by whoever comes next. It also lets skills compose: the output of `repo-recon` is the input to `feasibility-probe`.
@@ -111,6 +111,8 @@ The portfolio maps to the arc an FDE actually walks, from a vague ask to somethi
 ```
 
 Phases are a **default order, not a gate sequence**. Real engagements skip, loop, and reorder — the routing layer (§7) handles that.
+
+Wave 5 extends the arc with human `workflow-discovery` and `use-case-selection` before a problem is committed; `outcome-measurement` starts a baseline and returns for dated readouts; `adoption-plan` covers end-user transition. Optional `field-to-product` closes the shared-product feedback loop. Optional `ai-evaluation` and `agent-action-safety` provide evidence for delivered AI workflows within the existing verification/release phases.
 
 ---
 
@@ -271,8 +273,27 @@ Consumed by the skills above, kept in one place so the conventions stay consiste
 - **`workspace-conventions.md`** — the `.fde/` layout, artifact naming, and how skills read each other's outputs.
 - **`enterprise-constraints.md`** — working behind proxies and internal registries, without admin rights, offline; and the data-handling posture for proprietary code.
 - **`comms-register.md`** — how to write for engineer vs. lead vs. sponsor vs. change board.
+- **`change-review.md`** — selecting the actual target branch, including committed and uncommitted work, and returning redacted review findings.
 
 ---
+
+### 5.13 Wave 5 — discovery, business outcomes, adoption, and field learning
+
+The earlier portfolio concentrated on delivering a change once an engagement existed. These additions address different decisions: what users actually do, which problem to pursue, whether business benefit materialized, whether users successfully changed their work, and which field lessons can become shared capabilities.
+
+| Skill | Distinct procedure | Pack | Artifact under the resolved workspace |
+|---|---|---|---|
+| `workflow-discovery` | Observe cases, human handoffs, active work, waiting, exceptions, and controls | core | `discovery/workflow-<name>.md` |
+| `use-case-selection` | Compare candidate problems and constraints before committing to one | core | `discovery/opportunities.md` |
+| `outcome-measurement` | Preserve a business baseline, compare dated results/costs, state attribution limits | core | `outcomes/<initiative>.md` |
+| `adoption-plan` | Identify end-user barriers, run a bounded transition, measure successful tasks and fallback | core | `adoption/<initiative>.md` |
+| `field-to-product` | Turn permitted field evidence into a reproducible shared-product decision request | product | `product-feedback/<topic>.md` |
+| `ai-evaluation` | Evaluate model-driven task outcomes with independent grading and versioned comparisons | ai | `ai/evaluation-<workflow>.md` |
+| `agent-action-safety` | Map tool authority to enforcement and test permitted/forbidden effects in isolation | ai | `ai/action-safety-<workflow>.md` |
+
+**Status:** experimental. All seven passed initial synthetic artifact checks; three optional skills passed standalone retests after removing an implicit dependency on core conventions. `eval/procedure-scenarios.json` supplies reusable contexts and review checks; `eval/procedure-results.json` indexes the executed evidence. These trials do not establish real engagement effectiveness. The trigger suite separately covers selection and neighboring skills.
+
+These additions have narrow boundaries: tracing code remains `trace-the-flow`; specifying a chosen change remains `requirements-to-spec`; choosing an implementation remains `solution-design`; technical measurement remains `nfr-validation`; operator capability transfer remains `enablement-handoff`. A clear small engineering task does not need a new business-analysis chain. Product material remains constrained by confidentiality and reuse permissions. AI evaluation supplies evidence without replacing formal review or authorizing live tool effects.
 
 ## 6. Shared infrastructure
 
@@ -290,8 +311,9 @@ Every artifact carries a consistent header so a reader knows what they're holdin
 # <Artifact title>
 **Engagement:** <name> · **Author:** FDE · **Date:** <ISO date>
 **Status:** draft | reviewed | superseded
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 **Confidence:** what in here is confirmed vs. inferred vs. unverified
-**Sources:** repos, branches, commit SHAs, and environments this was derived from
+**Sources:** additional repositories, branches, and environments this was derived from
 ```
 
 The commit SHA matters more than it looks: an artifact describing a system that has since moved on is actively misleading, and the SHA is what lets a future reader tell.
@@ -320,6 +342,9 @@ Skills read each other's artifacts rather than re-deriving context. `feasibility
 | **Decommission / sunset** | recon → consumer discovery → decommission-plan → staged darkening → archival |
 | **Regulatory / audit-driven** | requirements *(from the obligation, not a stakeholder)* → feasibility → nfr-baseline → change-control-navigation → evidence pack |
 | **Proof of concept / spike** | timeboxed feasibility → stakeholder-brief *(decision, not code)* |
+| **Open problem / opportunity selection** | workflow-discovery → use-case-selection → outcome-measurement *(baseline)* → requirements → feasibility |
+| **AI workflow / agent delivery** | requirements → feasibility → design → ai-evaluation *(plan)* → agent-action-safety *(policy, if actions)* → build → action-boundary tests → ai-evaluation *(candidate)* → verify → release; requires fde-ai |
+| **Field lessons for a shared product** | permitted deployment evidence → field-to-product *(fde-product)* → product-owner decision |
 
 The archetype is recorded in `00-engagement.md` and revisited when the engagement changes shape — which it usually does, most often from "enhancement" to "rescue."
 
@@ -329,7 +354,7 @@ Two archetypes deserve a note. **Regulatory-driven work** inverts the normal neg
 
 ## 8. SKILL.md house style
 
-Consistency across forty-three skills matters more than local cleverness.
+Consistency across fifty skills matters more than local cleverness.
 
 **Frontmatter** — the `description` is the primary triggering mechanism, so it states both *what the skill does* and *the concrete situations that should invoke it*, phrased the way a user would actually describe the moment. Descriptions lean slightly assertive, because the common failure mode is under-triggering.
 
@@ -370,19 +395,26 @@ The skills that prevent the expensive failures: breaking something invisible, sh
 **Wave 4 — specialist and archetype packs (16)**
 `cutover-plan` · `integration-adapter` · `refactor-seams` · `contract-design` · `data-archaeology` · `git-archaeology` · `ci-forensics` · `observability-gap` · `security-compliance-check` · `nfr-validation` · `post-deploy-watch` · `db-change-management` · `dependency-upgrade` · `data-pipeline-work` · `cots-configuration` · `decommission-plan`
 
-Wave 4 is deliberately last: these fire on specific engagement types, and their content will be sharper once the earlier waves have been exercised on real repos.
+Wave 4 follows the original spine: these fire on specific engagement types, and their content becomes sharper as the earlier waves are exercised on real repos.
+
+**Wave 5 — discovery, outcomes, adoption, product feedback, and AI (7)**
+`workflow-discovery` · `use-case-selection` · `outcome-measurement` · `adoption-plan` · `field-to-product` · `ai-evaluation` · `agent-action-safety`
+
+Wave 5 is built and experimental. Use bounded synthetic trials and baseline comparisons before claiming effectiveness or broadening a description to attract more requests.
 
 ### 9.1 A constraint the count creates
 
-Forty-three skills is a lot, and skill names and descriptions load into context **every session**, whether or not they fire. A portfolio this size spends real context budget continuously — which is exactly the resource `context-strategy` exists to protect.
+Fifty skill names and descriptions can consume context **every session**, whether or not they fire. A portfolio this size spends real context budget continuously — which is exactly the resource `context-strategy` exists to protect.
 
 That argues for splitting distribution rather than trimming content:
 
-- **`fde-core`** — 30 skills (Waves 1–3, plus `test-data-strategy` and `incident-triage`). Always installed. Those two stay in core because verification-without-data and production incidents happen on every engagement type.
+- **`fde-core`** — 34 skills, including the four general Wave 5 additions. Always installed; the new skills remain conditionally triggered rather than mandatory stages for every change.
 - **`fde-data`** — `data-pipeline-work`, `data-archaeology`, `db-change-management`
 - **`fde-migration`** — `cutover-plan`, `decommission-plan`, `dependency-upgrade`, `refactor-seams`
 - **`fde-platform`** — `cots-configuration`, `integration-adapter`, `contract-design`
 - **`fde-operate`** — `observability-gap`, `ci-forensics`, `post-deploy-watch`
+- **`fde-product`** — `field-to-product`; optional for shared-product/vendor FDE work
+- **`fde-ai`** — `ai-evaluation`, `agent-action-safety`; optional for delivered model-driven workflows
 
 The FDE installs core plus whichever pack matches the archetype `fde-orient` identified. `fde-orient` names the pack in the charter and must not sequence a pack skill that is not installed.
 
@@ -416,7 +448,7 @@ The test applied: *does this activity have a genuinely different procedure, or o
 
 ## 11. Why this list can never be complete
 
-The honest answer to "have we covered everything" is no, and no version of this document will. Enterprise IT generates situations faster than anyone can enumerate them, and the next engagement will contain something absent from all forty-three entries.
+The honest answer to "have we covered everything" is no, and no version of this document will. Enterprise IT generates situations faster than anyone can enumerate them, and the next engagement will contain something absent from all fifty entries.
 
 That makes the **disciplines more important than the catalog**. An FDE who has internalized four things will handle an unlisted situation well:
 
@@ -451,14 +483,14 @@ Settled in the skills; left here so we do not re-open them casually.
 2. **Artifact format** — markdown in the workspace is the default. Paste-friendly templates; no Confluence exporter in v1.
 3. **Tooling floor** — filesystem + git + shell. Host CLIs (`gh`, `glab`) are optional accelerators with a filesystem fallback.
 4. **Network** — assume offline / internal-registry by default (`enterprise-constraints.md`).
-5. **Distribution** — Claude Code plugins, one per pack. Path install works. No marketplace manifest yet.
+5. **Distribution** — Claude Code plugins, one per pack, listed in `.claude-plugin/marketplace.json`. Register this repository as the `fde-skills` marketplace and install by `name@fde-skills`; use `--plugin-dir` for local session-only loading.
 6. **Naming prefix** — directory names are the skill names. Only the entry point is `fde-orient`. Collision risk is accepted in exchange for shorter invocations.
 
 ---
 
 ## Appendix — catalog at a glance
 
-Forty-three skills. Entries marked **†** were added by the §5.11 gap analysis.
+Fifty skills. Entries marked **†** were added by the §5.11 gap analysis; entries 44–50 are experimental Wave 5 additions (§5.13).
 
 | # | Skill | Phase | Wave | Pack |
 |---|---|---|---|---|
@@ -505,3 +537,10 @@ Forty-three skills. Entries marked **†** were added by the §5.11 gap analysis
 | 41 | **†** `enablement-handoff` | Sustain | 3 | core |
 | 42 | `stakeholder-brief` | Cross-cutting | 3 | core |
 | 43 | **†** `escalation-and-renegotiation` | Cross-cutting | 3 | core |
+| 44 | `workflow-discovery` | Frame | 5 | core |
+| 45 | `use-case-selection` | Frame | 5 | core |
+| 46 | `outcome-measurement` | Frame / Sustain | 5 | core |
+| 47 | `adoption-plan` | Sustain | 5 | core |
+| 48 | `field-to-product` | Cross-cutting | 5 | product |
+| 49 | `ai-evaluation` | Verify | 5 | ai |
+| 50 | `agent-action-safety` | Design / Verify | 5 | ai |

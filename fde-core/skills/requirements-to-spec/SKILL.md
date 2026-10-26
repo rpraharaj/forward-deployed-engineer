@@ -31,7 +31,11 @@ This skill's job is to surface those decisions **before** they're made accidenta
 
 ## Prerequisites
 
-`.fde/00-engagement.md` — the sponsor and the real problem from the charter are the frame for everything here.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`<workspace>/00-engagement.md` — the sponsor and the real problem from the charter are the frame for everything here.
+
+Read `discovery/workflow-*.md`, `discovery/opportunities.md`, and `outcomes/<initiative>.md` when available. If no problem has been chosen, use `use-case-selection`; if the human process is unclear, use `workflow-discovery`. Existing clear requirements do not need those extra steps.
 
 ## Procedure
 
@@ -111,7 +115,7 @@ Record who confirmed and when. Unconfirmed, the spec is your interpretation, and
 
 ## Output template
 
-Write to `.fde/03-requirements.md`:
+Write to `<workspace>/03-requirements.md`:
 
 ```markdown
 # Requirements — <feature>

@@ -33,8 +33,10 @@ This is frequently the real bottleneck to shipping in an enterprise — not the 
 
 ## Prerequisites
 
-- `.fde/03-requirements.md` — the criteria determine what data must exist
-- `.fde/02-system-map.md` — where data lives and what shape it takes
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03-requirements.md` — the criteria determine what data must exist
+- `<workspace>/02-system-map.md` — where data lives and what shape it takes
 - Understand the organization's data policy before starting. See `../_shared/enterprise-constraints.md`.
 
 ## Procedure
@@ -78,7 +80,7 @@ SELECT n_orders, COUNT(*) FROM (
 ) t GROUP BY n_orders ORDER BY 1 DESC;
 ```
 
-These queries are the home for shape analysis. `data-archaeology` points here rather than pasting a second copy.
+These queries are the home for shape analysis. `data-archaeology` *(fde-data)* points here rather than pasting a second copy.
 
 Aggregate queries are usually permitted where row access isn't, and they tell you what matters: null rates, value distributions, the long tail, the enum values still in the data that the code no longer produces.
 
@@ -142,7 +144,7 @@ State the coverage explicitly, so a later reader doesn't over-trust a green test
 
 ## Output template
 
-Write to `.fde/03c-test-data.md`:
+Write to `<workspace>/03c-test-data.md`:
 
 ```markdown
 # Test data strategy
@@ -152,6 +154,7 @@ Write to `.fde/03c-test-data.md`:
 **Date:** <YYYY-MM-DD>
 **Status:** draft
 **Confidence:** <how well this represents production>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Policy position
 **Production data in lower environments:** not permitted `[confirmed: per data policy, J. Okafor 03-14]`

@@ -31,9 +31,10 @@ The second thing that catches service engineers out: pipelines are re-run. Re-ru
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/traces/data-model.md` — the shape and eras of the source data
-- `.fde/02-system-map.md` — where the pipeline sits
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/traces/data-model.md` — the shape and eras of the source data
+- `<workspace>/02-system-map.md` — where the pipeline sits
 - Access to both source and destination, ideally, plus the orchestrator
 
 ## Procedure
@@ -98,13 +99,15 @@ A changed definition — even a corrected one — will be noticed by someone who
 
 ## Output
 
-Write to `.fde/traces/pipeline-<name>.md`:
+Write to `<workspace>/traces/pipeline-<name>.md`:
 
 ```markdown
 # Pipeline — <name>
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
 **Source of truth:** <system> · **Confidence:** <what's confirmed vs. inferred>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Lineage
 | # | Stage | Does | Grain | Idempotent | Confidence |

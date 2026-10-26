@@ -31,9 +31,10 @@ The second characteristic incident is ordering. The application deploys before t
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/traces/data-model.md` or `data-archaeology` — you need to know the eras and the real shape
-- `.fde/06-blast-radius-*.md` — ring 5 especially, who else reads this table
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/traces/data-model.md` or `data-archaeology` — you need to know the eras and the real shape
+- `<workspace>/06-blast-radius-*.md` — ring 5 especially, who else reads this table
 - Row counts and table sizes from the actual production database, not from staging. If you cannot get prod numbers, **stop** and put that in `00b-access.md`. Do not classify the lock from staging.
 
 ## Procedure
@@ -42,13 +43,7 @@ The second characteristic incident is ordering. The application deploys before t
 
 Staging is not production, and the difference is the whole risk.
 
-```sql
--- Adapt to the engine; the point is production row count and size
-SELECT COUNT(*) FROM orders;
--- Postgres
-SELECT pg_size_pretty(pg_total_relation_size('orders'));
--- Any engine: how busy is it?
-```
+Start with engine catalog statistics or an approved read replica for row-count and size estimates. Exact counts and distribution queries may scan a large table: agree a query budget, enforce a statement timeout, and avoid busy periods before running them on production. Read `references/engine-notes.md` for the detected engine; verify behavior against that engine and version's documentation before choosing an operation.
 
 Establish: row count, table size, index count, write rate, whether it's replicated, and whether long-running transactions or reporting queries touch it. A table read by a nightly batch has a window where a migration is far cheaper.
 
@@ -62,12 +57,14 @@ This determines everything. Behavior varies by engine and version, so **verify a
 |---|---|
 | Add nullable column, no default | Cheap — metadata only on modern engines |
 | Add column **with a default** | Historically a full table rewrite; cheap on recent Postgres/MySQL. Version matters enormously. |
-| Add index | Locks writes unless built concurrently (`CREATE INDEX CONCURRENTLY`, `ALGORITHM=INPLACE`) |
+| Add index | May block writes; online/concurrent options and their limitations are engine-specific |
 | Add NOT NULL to existing column | Full scan to validate |
 | Add foreign key | Scan plus lock on both tables |
 | Drop column | Usually cheap, but **irreversible** |
 | Change column type | Usually a rewrite; frequently the most expensive operation there is |
 | Rename | Cheap, and breaks every reader instantly |
+
+Metadata-only does not mean lock-free. Establish the lock mode, maximum wait, and transaction duration separately from rewrite cost. Keep DDL transactions short and enforce bounded lock and statement timeouts; a queued exclusive lock can disrupt traffic even when the operation itself is quick. Engine examples live in `references/engine-notes.md`.
 
 Rename deserves its own warning: it is technically trivial and operationally severe, because it breaks all consumers at the moment it lands with no compatibility window. Use expand/contract instead.
 
@@ -110,7 +107,7 @@ The rolling-deploy constraint again: for a period, both versions run. Every orde
 
 For each migration: can it be reversed, how long does that take, and what happens to rows written in the meantime?
 
-- **Additive** — reversible. Dropping the added column loses only new data.
+- **Additive** — application rollback can often leave the new column in place. Dropping it destroys any values written since deployment and is a separate destructive change, not a harmless reversal.
 - **Backfill** — usually not reversible in any meaningful sense, but usually harmless to leave.
 - **Destructive** — **not reversible.** "Restore from backup" is a plan only if someone has tested it and knows the RTO.
 
@@ -124,22 +121,22 @@ Where no production-shaped copy exists, say so, and treat the timing as `[unveri
 
 ## Output
 
-Append to `.fde/runbooks/deploy-<change>.md`, and summarize in the change log:
+Append to `<workspace>/runbooks/deploy-<change>.md`, and summarize in the change log:
 
 ```markdown
 ## Schema change — <description>
 
 **Table:** `orders` · **Rows:** 40.2M · **Size:** 12 GB · **Replicated:** yes, 2 replicas
-**Engine:** PostgreSQL 15 `[confirmed]`
+**Engine:** <engine and exact version, with evidence>
 
 ### Steps
 | # | Deploy | Operation | Expected duration | Lock | Reversible |
 |---|---|---|---|---|---|
-| 1 | schema | `ADD COLUMN currency varchar(3) NULL` | < 1s, metadata only | none | yes |
+| 1 | schema | Add nullable currency column | measured in rehearsal | Verify engine/version; bounded lock wait, short transaction | App can roll back leaving column |
 | 2 | app | dual-write currency | — | — | yes |
-| 3 | data | backfill, 10k batches, 200ms pause | ~90 min, resumable | none | n/a |
+| 3 | data | backfill, 10k batches, 200ms pause | ~90 min, resumable | Update/row locks; commit each batch, bounded timeout | n/a |
 | 4 | app | read from currency | — | — | yes |
-| 5 | schema | *(deferred 30d)* drop legacy column | < 1s | brief ACCESS EXCLUSIVE | **NO — one-way door** |
+| 5 | schema | *(deferred 30d)* drop legacy column | measured in rehearsal | Verify engine/version and bound wait | **NO — one-way door** |
 
 ### Rehearsal
 Run against a 40M-row copy on <date>: step 3 took 94 min, peak replica lag 4s. ✅

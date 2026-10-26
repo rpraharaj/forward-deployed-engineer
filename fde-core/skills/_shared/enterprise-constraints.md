@@ -9,8 +9,15 @@ Working inside a large organization's controls. These are the environmental fact
 Check what's already configured before assuming there's no route out:
 
 ```bash
-env | grep -i "proxy\|no_proxy" ; cat ~/.npmrc ~/.m2/settings.xml 2>/dev/null | grep -i proxy
+python3 - <<'PY'
+import os
+for name in sorted(os.environ):
+    if "proxy" in name.lower():
+        print(f"{name}=<set>")
+PY
 ```
+
+Proxy URLs can contain credentials. Inspect tool-specific configuration locally in an approved viewer; report only the file and setting names that are present. Do not print raw environment values or registry/proxy configuration into tool output, chat, or artifacts.
 
 Each toolchain needs its proxy configured separately — `git`, `npm`, `pip`, Maven, Gradle, Docker, and the JVM all read different settings. Configuring one and assuming the rest follow is the usual mistake.
 

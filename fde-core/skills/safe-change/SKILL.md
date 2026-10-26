@@ -24,12 +24,14 @@ There's a second, less obvious constraint. Your diff is being read by people dec
 
 - Your own scratch code or a throwaway spike
 - A genuine emergency mitigation — do the minimum, then come back and do this properly
-- Large-scale extraction or restructuring — that's `refactor-seams`
+- Large-scale extraction or restructuring — that's `refactor-seams` *(fde-migration)*
 
 ## Prerequisites
 
-- `.fde/04-feasibility.md` — you should know where the change lands before opening a file
-- `.fde/06-blast-radius-*.md` — for anything beyond a local change
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/04-feasibility.md` — you should know where the change lands before opening a file
+- `<workspace>/06-blast-radius-*.md` — for anything beyond a local change
 - If the change site has no test coverage, run `characterization-tests` **first**. Changing untested legacy code and verifying by inspection is the single highest-risk thing in this portfolio.
 
 ## Procedure
@@ -40,7 +42,7 @@ Before touching anything, know the state you're starting from:
 
 ```bash
 git status && git rev-parse --short HEAD
-<build command>       # from .fde/01-environment.md
+<build command>       # from <workspace>/01-environment.md
 <test command>
 ```
 
@@ -153,9 +155,7 @@ Then confirm you didn't break the baseline: full suite, and specifically the cal
 
 Read your own diff top to bottom as a reviewer would:
 
-```bash
-git diff main...HEAD
-```
+Follow `../_shared/change-review.md`: verify the actual target branch, review branch commits **and** staged, unstaged, and untracked changes, and sanitize findings before displaying sensitive content. A branch-only diff does not include work you have not committed.
 
 Look for: debug output, commented-out code, TODOs you meant to resolve, stray formatting, files you didn't intend to touch, secrets or real data in fixtures, and anything that would make a reviewer ask "why is this here?"
 
@@ -165,7 +165,7 @@ Then write a PR description that answers what changed, why, how it was verified,
 
 ## Output
 
-The change itself, plus an entry in `.fde/06b-change-log.md`:
+The change itself, plus an entry in `<workspace>/06b-change-log.md`. Create the file with the standard header if missing:
 
 ```markdown
 ## <date> — <change>

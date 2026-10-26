@@ -7,10 +7,10 @@
 From a vague ask to something running in production — on a stack you didn't choose, in a system nobody documented, with Claude Code as your only tool.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Skills](https://img.shields.io/badge/skills-43-blue)
-![Packs](https://img.shields.io/badge/packs-5-blue)
+![Skills](https://img.shields.io/badge/skills-50-blue)
+![Packs](https://img.shields.io/badge/packs-7-blue)
 ![Cold-start tested](https://img.shields.io/badge/cold--start%20tested-5%20stacks-brightgreen)
-![Trigger accuracy](https://img.shields.io/badge/trigger%20accuracy-42%2F43-brightgreen)
+![Historical Claude trigger](https://img.shields.io/badge/historical%20Claude%20trigger-42%2F43-lightgrey)
 
 [Quick start](#quick-start) · [The skills](#whats-in-the-box) · [Why it's tested](#validated-not-vibed) · [Contributing](#contributing)
 
@@ -24,7 +24,7 @@ You start Monday at a bank, an insurer, a telco. They put you on a fifteen-year-
 
 **Your bottleneck is never writing code.** Claude can already write the service. What it can't do — and what nobody has written down — is the *procedure* for building an accurate mental model of an unfamiliar system fast enough that a team who didn't ask for you starts trusting your judgment.
 
-That's what this is. 43 skills encoding what an experienced forward deployed engineer actually does, and the artifacts that make the work survive their departure.
+That's what this is. 50 skills encoding what an experienced forward deployed engineer actually does, and the artifacts that make the work survive their departure.
 
 ---
 
@@ -32,7 +32,8 @@ That's what this is. 43 skills encoding what an experienced forward deployed eng
 
 ```bash
 git clone https://github.com/rpraharaj/forward-deployed-engineer.git
-claude plugin install ./forward-deployed-engineer/fde-core
+claude plugin marketplace add ./forward-deployed-engineer
+claude plugin install fde-core@fde-skills
 ```
 
 Then just describe your situation. No need to name a skill:
@@ -44,13 +45,17 @@ Then just describe your situation. No need to name a skill:
 **Install `fde-core` always. Add the pack that matches the work:**
 
 ```bash
-claude plugin install ./forward-deployed-engineer/fde-data        # ETL, warehouse, schema change
-claude plugin install ./forward-deployed-engineer/fde-migration   # replatform, EOL upgrade, cutover, decommission
-claude plugin install ./forward-deployed-engineer/fde-platform    # integration, contracts, SAP/Salesforce/ServiceNow
-claude plugin install ./forward-deployed-engineer/fde-operate     # pipelines, post-deploy watch, observability
+claude plugin install fde-data@fde-skills        # ETL, warehouse, schema change
+claude plugin install fde-migration@fde-skills   # replatform, EOL upgrade, cutover, decommission
+claude plugin install fde-platform@fde-skills    # integration, contracts, SAP/Salesforce/ServiceNow
+claude plugin install fde-operate@fde-skills     # pipelines, post-deploy watch, observability
+claude plugin install fde-product@fde-skills     # permitted customer lessons for a shared product
+claude plugin install fde-ai@fde-skills          # AI workflow evaluation and agent action boundaries
 ```
 
-The split isn't cosmetic. Skill descriptions load into context **every session** whether they fire or not — all 43 cost roughly 6k tokens. Install what the engagement needs.
+For local development without installing, start a session with `claude --plugin-dir ./forward-deployed-engineer/fde-core`; repeat `--plugin-dir` for each optional pack. The marketplace path above is local to your clone; refresh its catalog with `claude plugin marketplace update fde-skills` when pulling changes. See the [Claude plugin reference](https://code.claude.com/docs/en/plugins/cli-reference).
+
+The split isn't cosmetic. Skill descriptions load into context **every session** whether they fire or not. Install what the engagement needs: core has 34 skills; the six optional packs add 16.
 
 ---
 
@@ -66,6 +71,8 @@ The split isn't cosmetic. Skill descriptions load into context **every session**
 `knowledge-interview`
 
 **FRAME** — work out what's actually being asked
+`workflow-discovery` · `use-case-selection`
+`outcome-measurement`
 `requirements-to-spec` · `feasibility-probe`
 `estimation` · `delivery-plan`
 
@@ -98,12 +105,19 @@ The split isn't cosmetic. Skill descriptions load into context **every session**
 **SUSTAIN**
 `incident-triage` · `observability-gap`
 `handover-pack` · `enablement-handoff`
+`adoption-plan`
+
+**PRODUCT & AI** — optional engagement-specific procedures
+`field-to-product` · `ai-evaluation`
+`agent-action-safety`
 
 **ACROSS EVERYTHING**
 `stakeholder-brief` · `escalation-and-renegotiation`
 
 </td></tr>
 </table>
+
+**Seven new procedures are experimental:** workflow discovery, use-case selection, business outcomes, end-user adoption, field-to-product feedback, AI evaluation, and agent action safety. All seven passed their initial synthetic scenario checks; three optional skills also passed isolated retests after a convention dependency was fixed. [Results and limitations](VALIDATION.md#run-16--seven-synthetic-procedure-trials) are recorded; these trials do not establish field effectiveness.
 
 📖 **[USAGE.md](USAGE.md)** — first-day walkthrough, full reference, workflows by engagement type
 
@@ -147,6 +161,8 @@ Every fix is a *method*, never a pattern. Adding `IScheduleTask` to a .NET list 
 
 📖 **[VALIDATION.md](VALIDATION.md)** — every run, every defect, and an explicit list of what still isn't tested
 
+The model scores above are historical and refer to the earlier 43-skill catalog. The October 2026 audit found malformed runtime metadata and permissive evaluator parsing; both are repaired, with native plugin validation and offline regressions recorded in [run 14](VALIDATION.md#run-14--local-audit-and-evaluator-regressions). The seven additions have a separate validation record; do not apply the old scores to the 50-skill catalog.
+
 > **What this doesn't claim.** The skills don't make Claude smarter about your codebase. They add provenance, declared limits, and better accuracy on the steps the procedure forces. That's a narrower claim than most skill repos make, and it's the one the evidence supports.
 
 ---
@@ -165,7 +181,7 @@ Use the [cold-start report template](.github/ISSUE_TEMPLATE/cold-start-report.md
 
 ### 🧭 Tell us when a procedure didn't fit
 
-Used a skill on a real engagement and the steps were wrong for your situation? That's the highest-signal feedback available, and 37 of 43 skills have never been tested on a live engagement. Open an issue.
+Used a skill on a real engagement and the steps were wrong for your situation? That's the highest-signal feedback available. Four skills have documented repository-based procedure trials, at least partially, and seven others have synthetic artifact trials; 39 of 50 have no recorded procedure trial. These are not a substitute for live engagement validation. Open an issue.
 
 ### ✍️ Write or improve a skill
 

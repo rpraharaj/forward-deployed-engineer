@@ -31,8 +31,10 @@ This skill looks. It is deliberately **bounded** — hours, not weeks — becaus
 
 ## Prerequisites
 
-- `.fde/03-requirements.md` — you're probing *these* requirements
-- `.fde/02-system-map.md` — you need to know where things are before asking whether they exist
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03-requirements.md` — you're probing *these* requirements
+- `<workspace>/02-system-map.md` — you need to know where things are before asking whether they exist
 
 Missing the system map, you'll re-derive it inline, badly and without citations. Run `repo-recon` first. If the engagement genuinely doesn't warrant it, say so in the Confidence line.
 
@@ -176,7 +178,7 @@ When someone asks for a number here — and they will — give them the shape in
 
 ## Output template
 
-Write to `.fde/04-feasibility.md`:
+Write to `<workspace>/04-feasibility.md`:
 
 ```markdown
 # Feasibility — <feature>

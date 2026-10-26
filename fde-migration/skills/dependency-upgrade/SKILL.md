@@ -34,9 +34,10 @@ The compensating advantage: it's unusually amenable to systematic treatment. The
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/02-system-map.md`
-- `.fde/01-environment.md` — you need a working build before changing what it builds with
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md`
+- `<workspace>/01-environment.md` — you need a working build before changing what it builds with
 - `characterization-tests` where coverage is thin. An upgrade with no tests is a rewrite you can't verify.
 
 ## Procedure
@@ -120,7 +121,7 @@ Highest-value checks: run the characterization tests, compare outputs before and
 
 ## Output
 
-Write to `.fde/05c-upgrade-matrix.md`:
+Write to `<workspace>/05c-upgrade-matrix.md`:
 
 ```markdown
 # Upgrade — <from> → <to>
@@ -128,6 +129,10 @@ Write to `.fde/05c-upgrade-matrix.md`:
 **Engagement:** <name> · **Date:** <YYYY-MM-DD>
 **Deadline:** <date> · **What happens after:** no further security patches — hard for PCI scope
 **Extended support available:** yes, ~<cost> — raised with <name> on <date>
+**Author:** FDE
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Compatibility matrix
 | Dependency | Current | Needed | Available? | Status |

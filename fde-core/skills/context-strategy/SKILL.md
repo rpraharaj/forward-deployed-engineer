@@ -29,7 +29,9 @@ The fix isn't reading faster. It's deciding, deliberately and repeatedly, **what
 
 ## Prerequisites
 
-Locate the workspace (`../_shared/workspace-conventions.md`). `00-engagement.md` if it exists — it scopes which subtree matters. If there is no workspace yet, still set the budget, write `00c-context.md` next to the checkout or after `fde-orient` creates the workspace, and do not invent a system map.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`00-engagement.md` if it exists — it scopes which subtree matters. If there is no workspace yet, still set the budget in the response, then persist `00c-context.md` after `fde-orient` creates the chosen workspace. Do not scatter artifacts next to the checkout or invent a system map.
 
 ## Procedure
 
@@ -137,7 +139,7 @@ The single highest-return artifact for a long engagement. It loads automatically
 
 - Anything a grep answers in two seconds
 - Full file contents or long code excerpts
-- Engagement narrative — that's `.fde/`, not `CLAUDE.md`
+- Engagement narrative — that's `<workspace>/`, not `CLAUDE.md`
 - Speculation. If it's `[inferred]`, tag it, or leave it out.
 
 Aim for well under 200 lines. A bloated `CLAUDE.md` costs context every single session and eventually gets skimmed rather than read — the same failure as an over-long README, with a per-session price.
@@ -150,7 +152,7 @@ Notice when context is filling. The failure mode is not running out — it's run
 
 When you're roughly two-thirds through and the task isn't done, stop and persist:
 
-1. Write findings to the relevant `.fde/` artifact **with citations** — a finding without a citation is one you'll have to re-derive
+1. Write findings to the relevant `<workspace>/` artifact **with citations** — a finding without a citation is one you'll have to re-derive
 2. Update `CLAUDE.md` with anything durable
 3. Note the working set and the exact next step
 4. Then continue
@@ -159,7 +161,7 @@ The test: **if this session ended right now, could a fresh session pick up from 
 
 ### 8. Structure long engagements around artifacts, not memory
 
-Across weeks, the `.fde/` workspace is the engagement's memory and each session is stateless. Start a session by reading the artifacts relevant to today's task — not by re-exploring — and end it by updating them.
+Across weeks, the `<workspace>/` workspace is the engagement's memory and each session is stateless. Start a session by reading the artifacts relevant to today's task — not by re-exploring — and end it by updating them.
 
 An FDE re-deriving the system map in week three has a workspace problem, not a memory problem.
 

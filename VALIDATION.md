@@ -591,12 +591,102 @@ That uses `claude -p --bare` (no skills, no tools; description list only) and wr
 
 ---
 
+## Run 14 — local audit and evaluator regressions
+
+**Date:** 2026-10-25 · **Method:** read all 43 skills and shared references, validate the marketplace and five packs with the installed Claude CLI, and exercise the evaluator without model calls.
+
+The initial native validation failed for `fde-core` and `fde-operate`: unquoted `: ` in the descriptions of `fde-orient` and `observability-gap` caused invalid YAML. The CLI reported that runtime loading silently dropped their metadata. Quoting those descriptions fixes parsing without changing the description text.
+
+Two evaluator defects were reproduced: an unrecognized answer counted as an intentional negative, and a suite containing a failed case exited zero. The evaluator now loads real YAML (PyYAML, declared in `eval/requirements.txt`), requires explicit answer syntax, treats subprocess failures/timeouts as errors without persisting raw diagnostics, and exits nonzero for failed cases or errors.
+
+The procedure audit also repaired workspace resolution and standalone headers, mandatory approval/exception handling, shadow-run side-effect isolation, failure-injection boundaries, database lock examples, sensitive command output, uncommitted-change review, optional-pack routing, prospective observability work, and preservation of integration-test coverage. A local marketplace manifest now supports the documented installation path. These are reviewed procedure changes, not proof from a live engagement.
+
+| Check | Result |
+|---|---|
+| `claude plugin validate --strict .` | Pass — marketplace, no warnings |
+| `claude plugin validate --strict <pack>` for all five packs | 5/5 pass, no warnings |
+| `python3 -m unittest discover -s eval -p 'test_*.py' -v` | 18 tests pass; no model calls |
+| Metadata, names, referenced files, and explicit workspace resolution | 43/43 pass |
+| Catalog comparison against the prior revision | All 43 description texts unchanged |
+| Python compilation and `git diff --check` | Pass |
+| Credential-pattern scan of changed/untracked files | No matches; limited pattern scan, not a proof of absence |
+
+Regression coverage includes quoted/folded YAML, delimiter text inside descriptions, invalid/missing metadata, wrong name/type, empty catalogs, explicit `NONE`, malformed/negated/unknown answers, failed cases, acceptable collisions, both judge processes failing, and timeouts. Historical `eval/trigger-results.json` and the Claude probe log were preserved.
+
+**Limits:** No new model-backed trigger run, client engagement trial, production experiment, or live schema migration was performed. Some historical Grok replies included prose that the stricter parser now treats as an error; the old scores remain a record of their original method, not a fresh score from the repaired evaluator. Structural validation does not establish that a procedure improves delivery.
+
+---
+
+## Run 15 — seven experimental additions and catalog validation
+
+**Date:** 2026-10-26 · **Scope:** four new core skills (`workflow-discovery`, `use-case-selection`, `outcome-measurement`, `adoption-plan`), optional `fde-product` (`field-to-product`), and optional `fde-ai` (`ai-evaluation`, `agent-action-safety`). The catalog now contains 50 skills across seven packs.
+
+Each addition has bounded applicability, explicit neighboring-skill boundaries, workspace/header conventions, a stopping condition, and a named artifact. Routing now includes open-problem selection, AI delivery, and permitted shared-product feedback. Existing requirements, verification, release, watch, enablement, and handover procedures link to the additions conditionally; they are not new gates on every small task.
+
+The new catalog test initially failed because seven skills lacked positive trigger cases. After adding those cases, three negatives, and eight neighboring-skill collision probes, the suite contains **82 queries: 50 positives, 9 negatives, 13 collisions, 10 regressions**. All targets resolve to real skills, IDs are unique, and every skill has a positive case. This validates the fixture catalog, not model selection accuracy.
+
+| Check | Result |
+|---|---|
+| Skill creator `quick_validate.py` on the seven new folders | 7/7 pass |
+| `claude plugin validate --strict .` | Marketplace passes without warnings |
+| `claude plugin validate --strict <pack>` for all seven packs | 7/7 pass without warnings |
+| `python3 -m unittest discover -s eval -p 'test_*.py' -v` | 23 tests pass without model calls |
+| Actual catalog metadata, references, workspace instructions, new artifact headers, marketplace sources, and documentation inventory | 50 skills consistent; new bodies under 250 lines |
+| Python compilation and `git diff --check` | Pass |
+| Fresh Grok CLI availability probe | Exited 1 without a usable result; no trigger score |
+| Fresh Claude CLI availability probe | Timed out at the evaluator's 180-second limit; no trigger score |
+| Credential-pattern scan of changed/untracked files | No matches; a limited pattern scan, not proof of absence |
+
+`eval/procedure-scenarios.json` adds seven **planned** synthetic procedure trials. They cover human-work timing vs. queues, opportunity constraints, business benefit attribution, successful-use denominators, customer material reuse restrictions, a critical AI failure hidden by an average, and forbidden agent effects despite refusal text. The protocol withholds review checks during generation and compares a skill-assisted artifact with a baseline. Fixtures were checked for consistency; these procedure trials have not been executed.
+
+Historical trigger results and probe logs remain unchanged. Use `--out eval/trigger-results-expanded.json` or a separate Claude output for an expanded run, rather than overwriting the historical record. The additions remain **experimental**: structural validity, fixture coverage, and evaluator regressions do not prove selection accuracy or engagement effectiveness.
+
+---
+
+## Run 16 — seven synthetic procedure trials
+
+**Date:** 2026-10-26 · **Scope:** execute S01–S07 from `eval/procedure-scenarios.json`, compare with baselines, fix demonstrated issues, and retest affected optional skills without core files.
+
+Independent subagents generated seven baseline artifacts and seven skill-assisted artifacts in temporary engagement workspaces. Each condition used fresh agents, grouped S01/S02, S03/S04/S05, and S06/S07. Testers received the request and synthetic E1–E3, with the review checks and other condition's outputs withheld. Assisted testers also received the named skills and required conventions. A usage limit interrupted assisted runs; the user requested a retry, and saved work was preserved when agents resumed.
+
+The primary agent manually reviewed the complete artifacts against the three pre-existing checks per scenario. This is model-based artifact review, not independent human validation. Full snapshots are retained under [`eval/procedure-trials/run-16/`](eval/procedure-trials/run-16/); [`eval/procedure-results.json`](eval/procedure-results.json) records per-check evidence, source/instruction/artifact hashes, protocol differences, the correction, and limits.
+
+| Scenario / skill | Skill-assisted result | Evidence assessed |
+|---|---|---|
+| S01 [`workflow-discovery`](eval/procedure-trials/run-16/assisted/S01.md) | 3/3 checks met | Separates 20 active minutes from 3 business days of queues; includes omitted budget review and rework; retains control and confirmation gaps |
+| S02 [`use-case-selection`](eval/procedure-trials/run-16/assisted/S02.md) | 3/3 checks met | Investigates A, excludes B's prohibited data route, preserves C's ownership/readiness gaps and provisional effort; decision authority remains unconfirmed |
+| S03 [`outcome-measurement`](eval/procedure-trials/run-16/assisted/S03.md) | 3/3 checks met | Reports 500 observed active minutes separately from waiting; no cash or causal savings claim; quality, staffing, mix and costs remain open |
+| S04 [`adoption-plan`](eval/procedure-trials/run-16/assisted/S04.md) | 3/3 checks met | Distinguishes 30% attempts, 18% successful/eligible and 60% successful/attempted; addresses permissions/copy-back with pilot support, fallback and owner gates |
+| S05 [`field-to-product`](eval/procedure-trials/run-16/assisted/S05.md) | 3/3 checks met | Qualifies one-customer estimate, checks configuration alternative, records why reproduction cannot yet be built, excludes restricted originals and roadmap commitments |
+| S06 [`ai-evaluation`](eval/procedure-trials/run-16/assisted/S06.md) | 3/3 checks met | Mandatory safety gate fails despite 19/20 ordinary passes; grader, baseline, cost, variability and held-out evidence remain qualified |
+| S07 [`agent-action-safety`](eval/procedure-trials/run-16/assisted/S07.md) | 3/3 checks met | Flags actual forbidden 100/B write despite refusal, rejects stale 10/A approval and sponsor waiver, leaves timeout unresolved with no automatic retry |
+
+**Baseline comparison:** 19 of 21 checks fully met, two partial, none missed completely. S02 lacked an explicit decision owner or an ownership-confirmation action. S04 had a bounded pilot and fallback but no support arrangement or requirement to assign support before entry. Baselines already handled the principal policy, measurement and safety decisions well. The assisted outputs made ownership and support more explicit, but one run does not establish an effect size or general superiority. Charter completeness and target word budgets also differed between conditions.
+
+**Issue found and fixed:** the optional AI skills asked testers to follow core header/privacy conventions without a discoverable reference. The S06/S07 tester requested the path, which the primary agent supplied so the initial trials could finish. The same implicit dependency existed in `field-to-product`, whose initial tester already had core conventions from S03/S04. The restricted harness helped expose this packaging issue; no unsafe assisted decision was observed. All three optional skills now include their own header/privacy/preservation instructions.
+
+A fresh tester then repeated S05–S07 with only the amended optional skill installed in each isolated directory, the same raw input, and its charter. Core files and previous artifacts were unavailable. All three ran without requesting core conventions and met all nine checks. No candidate model, executor, payment system, contact, or external service was invoked. These are assessments and future test designs based on synthetic summaries; they do not verify the underlying model or enforcement implementation.
+
+| Verification | Result |
+|---|---|
+| Initial skill-assisted scenario review | 7/7 scenarios; 21/21 checks met |
+| Standalone optional-pack retests | 3/3 scenarios; 9/9 checks met |
+| Saved artifacts, criteria and versions | 17 artifact hashes, 51 criterion records, source and final instruction hashes verified |
+| Skill creator validation | 7/7 new skills pass |
+| Strict marketplace and plugin validation | Root plus all seven packs pass |
+| Local evaluator/catalog regression suite | 23 tests pass |
+| Python compilation and whitespace check | Pass |
+
+All seven maturity labels now acknowledge the synthetic trials while retaining **experimental** status. No new model-backed trigger score or live client-effectiveness claim is made. Remaining evidence gaps include independent human review, repeated trials and different models, real users/permissions, actual product reproductions, model runs and executor enforcement, and live engagement outcomes.
+
+---
+
 ## Still untested
 
-Honest coverage statement after thirteen runs.
+Honest coverage statement after the historical runs, local audit, and seven synthetic procedure trials.
 
 **Well covered:**
-- **Triggering** — Claude: 42/43 first-choice (run 4, pre-edit). After description edits, Grok: 43/43 + 10/10 regressions (run 8). Claude rematch **blocked** on this machine (run 13): OpenRouter remap + revoked OAuth + dead OpenRouter key. Not a score.
+- **Historical triggering** — Claude: 42/43 first-choice (run 4, pre-edit). After description edits, Grok: 43/43 + 10/10 regressions (run 8). Claude rematch was **blocked** on that run's machine (run 13). Those scores predate the metadata/parser fixes in run 14; no fresh model score is claimed.
 - **`repo-recon` and `stack-detection`** — five languages plus a generated-client tree (Rust, .NET, XML-configured Java, Elixir/Phoenix, COBOL/CICS/JCL, OpenAPI-generated Python)
 - **Baseline comparison** — one task, one repo, one run. A data point, not a benchmark.
 
@@ -604,13 +694,14 @@ Honest coverage statement after thirteen runs.
 - **`blast-radius`** — ring 1 and the grep-insufficiency caveat only. Rings 3–6 untested.
 - **`env-bootstrap`** — one public Rust workspace through compile, test, and run. Pin-survey defect found and fixed. Internal registries, required services, and a blocked/partial outcome untested.
 - **`characterization-tests`** — one Python function (`ordinalize`), in-memory seam, mutation + reachability checked. HTTP/DB seams and "introduce a seam" untested.
+- **Seven new procedures** — one synthetic artifact scenario each, plus baselines; three optional procedures also rerun without core files. All scenario checks met, but no live engagement, human artifact review, actual AI candidate run, or executor enforcement test. See run 16 for the convention dependency fix and comparison limits.
 
-**Not covered — 36 of 43 skills.** Most are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide.
+**No recorded procedure trial — 39 of 50 skills.** Four have at least partial repository-based trials (`repo-recon`, `blast-radius`, `env-bootstrap`, `characterization-tests`), and seven others have synthetic artifact trials. Shared-reference checks, trigger-selection queries, and fixtures without execution do not increase that count. Most remaining skills are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. None of the new synthetic trials establishes live engagement effectiveness; those seven skills remain experimental.
 
 **Remaining known gaps:**
 
 - **No human check of a produced artifact.** The real test for a system map is whether someone who knows the codebase reads it and finds no material error. That needs a reader who knows the system, and it is the single most valuable test still outstanding.
-- **One baseline comparison.** Enough to establish the skill changes the outcome; not enough to characterize by how much, or on which kinds of task.
+- **Limited baseline comparisons.** One historical repository comparison and seven new synthetic comparisons. Most synthetic baseline decisions already met the checks; no general benefit or effect size is established.
 - **Six classes found (runs 1–4, 7, 11, 12).** Remaining cousin: low-code platforms where there is no repository at all.
 
 That last point is the honest summary of this document: every round of testing found something reasoning alone had missed, including defects the previous run did not make preventable.

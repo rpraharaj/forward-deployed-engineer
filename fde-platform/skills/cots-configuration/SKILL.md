@@ -35,9 +35,10 @@ Three properties make COTS genuinely different:
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/00-engagement.md` — COTS should be the recorded archetype
-- `.fde/03-requirements.md` — you're assessing these against platform capability
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/00-engagement.md` — COTS should be the recorded archetype
+- `<workspace>/03-requirements.md` — you're assessing these against platform capability
 - Vendor documentation, and access to a non-production instance
 
 ## Procedure
@@ -109,7 +110,7 @@ Why a field was added, why a workflow branches, why a validation rule exists: no
 
 ## Output
 
-Write to `.fde/05d-cots-assessment.md`, with decisions as ADRs:
+Write to `<workspace>/05d-cots-assessment.md`, with decisions as ADRs:
 
 ```markdown
 # COTS assessment — <platform>
@@ -117,6 +118,10 @@ Write to `.fde/05d-cots-assessment.md`, with decisions as ADRs:
 **Engagement:** <name> · **Platform:** <name + version> · **Date:** <YYYY-MM-DD>
 **Vendor upgrade cadence:** 2 major/year, N-1 supported
 **Next upgrade:** <date> — **customizations must survive it**
+**Author:** FDE
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Customization tiers on this platform
 | Tier | Mechanism here | Upgrade-safe |

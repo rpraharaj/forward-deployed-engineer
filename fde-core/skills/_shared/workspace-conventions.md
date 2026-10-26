@@ -16,11 +16,13 @@ Resolution order, first hit wins:
 4. `../<repo-name>-fde/` adjacent to the checkout
 5. Ask, and record the answer in `00-engagement.md`
 
+If `FDE_WORKSPACE` is explicitly set but unavailable, report that path as the blocker; do not silently fall back to another directory. `fde-orient` may create the chosen location when opening an engagement. `<workspace>` in skill procedures and templates always means the resolved path, not a directory literally named `<workspace>`.
+
 If none exists, the engagement hasn't been opened — run `fde-orient` first rather than scattering artifacts into the current directory.
 
 When the workspace lives inside the repo, check whether `.fde/` should be added to `.gitignore`. Both answers are defensible — committed artifacts are inheritable and reviewable, ignored ones avoid an argument about repo hygiene with a team you just met. Ask once, in `fde-orient`, and record it.
 
-Archetype-pack skills (`fde-data`, `fde-migration`, `fde-operate`, `fde-platform`) use this same order even when this file is not on disk. Do not invent a second `.fde/` when the charter already recorded a different location.
+Archetype-pack skills (`fde-data`, `fde-migration`, `fde-operate`, `fde-platform`, `fde-product`, `fde-ai`) use this same order even when this file is not on disk. Do not invent a second `.fde/` when the charter already recorded a different location.
 
 ## Layout
 
@@ -49,6 +51,11 @@ Archetype-pack skills (`fde-data`, `fde-migration`, `fde-operate`, `fde-platform
 ├── 08b-change-control.md         # gates, freezes, backwards schedule
 ├── 09-handover.md
 ├── 09b-enablement.md             # capability checklist; not a second handover
+├── discovery/   workflow-<name>.md, opportunities.md
+├── outcomes/    <initiative>.md  # original business baseline plus dated readouts
+├── adoption/    <initiative>.md  # end-user pilot, support, fallback, observed use
+├── product-feedback/ <topic>.md  # permitted field evidence (fde-product)
+├── ai/          evaluation-<workflow>.md, action-safety-<workflow>.md (fde-ai)
 ├── adr/         NNNN-<slug>.md
 ├── traces/      <flow>.md, data-model.md, why-<symbol>.md, <external-system>.md
 ├── runbooks/    deploy-<svc>.md, cutover-<name>.md, decommission-<system>.md
@@ -78,6 +85,8 @@ Every artifact opens with this block. It takes fifteen seconds and it is what ma
 
 **Status** is not decoration. `superseded` at the top of a stale document, with a pointer to what replaced it, prevents the most common workspace failure — a later reader acting on an earlier conclusion.
 
+Standalone templates include this header; skill-specific states such as `live`, `rehearsed`, or `approved` may refine Status. For work with no source repository, write "no repository yet" in Source revision. Appended sections inherit the enclosing header and add their own date and revision where evidence changes. Create a missing destination with the standard header before appending. On a rerun, update the relevant section and preserve other skills' evidence; do not overwrite an NFR or security appendix while regenerating the enclosing assessment.
+
 ## Composition
 
 Skills read upstream artifacts rather than re-deriving context. This is the whole reason the workspace exists: `feasibility-probe` should not have to re-map the system that `repo-recon` already mapped.
@@ -106,6 +115,14 @@ Declared dependencies (each skill's Prerequisites section is authoritative if th
 | `release-readiness` | `03-requirements.md`, `07-verification.md`, `06-blast-radius-*.md`, `03b-nfrs.md`, `06b-change-log.md`, `runbooks/deploy-*.md` |
 | `handover-pack` | the workspace as a whole |
 | `enablement-handoff` | `02b-ownership.md`, runbooks, `01-environment.md` — not `09-handover.md` |
+| `observability-gap` *(fde-operate)* | Incident notes for post-incident work; proposed change/draft NFRs for pre-release work. NFR and release assessments are optional inputs. |
+| `workflow-discovery` | Charter if available; approved cases/participant observations. No system map is required to map human work. |
+| `use-case-selection` | Candidate problems, decision authority, and available workflow/impact/readiness evidence; discovery artifacts are optional. |
+| `outcome-measurement` | Chosen problem and owner, permitted aggregate evidence, metric definitions. Retains its original baseline across readouts. |
+| `adoption-plan` | Intended users/process owner, change, known readiness limits, and available usage evidence; operator enablement is separate. |
+| `field-to-product` *(fde-product)* | Permitted deployment evidence, product context, and audience/reuse restrictions; no customer material is implicitly shareable. |
+| `ai-evaluation` *(fde-ai)* | Task criteria/owner, versioned cases and grader, isolated runnable system or explicit measurement blockers. |
+| `agent-action-safety` *(fde-ai)* | Tasks/principals, tool permissions, control owners, and isolated execution evidence. |
 
 ### When an upstream artifact is missing
 

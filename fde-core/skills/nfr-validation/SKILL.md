@@ -33,8 +33,10 @@ The other half of this skill is failure behavior. Systems are almost never teste
 
 ## Prerequisites
 
-- `.fde/03b-nfrs.md` — **required.** The targets and the baseline.
-- `.fde/07-verification.md` — this appends to it. If the file does not exist, create it with the standard header and say so in Confidence; do not pretend `verification-plan` already ran.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03b-nfrs.md` — **required.** The targets and the baseline.
+- `<workspace>/07-verification.md` — this appends to it. If the file does not exist, create it with the standard header and say so in Confidence; do not pretend `verification-plan` already ran.
 - Access to a realistic environment, or an honest statement that you don't have one
 
 ## Procedure
@@ -60,6 +62,8 @@ Option 3 is legitimate and under-used. A 5% rollout with a p95 dashboard is a re
 
 ### 3. Test the failure boundaries
 
+Use an isolated non-production environment by default. The production measurement option in step 2 does **not** authorize fault injection. Before each experiment, name the target environment and dependencies, allowed impact and duration, abort thresholds, restoration steps, and operator. Production fault injection requires a separately approved experiment under the organization's change process; without that authorization, record a gap and use a lower environment. Restore the dependency and verify recovery even if the check fails.
+
 The part that gets skipped. For each dependency, find out what actually happens when it's unavailable, slow, or returning errors — not what the code appears to do.
 
 - Dependency down: does the system degrade as `nfr-baseline` said it should, or fail entirely?
@@ -78,9 +82,11 @@ Where `nfr-baseline` recorded an audit requirement, check it produces what was p
 Also check the inverse, which is the failure that ends careers: **is anything in the logs that shouldn't be?** Personal data, card numbers, tokens, full request payloads. Scan against the field list from the data classification.
 
 ```bash
-# Adapt the field names to the classification in 03b-nfrs.md
-grep -riE "(email|card|ssn|passport|token|password)[\"']?\s*[:=]" <log sample> | head
+# Adapt fields to the classification. Return filenames only, never matching values.
+grep -rilE "(email|card|ssn|passport|token|password)[\"']?\s*[:=]" <approved-log-sample-directory>
 ```
+
+Inspect flagged samples only in an approved local viewer. Share file/line references and redacted findings, never raw payloads. A pattern scan is a limited sample, not proof that all sensitive data is absent.
 
 ### 5. Report numbers with conditions, and be plain about gaps
 
@@ -90,7 +96,7 @@ Resist rounding a marginal result into a pass. A p95 of 0.98s against a 1.0s tar
 
 ## Output
 
-Append to `.fde/07-verification.md`:
+Append to `<workspace>/07-verification.md`:
 
 ```markdown
 ## NFR validation

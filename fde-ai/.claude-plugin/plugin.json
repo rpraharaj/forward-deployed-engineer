@@ -1,0 +1,6 @@
+{
+  "name": "fde-ai",
+  "version": "0.1.0",
+  "description": "FDE skills for evaluating delivered AI workflows and verifying boundaries on agent actions.",
+  "author": { "name": "FDE Portfolio" }
+}

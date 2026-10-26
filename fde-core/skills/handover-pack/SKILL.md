@@ -24,13 +24,15 @@ The section that matters most is the one almost every handover omits: **the open
 
 ## When it doesn't
 
-- Short engagements where the artifacts already are the handover — point at `.fde/` and walk them through it
+- Short engagements where the artifacts already are the handover — point at `<workspace>/` and walk them through it
 - Work that will genuinely never be touched again, which is rarer than it seems
 - Teaching the team to operate what you built — that's `enablement-handoff`, and it's a different activity that should happen alongside this
 
 ## Prerequisites
 
-The `.fde/` workspace. This skill consolidates rather than creates — if the artifacts were kept as you went, this is an afternoon. If they weren't, it's a week, and it'll be worse.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+The `<workspace>/` workspace. This skill consolidates rather than creates — if the artifacts were kept as you went, this is an afternoon. If they weren't, it's a week, and it'll be worse.
 
 ## Procedure
 
@@ -56,7 +58,7 @@ Where the repository had a `CLAUDE.md` before you, keep its voice and structure.
 
 ### 4. Consolidate the durable artifacts
 
-Not everything in `.fde/` is worth keeping. Sort it:
+Not everything in `<workspace>/` is worth keeping. Sort it:
 
 **Keep and promote into the repository proper:**
 - Runbooks — deploy, rollback, cutover. These get used.
@@ -80,6 +82,8 @@ The part that earns the document. Everything you know that could bite them:
 - **Deferred work** and what happens if it stays deferred
 - **Fragile areas** — where you'd be careful, and why
 - **Dependencies** you never got answers on
+- **Business outcomes and adoption** — original baselines, observed results, open review dates, and the process owner; link `outcome-measurement` and `adoption-plan` artifacts if they exist
+- **Shared product feedback** — permitted proposals and decision owners from `field-to-product` *(fde-product)* if used; preserve audience/reuse restrictions
 - **Things you'd do differently**, which is the most useful and least written thing in any handover
 
 Resist the urge to make this section look tidy. A handover that reads as a clean success and omits three known risks is a document that will be resented in month two.
@@ -110,7 +114,7 @@ Being honest about the limit is kinder than an open offer you won't be able to k
 
 ## Output template
 
-Write to `.fde/09-handover.md`:
+Write to `<workspace>/09-handover.md`:
 
 ```markdown
 # Handover — <engagement>
@@ -120,6 +124,8 @@ Write to `.fde/09-handover.md`:
 **Date:** <YYYY-MM-DD>
 **Receiving:** <team / person> · **Walked through:** <date, with whom, or "not yet">
 **Source revision:** <repo>@<short SHA>
+**Status:** draft
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## What was done
 <Three or four sentences. What changed, what state it's in.>
@@ -157,10 +163,10 @@ Write to `.fde/09-handover.md`:
 | What | Where |
 |---|---|
 | Working aid for Claude Code | `CLAUDE.md` |
-| Deploy + rollback | `.fde/runbooks/deploy-refund-currency.md` |
-| Decisions and why | `.fde/adr/` |
-| System map | `.fde/02-system-map.md` |
-| Enablement / can they operate it | `.fde/09b-enablement.md` |
+| Deploy + rollback | `<workspace>/runbooks/deploy-refund-currency.md` |
+| Decisions and why | `<workspace>/adr/` |
+| System map | `<workspace>/02-system-map.md` |
+| Enablement / can they operate it | `<workspace>/09b-enablement.md` |
 
 ## Access that will be revoked
 | Grant | Location | Inherits | If nobody does |

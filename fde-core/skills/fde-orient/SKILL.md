@@ -1,6 +1,6 @@
 ---
 name: fde-orient
-description: Open a new engagement as a forward deployed engineer - establish what you have actually been asked to do, classify the engagement type, set up the .fde workspace, and produce a sequenced plan of which skills to run. Use when starting at a new client, joining an unfamiliar team, being assigned to a project you know nothing about, or when someone says "I've been dropped into X and don't know where to start". Also use when an engagement changes shape mid-flight (an enhancement turns into a rescue, scope shifts, the sponsor changes) and the original plan no longer fits. Scope note - this opens an engagement once, at the start. It is not the skill for a specific technical question inside an engagement already underway: sizing a change is feasibility-probe, mapping a codebase is repo-recon, getting access is access-and-onboarding.
+description: "Open a new engagement as a forward deployed engineer - establish what you have actually been asked to do, classify the engagement type, set up the .fde workspace, and produce a sequenced plan of which skills to run. Use when starting at a new client, joining an unfamiliar team, being assigned to a project you know nothing about, or when someone says \"I've been dropped into X and don't know where to start\". Also use when an engagement changes shape mid-flight (an enhancement turns into a rescue, scope shifts, the sponsor changes) and the original plan no longer fits. Scope note - this opens an engagement once, at the start. It is not the skill for a specific technical question inside an engagement already underway: sizing a change is feasibility-probe, mapping a codebase is repo-recon, getting access is access-and-onboarding."
 ---
 
 # FDE Orient
@@ -38,8 +38,12 @@ Resolve the workspace the same way later skills will — see `../_shared/workspa
 
 ```bash
 # Order: $FDE_WORKSPACE, then .fde/, then a sibling *-fde/
-if [ -n "$FDE_WORKSPACE" ] && [ -f "$FDE_WORKSPACE/00-engagement.md" ]; then
-  cat "$FDE_WORKSPACE/00-engagement.md"
+if [ -n "$FDE_WORKSPACE" ]; then
+  if [ -f "$FDE_WORKSPACE/00-engagement.md" ]; then
+    cat "$FDE_WORKSPACE/00-engagement.md"
+  else
+    printf '%s\n' 'No charter at the configured FDE_WORKSPACE; resolve or initialize that location in step 6. Do not fall back.'
+  fi
 elif [ -f .fde/00-engagement.md ]; then
   cat .fde/00-engagement.md
 else
@@ -78,6 +82,8 @@ Ask yourself, and where it is cheap to ask the user: **what happens if we don't 
 
 Do **not** turn this into requirements gathering. Unpacking actors, acceptance criteria, and out-of-scope is `requirements-to-spec`. Orient that spends the sponsor's patience on the spec is why they go quiet when you need them later.
 
+If the current human process is unclear, sequence `workflow-discovery`. If several problems compete, use `use-case-selection` before choosing requirements. For a chosen initiative, establish its business baseline with `outcome-measurement`; use `adoption-plan` when end users must change their daily work. These are conditional paths, not gates on an already-clear small task.
+
 ### 5. Classify the archetype
 
 Only name skills that exist. Pack skills are marked; if that pack is not installed, say so and substitute the nearest core skill rather than inventing a procedure.
@@ -86,8 +92,8 @@ Only name skills that exist. Pack skills are marked; if that pack is not install
 |---|---|---|
 | **Brownfield enhancement** | core | `repo-recon` → `requirements-to-spec` → `feasibility-probe` → `trace-the-flow` → `blast-radius` → `characterization-tests` → `safe-change` → `verification-plan` → `release-readiness` |
 | **Greenfield in an existing org** | core | `repo-recon` *(of the platform)* → `requirements-to-spec` → `nfr-baseline` → `solution-design` → build → `verification-plan` → `deploy-runbook` |
-| **Integration** | **`fde-platform`** | `repo-recon` *(both sides)* → `integration-adapter` → `contract-design` → `blast-radius` → `verification-plan` → `release-readiness` |
-| **Migration / replatform** | **`fde-migration` + `fde-data`** | `repo-recon` → `data-archaeology` → `solution-design` → `cutover-plan` → `refactor-seams` → `post-deploy-watch` |
+| **Integration** | **`fde-platform`** | `repo-recon` *(both sides)* → `requirements-to-spec` → `nfr-baseline` → `feasibility-probe` → `blast-radius` → `contract-design` → `integration-adapter` → `verification-plan` → `release-readiness` |
+| **Migration / replatform** | **`fde-migration` + `fde-data` + `fde-operate`** | `repo-recon` → `data-archaeology` → `solution-design` → `refactor-seams` → `verification-plan` → `cutover-plan` → `post-deploy-watch` |
 | **Rescue / stabilization** | **`fde-operate`** | `incident-triage` → `repo-recon` → `ci-forensics` → `verification-plan` → `delivery-plan` *(replan honestly; do not build until it is stable)* |
 | **Assessment only** | core | `repo-recon` → `feasibility-probe` → `blast-radius` → `stakeholder-brief` |
 | **Version / EOL upgrade** | **`fde-migration`** | `repo-recon` → `dependency-upgrade` → `blast-radius` → `characterization-tests` → `deploy-runbook` *(staged)* → `verification-plan` |
@@ -96,6 +102,11 @@ Only name skills that exist. Pack skills are marked; if that pack is not install
 | **Decommission** | **`fde-migration`** | `repo-recon` → `decommission-plan` |
 | **Regulatory / audit-driven** | core | `requirements-to-spec` *(from the obligation)* → `feasibility-probe` → `nfr-baseline` → `change-control-navigation` → `release-readiness` |
 | **Spike / PoC** | core | timeboxed `feasibility-probe` → `stakeholder-brief` |
+| **Open problem / opportunity selection** | core | `workflow-discovery` → `use-case-selection` → `outcome-measurement` *(baseline)* → `requirements-to-spec` → `feasibility-probe` |
+| **AI workflow / agent delivery** | **`fde-ai`** | `requirements-to-spec` → `feasibility-probe` → `solution-design` → `ai-evaluation` *(plan)* → `agent-action-safety` *(policy, if actions)* → build → `agent-action-safety` *(test)* → `ai-evaluation` *(candidate)* → `verification-plan` → `release-readiness` |
+| **Field lessons for a shared product** | **`fde-product`** | permitted deployment evidence → `field-to-product` → product-owner decision; accepted work returns to the ordinary delivery path |
+
+These paths show the main stages, not every prerequisite. Before sequencing a stage, read that skill's prerequisites and insert missing required work; do not skip it because it is absent from the table. If an optional pack is unavailable, use the core fallback and record the gap. In particular, without `fde-operate`, keep the watch plan and dated observations in core `deploy-runbook`.
 
 Two notes worth carrying: **regulatory work** inverts the usual negotiation — the date is fixed and scope only appears negotiable, so `escalation-and-renegotiation` fires earlier than elsewhere. **COTS work** surprises engineers most: the binding constraint is the vendor's upgrade path, and the right answer is often "don't build that."
 
@@ -118,11 +129,14 @@ Produce a short ordered list of the next three to five **installed** skills, eac
 
 `access-and-onboarding` comes first in almost every engagement, because access lead times are the one constraint you cannot compress later. If it's not first, be able to say why.
 
-If the archetype needs `fde-data`, `fde-migration`, `fde-platform`, or `fde-operate`, tell the user to install that pack before those skills can run:
+If the archetype needs `fde-data`, `fde-migration`, `fde-platform`, `fde-operate`, `fde-product`, or `fde-ai`, tell the user to install that pack before those skills can run:
 
 ```bash
-claude plugin install /path/to/FDE-Claude/fde-<pack>
+claude plugin marketplace add /path/to/FDE-Claude
+claude plugin install fde-<pack>@fde-skills
 ```
+
+For local development, load the core and selected pack for one session with `claude --plugin-dir /path/to/FDE-Claude/fde-core --plugin-dir /path/to/FDE-Claude/fde-<pack>`.
 
 Do not sequence a pack skill that is not installed. Substitute a core skill and record the gap in the charter.
 
@@ -144,7 +158,7 @@ Write to `<workspace>/00-engagement.md` (the location you just decided):
 - **Location:** `.fde/` | `$FDE_WORKSPACE` | `../<repo>-fde/`
 - **Committed to VCS:** yes | no
 - **Decided by:** <who, when>
-- **Packs needed:** core | + `fde-data` | + `fde-migration` | + `fde-platform` | + `fde-operate`
+- **Packs needed:** core | + `fde-data` | + `fde-migration` | + `fde-platform` | + `fde-operate` | + `fde-product` | + `fde-ai`
 
 ## The ask
 **As stated:** <verbatim>

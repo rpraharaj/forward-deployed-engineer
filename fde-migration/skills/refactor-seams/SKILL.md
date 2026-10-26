@@ -31,10 +31,11 @@ For an FDE this matters twice over. You may not be here long enough to finish a 
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/06-blast-radius-*.md` — you need to know every caller
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/06-blast-radius-*.md` — you need to know every caller
 - **`characterization-tests` first.** Restructuring untested code is the single riskiest thing in this portfolio. The tests are what make the refactor verifiable as behavior-preserving.
-- `.fde/adr/` — the target shape should be a recorded decision
+- `<workspace>/adr/` — the target shape should be a recorded decision
 
 ## Procedure
 
@@ -61,7 +62,7 @@ Where no seam exists, **introducing one is your first change** — and it must b
 | **Adapter insertion** | The new thing has a different shape from the old | Adapter removed once callers migrate, or kept deliberately |
 | **Parallel run** | You must prove equivalence before switching | Old path removed once outputs match for a stated period |
 
-**Parallel run deserves more use than it gets.** Running both implementations and comparing outputs on live traffic — new path's result discarded — is the strongest possible evidence of equivalence, and it costs a flag and some logging. For anything where being wrong is expensive, it is worth the effort.
+**Parallel run needs side-effect isolation.** Compare both implementations only when the shadow path is read-only, or its writes, events, notifications, and external calls are redirected to isolated destinations or suppressed. Discarding a response does not undo a charge or a published event. Verify this isolation before using live traffic, bound extra load, and provide a kill switch. If isolation cannot be established, replay policy-approved synthetic or sanitized inputs in a lower environment instead. Record which effects were suppressed and what equivalence remains unverified.
 
 ### 3. Sequence so every step ships
 
@@ -98,7 +99,7 @@ Where you stop mid-way, **write down where you stopped, why, and what completing
 
 ## Output
 
-ADR for the target shape, plus a tracking note in `.fde/06b-change-log.md`:
+ADR for the target shape, plus a tracking note in `<workspace>/06b-change-log.md`:
 
 ```markdown
 ## Refactor — extract pricing from the order monolith
@@ -137,6 +138,6 @@ Completing means step 6 only.
 
 **No stated deletion condition or owner.** Guarantees the above.
 
-**Not using parallel run when the stakes justify it.** Strongest equivalence evidence available, and it costs a flag.
+**Shadowing without isolating side effects.** A discarded response can still leave a duplicate payment, write, or notification. Isolation and a bounded load budget come before live comparison.
 
 **Stopping without documenting where.** An archaeological puzzle for whoever finds it.

@@ -30,7 +30,9 @@ The main discipline: **mitigation and diagnosis are different jobs.** Doing them
 
 ## Prerequisites
 
-None — incidents don't wait for artifacts. Where they exist, `02-system-map.md` and any traces are valuable. Where they don't, this skill degrades to careful work with a stranger's system, which is the normal FDE condition anyway.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+None — incidents don't wait for artifacts. Use the workspace resolver only to locate existing records; if none exists, do not run `fde-orient` or delay mitigation to choose a directory. Keep minimal redacted notes in the response, then persist them in a chosen workspace once impact is stable. Where they exist, `02-system-map.md` and any traces are valuable. Where they don't, this skill degrades to careful work with a stranger's system, which is the normal FDE condition anyway.
 
 ## Procedure
 
@@ -126,7 +128,7 @@ Two things belong in it that people leave out: **what you ruled out**, which sav
 
 ## Output template
 
-Write to `.fde/incidents/<date>-<slug>.md`:
+Write to `<workspace>/incidents/<date>-<slug>.md`:
 
 ```markdown
 # Incident — <short description>
@@ -134,6 +136,9 @@ Write to `.fde/incidents/<date>-<slug>.md`:
 **Date:** <YYYY-MM-DD> · **Detected:** <time> · **Mitigated:** <time> · **Duration:** <n>
 **Severity:** <org's scale> · **Author:** FDE
 **Status:** mitigated | resolved | ongoing
+**Engagement:** <name>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Impact
 **Symptom:** <observable> · **Affected:** <who, how many> · **Started:** <time, and how established>
@@ -159,7 +164,7 @@ Write to `.fde/incidents/<date>-<slug>.md`:
 <What was checked and eliminated. Saves the next responder the same hour.>
 
 ## What made this hard
-<Missing logs, absent alerts, misleading dashboards, unclear ownership. → `observability-gap`.>
+<Missing logs, absent alerts, misleading dashboards, unclear ownership. → `observability-gap` (fde-operate), or a tracked instrumentation follow-up if that pack is unavailable.>
 
 ## Follow-ups
 | # | Action | Why | Owner |

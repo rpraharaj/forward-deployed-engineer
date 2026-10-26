@@ -32,9 +32,10 @@ Two assumptions make this work, and both feel pessimistic until you've been burn
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/02-system-map.md` — where this integration sits
-- `.fde/03b-nfrs.md` — what data may cross the boundary
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` — where this integration sits
+- `<workspace>/03b-nfrs.md` — what data may cross the boundary
 - Any existing callers of the same system, which are your best documentation
 
 ## Procedure
@@ -119,7 +120,7 @@ This is what makes the integration maintainable after you leave, and it's the th
 
 ## Output
 
-Write to `.fde/traces/<external-system>.md`:
+Write to `<workspace>/traces/<external-system>.md`:
 
 ```markdown
 # Integration — <system>
@@ -127,6 +128,8 @@ Write to `.fde/traces/<external-system>.md`:
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
 **Their docs:** <ref, date> · **Observed:** <environment>, <dates>
 **Confidence:** <observed vs. documented-only>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Interface
 **Protocol:** SOAP 1.1 over HTTPS · **Auth:** mutual TLS, cert expires <date> ⚠️

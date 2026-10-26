@@ -30,11 +30,13 @@ For an FDE there's a second reason. Your credibility rests on being predictable.
 
 ## Prerequisites
 
-- `.fde/04-feasibility.md` — shapes, sites, deceptive costs
-- `.fde/05b-estimate.md` — sizing, if it exists
-- `.fde/06-blast-radius-*.md` — coordination needs
-- `.fde/00b-access.md` — blocked access is a dependency with a lead time
-- `.fde/08b-change-control.md` — **the calendar and gates.** If missing, offer `change-control-navigation`; do not invent CAB dates. If you proceed anyway, every window is `[unverified]`.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/04-feasibility.md` — shapes, sites, deceptive costs
+- `<workspace>/05b-estimate.md` — sizing, if it exists
+- `<workspace>/06-blast-radius-*.md` — coordination needs
+- `<workspace>/00b-access.md` — blocked access is a dependency with a lead time
+- `<workspace>/08b-change-control.md` — **the calendar and gates.** If missing, offer `change-control-navigation`; do not invent CAB dates. If you proceed anyway, every window is `[unverified]`.
 
 ## Procedure
 
@@ -95,7 +97,7 @@ Say explicitly when you'll re-plan — after the first deploy, after the unknown
 
 ## Output template
 
-Write to `.fde/05-delivery-plan.md`:
+Write to `<workspace>/05-delivery-plan.md`:
 
 ```markdown
 # Delivery plan — <scope>

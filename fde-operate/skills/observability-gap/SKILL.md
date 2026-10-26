@@ -1,6 +1,6 @@
 ---
 name: observability-gap
-description: Ask whether a failure could have been seen, then close the gaps - missing logs, metrics, traces, and alerts - so the next incident is cheaper to diagnose. Use after any incident where the answer was hard to find, before shipping anything whose failure would be silent, when a change has no way to be detected going wrong, or when diagnosis required guessing. The compounding skill: each pass makes every future incident shorter, and silent failures are the ones worth spending on.
+description: "Ask whether a failure could have been seen, then close the gaps - missing logs, metrics, traces, and alerts - so the next incident is cheaper to diagnose. Use after any incident where the answer was hard to find, before shipping anything whose failure would be silent, when a change has no way to be detected going wrong, or when diagnosis required guessing. The compounding skill: each pass makes every future incident shorter, and silent failures are the ones worth spending on."
 ---
 
 # Observability gap
@@ -33,14 +33,17 @@ The other half is prospective: before shipping, asking whether this change's fai
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/incidents/*.md` — specifically the "what made this hard" section
-- `.fde/03b-nfrs.md` — the silent-failure analysis
-- `.fde/08-release-readiness.md` — the observability dimension
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- **After an incident:** the relevant `<workspace>/incidents/*.md`, especially "what made this hard", if available
+- **Before release:** the proposed change or acceptance criteria, plus `<workspace>/03b-nfrs.md` if it exists. A draft target or a missing-baseline finding from `nfr-baseline` is enough; do not require that skill to finish first.
+- `<workspace>/08-release-readiness.md` — optional, only if a release assessment already exists
 
 ## Procedure
 
 ### 1. Start from a real diagnosis, not from a checklist
+
+Choose the mode first. **Post-incident:** use the actual diagnosis below. **Pre-release:** name the changed operation and its dependencies, list plausible failure and silent-corruption scenarios from the spec or draft NFRs, and ask the four questions in step 2 for each. Tag these scenarios as inferred until tested. Do not manufacture an incident or wait for a future release assessment to begin.
 
 The best input is a specific incident and the specific moments where you were stuck. `incident-triage` records these under "what made this hard" for exactly this reason.
 
@@ -105,22 +108,25 @@ Confirm the important alerts can actually fire. The only reliable way is to make
 
 The failure mode here is proposing an observability programme instead of adding four log lines and one alert.
 
-Ship the small version now: the specific gaps from the specific incident. It's reviewable, it's cheap, and it makes the next incident measurably shorter. Larger platform gaps — no tracing at all, no log aggregation — belong in the handover as findings, not as a blocker to this change.
+Ship the small version now: the specific gaps from the incident or pre-release scenarios. It's reviewable, it's cheap, and it gives the next diagnosis better evidence. Larger platform gaps — no tracing at all, no log aggregation — belong in the handover as findings; record any required detection capability that remains missing as a release gap.
 
 ## Output
 
-A PR plus a note appended to the incident record, or `.fde/07c-observability.md`:
+A PR plus a note appended to the incident record, or `<workspace>/07c-observability.md`:
 
 ```markdown
 # Observability gaps — <area>
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
-**Source:** incident `2026-03-14-payment-timeouts` — 37 min to diagnose
+**Source:** <incident and diagnosis duration, or proposed change / draft NFR scenarios>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
-## Where diagnosis stalled
+## Where diagnosis stalled / prospective detection gaps
 | # | Stuck on | Cost | Gap |
 |---|---|---|---|
-| 1 | Which downstream was slow | ~15 min | No per-dependency latency metric |
+| 1 | Which downstream was slow | ~15 min after incident, or unmeasured before release | No per-dependency latency metric |
 | 2 | Whether the recon job had run | ~10 min | No completion metric — had to read logs on the host |
 | 3 | Which tenants were affected | ~8 min | Errors aggregated only, no tenant dimension |
 
@@ -159,7 +165,7 @@ A PR plus a note appended to the incident record, or `.fde/07c-observability.md`
 
 **Skipping it because the incident is over.** The pressure is gone, which is exactly why it needs to be a deliberate step.
 
-**Working from a generic checklist.** A real diagnosis targets what actually failed.
+**Inventing an incident to satisfy a prerequisite.** Use a real diagnosis after an incident, or explicit inferred failure scenarios before release. Neither mode needs a future release assessment to begin.
 
 **Only instrumenting loud failures.** They're usually covered. Silent ones are the danger.
 

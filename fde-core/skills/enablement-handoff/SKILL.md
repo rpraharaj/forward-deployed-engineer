@@ -29,10 +29,13 @@ The mechanism that causes this is worth naming: an FDE working efficiently works
 - The receiving team already knows this domain better than you
 - Nobody is receiving it — which is a finding to escalate, not a reason to skip this
 - You need documents rather than capability — that's `handover-pack`
+- Intended end users need to adopt a changed business process — that's `adoption-plan`; technical-team enablement can run alongside it
 
 ## Prerequisites
 
-`.fde/02b-ownership.md`, `.fde/01-environment.md`, and any runbooks — you need to know who is inheriting this and what they must operate. **Do not wait for `09-handover.md`.** Enablement starts at the midpoint; the handover is written at the end and *links* here.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+`<workspace>/02b-ownership.md`, `<workspace>/01-environment.md`, and any runbooks — you need to know who is inheriting this and what they must operate. **Do not wait for `09-handover.md`.** Enablement starts at the midpoint; the handover is written at the end and *links* here.
 
 ## Procedure
 

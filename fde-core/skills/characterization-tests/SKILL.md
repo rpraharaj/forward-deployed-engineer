@@ -20,7 +20,7 @@ The counter-intuitive part, and the part people resist: **you pin the bugs too.*
 - About to change code with thin or no coverage
 - Any refactor of legacy code
 - "Nobody knows what that does, so we don't touch it"
-- Before `refactor-seams` or a risky `safe-change`
+- Before `refactor-seams` *(fde-migration)* or a risky `safe-change`
 
 ## When it doesn't
 
@@ -31,8 +31,10 @@ The counter-intuitive part, and the part people resist: **you pin the bugs too.*
 
 ## Prerequisites
 
-- `.fde/01-environment.md` — you need to be able to run tests. If missing, run `env-bootstrap` or stop; you cannot characterize without a runner.
-- `.fde/04-feasibility.md` — the change sites you're protecting
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/01-environment.md` — you need to be able to run tests. If missing, run `env-bootstrap` or stop; you cannot characterize without a runner.
+- `<workspace>/04-feasibility.md` — the change sites you're protecting
 - Detect the stack from `01-environment.md` or `../_shared/stack-detection.md`, then read `references/harness-by-stack.md`. Do not assume `repo-recon` already ran.
 - `refactor-seams` *(fde-migration)* is a common successor, not a prerequisite.
 
@@ -104,13 +106,14 @@ Run the characterization suite. Anything that goes red is a behavior change — 
 
 ## Output
 
-Tests in the repository's own convention, plus a short note in `.fde/06b-change-log.md`. Create that file with the standard header if it does not exist.
+Tests in the repository's own convention, plus a short note in `<workspace>/06b-change-log.md`. Create that file with the standard header if it does not exist.
 
 ```markdown
 # Change log
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
 **Status:** live · **Source revision:** <repo>@<short SHA>
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Characterization — <component>
 

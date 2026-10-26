@@ -29,8 +29,10 @@ An FDE is unusually exposed here. An engineer who has worked on a system for fiv
 
 ## Prerequisites
 
-- `.fde/02-system-map.md` — integration surface and module boundaries
-- `.fde/04-feasibility.md` — the change sites you're assessing
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` — integration surface and module boundaries
+- `<workspace>/04-feasibility.md` — the change sites you're assessing
 - A trace helps where the change is on a request path, but isn't required
 
 ## Procedure
@@ -127,7 +129,7 @@ Then — the part that makes the artifact actionable — list the **specific thi
 
 ## Output template
 
-Write to `.fde/06-blast-radius-<change>.md`:
+Write to `<workspace>/06-blast-radius-<change>.md`:
 
 ```markdown
 # Blast radius — <change>

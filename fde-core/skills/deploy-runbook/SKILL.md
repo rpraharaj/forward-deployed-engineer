@@ -24,14 +24,16 @@ There's a second, sharper reason. **A rollback plan that has never been executed
 
 - Routine deploys through a mature, well-understood pipeline — don't add ceremony to something that works
 - Local or throwaway environments
-- A migration with a cutover window — that's `cutover-plan`, which is a bigger artifact
+- A migration with a cutover window — that's `cutover-plan` *(fde-migration)*, which is a bigger artifact
 
 ## Prerequisites
 
-- `.fde/06-blast-radius-*.md` — determines how careful the procedure must be
-- `.fde/07-verification.md` — what's proven and what's a gap
-- `.fde/01-environment.md` — the deploy commands, usually discoverable from CI
-- `.fde/08b-change-control.md` — who may press the button, freeze windows, CAB ref. If missing, offer `change-control-navigation` rather than inventing SoD.
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/06-blast-radius-*.md` — determines how careful the procedure must be
+- `<workspace>/07-verification.md` — what's proven and what's a gap
+- `<workspace>/01-environment.md` — the deploy commands, usually discoverable from CI
+- `<workspace>/08b-change-control.md` — who may press the button, freeze windows, CAB ref. If missing, offer `change-control-navigation` rather than inventing SoD.
 
 Read the CI/CD configuration before writing anything. The existing pipeline is the real deploy path, and a runbook that contradicts it is worse than none.
 
@@ -112,11 +114,11 @@ Mark them in the step list. If there's a one-way door, everything before it shou
 
 ### 8. Cover the post-deploy watch
 
-Who watches, what, for how long, and what would still trigger a rollback after the deploy "completed." See `post-deploy-watch`. A deploy isn't done when the pipeline goes green — it's done when the observation window closes without incident.
+Who watches, what, for how long, and what would still trigger a rollback after the deploy "completed." Use `post-deploy-watch` *(fde-operate)* if installed; otherwise keep the watch record here. A deploy isn't done when the pipeline goes green — it's done when the observation window closes without incident.
 
 ## Output template
 
-Write to `.fde/runbooks/deploy-<service-or-change>.md`:
+Write to `<workspace>/runbooks/deploy-<service-or-change>.md`:
 
 ```markdown
 # Deploy runbook — <change>
@@ -128,6 +130,8 @@ Write to `.fde/runbooks/deploy-<service-or-change>.md`:
 **Artifact:** `<service>:<version>` — commit `<SHA>`
 **Estimated duration:** <n> min · **Rollback duration:** <n> min (rehearsed <date>)
 **Executed by:** <role — note if segregation of duties applies>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Summary
 <One sentence a release manager understands.>

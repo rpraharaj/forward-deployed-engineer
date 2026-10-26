@@ -2,7 +2,7 @@
 
 An operator's manual for the forward deployed engineer skill portfolio.
 
-**Currently built:** All 43 skills across five packs — `fde-core` (30) plus four optional archetype packs.
+**Currently built:** 50 skills across seven packs — `fde-core` (34) plus six optional packs. The seven additions for discovery, outcomes, adoption, product feedback, and AI are experimental.
 **Why it's shaped this way:** [DESIGN.md](DESIGN.md) · **What was tested:** [VALIDATION.md](VALIDATION.md)
 
 ---
@@ -20,18 +20,23 @@ The skills don't teach Claude to write Java or configure Kubernetes; it can alre
 Install `fde-core` always. Add the pack that matches the engagement archetype `fde-orient` identifies.
 
 ```bash
-claude plugin install /path/to/FDE-Claude/fde-core
+claude plugin marketplace add /path/to/FDE-Claude
+claude plugin install fde-core@fde-skills
 ```
+
+Install optional packs by name from the same marketplace, for example `claude plugin install fde-data@fde-skills`. For one development session, use `claude --plugin-dir /path/to/FDE-Claude/fde-core --plugin-dir /path/to/FDE-Claude/fde-data` instead. Loading a directory this way is session-only.
 
 | Pack | Install when the engagement is | Skills |
 |---|---|---|
-| `fde-core` | **always** | 30 |
+| `fde-core` | **always** | 34 |
 | `fde-data` | analytics, ETL, warehouse, reporting, schema change | 3 |
 | `fde-migration` | replatform, EOL upgrade, cutover, decommission | 4 |
 | `fde-platform` | integration, contract design, COTS (SAP/Salesforce/ServiceNow) | 3 |
 | `fde-operate` | running what you shipped — pipelines, watch, observability | 3 |
+| `fde-product` | vendor FDEs turning permitted field evidence into shared product improvements | 1 |
+| `fde-ai` | delivered AI task evaluation and boundaries on agent tool actions | 2 |
 
-The split is deliberate. Skill descriptions load into context every session whether they fire or not — all 43 cost roughly 6k tokens, `fde-core` alone about 4k. Installing only what the engagement needs protects the budget `context-strategy` exists to defend.
+The split is deliberate. Skill descriptions load into context every session whether they fire or not. Installing only what the engagement needs protects the budget `context-strategy` exists to defend.
 
 Verify they loaded by asking Claude Code: *"what FDE skills do you have?"*
 
@@ -43,7 +48,7 @@ The skills are invoked by describing your situation in plain language — you do
 
 Three ideas. Everything else follows from them.
 
-**1. Artifacts, not conversations.** Every skill writes a file to a `.fde/` workspace in the repository. A finding that lives only in a chat transcript is gone next session, and gone entirely when you leave. The workspace *is* the engagement's memory.
+**1. Artifacts, not conversations.** Every skill persists its findings in the resolved engagement workspace: `.fde/` by default, or the external location recorded in the charter / `FDE_WORKSPACE`. A finding that lives only in a chat transcript is gone next session, and gone entirely when you leave. The workspace *is* the engagement's memory. The `.fde/` paths in this walkthrough are examples of the default location.
 
 **2. Evidence or a confidence tag.** Every claim carries a `file.java:88` citation, a command and its output, or one of three tags — `[confirmed]`, `[inferred]`, `[unverified]`. This is what makes you credible in week two rather than quietly routed around after being confidently wrong once.
 
@@ -175,24 +180,43 @@ The skills for the reasons engagements actually fail. Technical work dying for n
 
 Three skills load per-stack references on detection rather than hardcoding a language: `repo-recon` (entry points across nine stacks), `trace-the-flow` (following DI, reflection, event buses, generated code), and `characterization-tests` (test harnesses and approval-test tooling).
 
+### Wave 5 — discovery, outcomes, adoption, and field learning
+
+These seven procedures are experimental. Use them for the named situation; a clear small task does not need a new discovery or adoption workstream.
+
+| Skill | Pack | Fires when you say | Produces under the resolved workspace |
+|---|---|---|---|
+| `workflow-discovery` | core | "Map how finance actually handles invoices across email and spreadsheets" | `discovery/workflow-<name>.md` |
+| `use-case-selection` | core | "We have five possible problems; where should we start?" | `discovery/opportunities.md` |
+| `outcome-measurement` | core | "Did this engagement deliver the claimed business benefit?" | `outcomes/<initiative>.md`, retaining its baseline and dated readouts |
+| `adoption-plan` | core | "It's live but users keep the old workaround" | `adoption/<initiative>.md` |
+| `field-to-product` | fde-product | "Turn a recurring workaround into a permitted shared-product proposal" | `product-feedback/<topic>.md` |
+| `ai-evaluation` | fde-ai | "Compare the delivered assistant on representative held-out tasks" | `ai/evaluation-<workflow>.md` |
+| `agent-action-safety` | fde-ai | "Verify what this agent is allowed to cause through its tools" | `ai/action-safety-<workflow>.md` |
+
+Human workflow discovery complements code tracing; opportunity selection precedes implementation design; business benefit differs from technical NFR measurement; user adoption complements operator enablement. Product feedback carries explicit confidentiality/reuse boundaries. The AI pack evaluates the delivered system, not this repo's skill-selection evaluator. Plans, blocked checks, and observed results remain labelled separately.
+
 ---
 
 ## Workflows by engagement type
 
-`fde-orient` picks one of these and sequences it. All 43 skills exist; install the pack the charter names before sequencing pack skills.
+`fde-orient` picks one of these and sequences it. All 50 skills exist; install the pack the charter names before sequencing pack skills. Paths show main stages; insert each stage's actual prerequisites when needed.
 
 | Engagement | Path |
 |---|---|
 | **Brownfield enhancement** | orient → access → env-bootstrap → recon → requirements → feasibility → trace → blast-radius → characterization → safe-change → verification → deploy-runbook → release-readiness |
 | **Assessment only** | orient → recon → feasibility → blast-radius → stakeholder-brief |
 | **Rescue / stabilization** | incident-triage → orient *(reclassify honestly)* → env-bootstrap → recon → ci-forensics *(fde-operate)* → verification-plan → delivery-plan |
-| **Integration** | orient → recon *(both sides)* → integration-adapter → contract-design *(fde-platform)* → blast-radius → release-readiness |
-| **Migration / replatform** | orient → recon → data-archaeology *(fde-data)* → solution-design → cutover-plan → refactor-seams *(fde-migration)* → post-deploy-watch |
+| **Integration** | orient → recon *(both sides)* → requirements → NFR baseline → feasibility → blast-radius → contract-design → integration-adapter *(fde-platform)* → verification → release-readiness |
+| **Migration / replatform** | orient → recon → data-archaeology *(fde-data)* → solution-design → refactor-seams *(fde-migration)* → verification → cutover-plan *(fde-migration)* → post-deploy-watch *(fde-operate, or core runbook fallback)* |
 | **Spike / PoC** | orient → timeboxed feasibility → stakeholder-brief |
+| **Open problem / opportunity selection** | workflow-discovery → use-case-selection → outcome-measurement *(baseline)* → requirements → feasibility |
+| **AI workflow / agent delivery** | requirements → feasibility → design → ai-evaluation *(plan)* → agent-action-safety *(policy, if tool actions)* → build → action-boundary tests → ai-evaluation *(candidate)* → verification → release-readiness; AI skills require fde-ai |
+| **Field lessons for a shared product** | permitted deployment evidence → field-to-product *(fde-product)* → product-owner decision |
 
 Brownfield enhancement — the most common engagement type — is covered end to end in `fde-core`.
 
-Twelve archetypes are defined in total — see [DESIGN.md §7](DESIGN.md). If none fits, `fde-orient` will say so rather than force one, and compose a path from first principles.
+Fifteen archetypes are defined in total — see [DESIGN.md §7](DESIGN.md). If none fits, `fde-orient` will say so rather than force one, and compose a path from first principles. After release, use `adoption-plan` and dated `outcome-measurement` readouts when the engagement includes those responsibilities; they do not replace release checks.
 
 ---
 
@@ -236,9 +260,9 @@ That's an honest artifact. What the skills won't do is silently reconstruct a mi
 
 ## What is built vs what is tested
 
-All 43 skills are built. What remains untested is most of their **procedures** — see [VALIDATION.md](VALIDATION.md) for the precise coverage statement.
+All 50 skills are built. What remains untested is most of their **procedures** — see [VALIDATION.md](VALIDATION.md) for the precise coverage statement. The seven new procedures remain experimental after passing their initial synthetic scenario checks. Requests and criteria are in `eval/procedure-scenarios.json`; executed results and artifact snapshots are indexed by `eval/procedure-results.json`.
 
-Triggering is well covered (42/43 correct, no false fires) and four skills have been exercised against real repositories. The rest are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide.
+Historical triggering results are 42/43 first choice on Claude before the description edits, then 43/43 on Grok, both for the earlier catalog. Those runs used the older permissive reply parser and did not establish valid runtime metadata. The repaired evaluator requires valid YAML and explicit answer syntax; the expanded 82-query suite covers all 50 skill descriptions. Consult the latest validation entry for actual execution results, not the historical badge. Four skills have documented repository-based procedure trials (`repo-recon`, `blast-radius`, `env-bootstrap`, `characterization-tests`), some only partially. Seven others have synthetic artifact trials; the remaining 39 have no recorded procedure trial. Shared-reference checks do not add to the skill count.
 
 If you hit a skill whose procedure doesn't fit your situation, that's a finding worth recording — it's better evidence than anything in the design document.
 

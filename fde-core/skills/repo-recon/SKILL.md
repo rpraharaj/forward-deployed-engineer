@@ -27,7 +27,8 @@ Dropped into a large codebase, the instinct is to start reading. After two hours
 
 ## Prerequisites
 
-- Locate the workspace (`../_shared/workspace-conventions.md`)
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
 - `00-engagement.md` — scopes what you're looking for
 - `00c-context.md` / `01-environment.md` *(optional)* — budget and whether it builds
 - Read `../_shared/stack-detection.md` before step 2, including **Searching after detection**

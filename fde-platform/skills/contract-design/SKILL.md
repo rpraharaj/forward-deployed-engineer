@@ -31,10 +31,11 @@ An FDE hits this specifically because you often can't see the consumers. `blast-
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/06-blast-radius-*.md` — ring 3 and ring 4 especially. **You need the consumer list before designing.** If ring 4 was not checked, design as if consumers are uncontrollable.
-- `.fde/03b-nfrs.md` — data classification determines what may cross the boundary
-- `.fde/02b-ownership.md` — who must be coordinated with
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/06-blast-radius-*.md` — ring 3 and ring 4 especially. **You need the consumer list before designing.** If ring 4 was not checked, design as if consumers are uncontrollable.
+- `<workspace>/03b-nfrs.md` — data classification determines what may cross the boundary
+- `<workspace>/02b-ownership.md` — who must be coordinated with
 
 ## Procedure
 
@@ -125,12 +126,16 @@ Record the decision in an ADR via `solution-design`. The versioning strategy in 
 
 ## Output
 
-ADR at `.fde/adr/NNNN-contract-<name>.md`, plus the machine-readable schema in the repo:
+ADR at `<workspace>/adr/NNNN-contract-<name>.md`, plus the machine-readable schema in the repo:
 
 ```markdown
 # ADR-NNNN — <contract> versioning and compatibility
 
 **Status:** proposed · **Deciders:** <who> · **Date:** <YYYY-MM-DD>
+**Engagement:** <name>
+**Author:** FDE
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Decision
 <One sentence.>

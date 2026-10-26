@@ -37,7 +37,7 @@ Salesforce Apex · Low-code platforms (OutSystems, Mendix, Power Platform) · Em
 
 ## 2. Report a procedure that didn't fit 🧭
 
-**37 of 43 skills have never been tested on a live engagement.**
+**39 of 50 skills have no recorded procedure trial.** Four have at least partial repository-based trials: `repo-recon`, `blast-radius`, `env-bootstrap`, and `characterization-tests`. Seven additions have initial synthetic artifact trials, recorded in [VALIDATION.md](VALIDATION.md#run-16--seven-synthetic-procedure-trials), and remain experimental. Neither kind establishes live client-engagement effectiveness; shared-reference checks are counted separately.
 
 If you used one on real work and the steps were wrong for your situation — a missing step, an ordering that doesn't hold, a stopping condition that fired too early — that's the highest-signal feedback available, and it can't be obtained any other way.
 
@@ -91,21 +91,32 @@ Lean slightly assertive — under-triggering is the common failure. But bound it
 Before opening a PR, check your skill doesn't steal queries from existing ones:
 
 ```bash
-# Re-run the stored suite (64 queries). Requires `grok` on PATH.
-python3 eval/run-trigger-eval.py
+# Set up the evaluator in an isolated Python environment (3.10+).
+python3 -m venv .venv
+. .venv/bin/activate
+python3 -m pip install -r eval/requirements.txt
+
+# Offline regression tests; these make no model calls.
+python3 -m unittest discover -s eval -p 'test_*.py' -v
+
+# Run the expanded suite (82 queries) without overwriting historic results.
+# Requires `grok` on PATH.
+python3 eval/run-trigger-eval.py --out eval/trigger-results-expanded.json
 
 # Claude rematch (needs a working Anthropic path — not an OpenRouter remap).
 # Writes eval/trigger-results-claude.json so it does not overwrite the Grok run.
-python3 eval/run-trigger-eval.py --judge claude
+python3 eval/run-trigger-eval.py --judge claude --out eval/trigger-results-expanded-claude.json
 ```
 
 Or a single ad-hoc query:
 
 ```bash
 # 1. Build the description list
-for f in fde-*/skills/*/SKILL.md; do
-  echo "- $(sed -n '2s/^name: //p' "$f"): $(sed -n '3s/^description: //p' "$f")"
-done > /tmp/skills.txt
+python3 - <<'PY' > /tmp/skills.txt
+import runpy
+runner = runpy.run_path('eval/run-trigger-eval.py')
+print(runner['load_skills']())
+PY
 
 # 2. Ask which skill fires for a realistic query
 printf 'You are Claude Code. These skills are available:\n\n%s\n\nA user says:\n"%s"\n\nWhich skill(s) would you invoke? Reply with ONLY skill names, comma-separated, most relevant first (max 2). If none apply, reply exactly NONE. No explanation.' \
@@ -114,11 +125,21 @@ printf 'You are Claude Code. These skills are available:\n\n%s\n\nA user says:\n
 
 Test both directions: your skill wins its own queries, **and** neighbouring skills still win theirs. Include the results in your PR.
 
+The evaluator parses real YAML, including quoted and folded descriptions, and rejects malformed metadata before calling a judge. A reply must contain one or two known skill names, comma-separated, or exactly `NONE` (inline Markdown formatting is tolerated). Empty replies, explanatory prose, unknown names, subprocess failures, and timeouts are errors, not negative passes. Failed cases and errors both return a nonzero exit status. Historic result files retain their original parser's scores; do not present them as a fresh run of the repaired evaluator.
+
+### Trial the new procedures
+
+`eval/procedure-scenarios.json` contains seven synthetic scenarios with requests, raw context, and review checks. Run each in a separate temporary engagement workspace. Give a fresh session the named skill, request, and context; withhold the review checks until inspecting the artifact. Compare with a baseline that has no skill. Use only permitted local resources and synthetic state; do not contact people, make paid model calls, or mutate external systems as part of a scenario without separate authorization.
+
+Record the produced artifact, environment/revision, checks met/missed, evidence, and limitations in `VALIDATION.md`. A fixture that parses correctly or a well-formed template is not an executed procedure trial. Favor observed corrections over extra universal rules.
+
+The first executed set is in `eval/procedure-results.json`, with complete synthetic artifact snapshots in `eval/procedure-trials/run-16/`. It includes seven baselines, seven skill-assisted trials, and three standalone optional-pack retests. Preserve those snapshots; use a new run directory and result file for later trials.
+
 ---
 
 ## 4. Propose a new pack 📦
 
-`fde-core` plus four archetype packs is the current split. Sensible extensions:
+`fde-core` plus six optional packs is the current split. Sensible extensions:
 
 - Industry verticals — `fde-fintech`, `fde-healthcare`, `fde-public-sector`
 - Compliance regimes — regional data protection, sector-specific regulation
@@ -142,6 +163,12 @@ Open an issue to discuss the boundary before building. The test for a separate p
 Run the structural checks:
 
 ```bash
+# Validate the marketplace and every pack with Claude's runtime-aware validator.
+claude plugin validate . || exit 1
+for pack in fde-core fde-data fde-migration fde-platform fde-operate fde-product fde-ai; do
+  claude plugin validate --strict "$pack" || exit 1
+done
+
 for f in fde-*/skills/*/SKILL.md; do
   d=$(dirname "$f")
   [ "$(sed -n '2s/^name: //p' "$f")" = "$(basename $d)" ] || echo "NAME MISMATCH: $d"

@@ -33,6 +33,8 @@ It also happens to be the fastest way for an FDE to build trust. An engineer who
 
 ## Prerequisites
 
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
 This skill **gathers**; it doesn't re-derive. It reads:
 
 | Artifact | Provides |
@@ -43,8 +45,12 @@ This skill **gathers**; it doesn't re-derive. It reads:
 | `03b-nfrs.md` | Performance, security, compliance obligations |
 | `06b-change-log.md` | What actually shipped, flags, rollback notes |
 | `runbooks/deploy-*.md` | The deploy and rollback procedure |
+| `ai/evaluation-*.md` *(fde-ai, when applicable)* | Measured model-workflow quality and mandatory acceptance/safety thresholds |
+| `ai/action-safety-*.md` *(fde-ai, when applicable)* | Exercised action boundaries, allowed effects, approval enforcement, and unresolved controls |
 
 Where an artifact is missing, that's a finding, not a blocker. Record the dimension as **red — no evidence** rather than assuming it's fine. Absence of evidence assessed as green is exactly the failure this skill prevents.
+
+For AI work, equivalent evidence is acceptable if `fde-ai` is unavailable; do not silently drop required quality or action-boundary checks. Treat an unmet mandatory AI safety/control threshold under the same stop/authorized-exception rule as other required controls. Longer-term benefit and adoption readouts may remain planned; name their owners and dates rather than inventing realized outcomes at release.
 
 ## Procedure
 
@@ -73,13 +79,13 @@ Nine dimensions. Rate each **green / amber / red**, and cite.
 The ratings that matter:
 
 - **Amber** — a known gap with a stated mitigation. Amber is a normal, honest state. Most real releases go amber on something.
-- **Red** — no evidence, or a gap with no mitigation. **Red on rollback (6) or on a one-way door should stop the release**, regardless of how green everything else is. That's the one asymmetry worth being rigid about: everything else can be fixed forward.
+- **Red** — no evidence, or a gap with no mitigation. **Red on rollback (6), a one-way door, a required security/compliance control, a required approval, or a must-have acceptance criterion stops the release.** A delivery sponsor cannot waive a control owned by someone else. Proceed only after the gap closes or the owner authorized by organizational policy grants a documented exception, with scope, conditions, and expiry. An obligation with no permitted exception remains a blocker.
 
 Two dimensions are routinely skipped and shouldn't be.
 
 **Rollback rehearsed, not written.** A rollback procedure nobody has executed is a hypothesis. The question is not "do we have a rollback plan" but "has anyone run it, and how long did it take?" In enterprise environments the answer is often "no, and we discovered during the incident that the migration wasn't reversible."
 
-**Observability.** If this change breaks in a way the existing dashboards wouldn't show, you will find out from a customer. Ask concretely: what metric moves, what alert fires, who receives it. See `observability-gap`.
+**Observability.** If this change breaks in a way the existing dashboards wouldn't show, you will find out from a customer. Ask concretely: what metric moves, what alert fires, who receives it. Use `observability-gap` *(fde-operate)* if installed; otherwise record missing signals and owners here, with thresholds and watch steps in core `deploy-runbook`.
 
 ### 3. Enumerate the residual unknowns
 
@@ -106,7 +112,7 @@ Four forms, all legitimate:
 
 Attach the recommendation **to** the unknowns rather than after them: *"Recommend go, conditional on the staging rollback rehearsal completing. Three unverified items remain, all detectable within the first hour of monitoring."*
 
-Never soften a red to keep a date. If the decision-maker overrides you, that's legitimate — it's their call and they may have context you don't. Record that it was overridden, by whom, on what date. Not defensively, but because it's the fact that matters most in the post-incident review, and because a decision made knowingly is a different thing from one made in ignorance.
+Never soften a red to keep a date. A decision-maker may accept risks within their authority; record the decision, owner, date, and conditions. Verify exception authority against `08b-change-control.md` and the relevant control owner. If that authority is missing or unclear, keep the release blocked and escalate; a recorded instruction alone is not an approval.
 
 ### 5. Format for the actual reader
 
@@ -118,7 +124,7 @@ That last point is counter-intuitive but consistent: **naming your own residual 
 
 ## Output template
 
-Write to `.fde/08-release-readiness.md`:
+Write to `<workspace>/08-release-readiness.md`:
 
 ```markdown
 # Release readiness — <change>
@@ -129,6 +135,7 @@ Write to `.fde/08-release-readiness.md`:
 **Status:** draft | submitted | approved | overridden
 **Source revision:** <repo>@<short SHA>
 **Release window:** <date/time, and any freeze that applies>
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Recommendation
 **<GO | GO WITH CONDITIONS | NO-GO | CANNOT ASSESS>**
@@ -171,7 +178,7 @@ Write to `.fde/08-release-readiness.md`:
 **Trigger conditions:** <what specifically causes a rollback decision, and who makes it>
 
 ## Post-deploy watch
-<What to watch, for how long, who is watching. See `post-deploy-watch`.>
+<What to watch, for how long, who is watching. Use `post-deploy-watch` (fde-operate) if installed; otherwise keep the watch record in core `deploy-runbook`.>
 
 ## Decision log
 | Date | Decision | By | Notes |

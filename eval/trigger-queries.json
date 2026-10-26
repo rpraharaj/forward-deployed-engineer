@@ -43,7 +43,14 @@
     {"id": "P40", "query": "we just deployed, what do we watch and for how long", "expect": ["post-deploy-watch"]},
     {"id": "P41", "query": "how should we version this API, we have mobile clients we don't control", "expect": ["contract-design"]},
     {"id": "P42", "query": "can this be configured in Salesforce or do we have to customize it", "expect": ["cots-configuration"]},
-    {"id": "P43", "query": "we have to consume a partner SOAP API, the WSDL doesn't match what it returns", "expect": ["integration-adapter"]}
+    {"id": "P43", "query": "we have to consume a partner SOAP API, the WSDL doesn't match what it returns", "expect": ["integration-adapter"]},
+    {"id": "P44", "query": "Watch how the finance team actually handles invoices across email and spreadsheets; map the human handoffs, waits, and exception cases before we pick a change", "expect": ["workflow-discovery"]},
+    {"id": "P45", "query": "We have five competing automation opportunities and no selected problem; compare impact, data access, sponsorship, and readiness and recommend where to start", "expect": ["use-case-selection"]},
+    {"id": "P46", "query": "The sponsor claims this deployment will save staff time; establish a business baseline and later check observed benefit, operating costs, and attribution", "expect": ["outcome-measurement"]},
+    {"id": "P47", "query": "The solution is live but intended end users keep using spreadsheets; plan a bounded adoption pilot, user support, success measures, and a fallback", "expect": ["adoption-plan"]},
+    {"id": "P48", "query": "As the vendor FDE I keep seeing the same customer workaround; prepare a sanitized reproducible product-gap proposal for our shared product team", "expect": ["field-to-product"]},
+    {"id": "P49", "query": "Compare the old and new model-driven claims assistant on representative held-out tasks, grading quality, safety failures, latency, and cost", "expect": ["ai-evaluation"]},
+    {"id": "P50", "query": "Before our AI agent can issue refunds, define allowed tool actions, exact approval scope, retry limits, and adversarial tests of the executor boundary", "expect": ["agent-action-safety"]}
   ],
   "negatives": [
     {"id": "N01", "query": "write a function that parses this CSV", "expect": []},
@@ -51,14 +58,25 @@
     {"id": "N03", "query": "why does this React component re-render twice", "expect": []},
     {"id": "N04", "query": "help me write a cover letter", "expect": []},
     {"id": "N05", "query": "explain how Kafka consumer groups work", "expect": []},
-    {"id": "N06", "query": "rename this variable from foo to bar", "expect": []}
+    {"id": "N06", "query": "rename this variable from foo to bar", "expect": []},
+    {"id": "N07", "query": "Explain what a language model context window is", "expect": []},
+    {"id": "N08", "query": "Write a marketing announcement for a new feature", "expect": []},
+    {"id": "N09", "query": "Add a unit test to the skill-selection reply parser in this evaluator", "expect": []}
   ],
   "collisions": [
     {"id": "C01", "query": "how long is the refund work going to take", "expect": ["estimation"], "accept_second": ["feasibility-probe"]},
     {"id": "C02", "query": "are we ready to ship this", "expect": ["release-readiness"], "accept_second": ["verification-plan"]},
     {"id": "C03", "query": "engagement is wrapping up next month", "expect": ["handover-pack"], "accept_second": ["enablement-handoff"]},
     {"id": "C04", "query": "I don't know this codebase and need to change something in it", "expect": ["repo-recon"], "accept_second": ["safe-change"]},
-    {"id": "C05", "query": "need to tell them the plan has slipped", "expect": ["escalation-and-renegotiation"], "accept_second": ["stakeholder-brief"]}
+    {"id": "C05", "query": "need to tell them the plan has slipped", "expect": ["escalation-and-renegotiation"], "accept_second": ["stakeholder-brief"]},
+    {"id": "C06", "query": "Trace the exact HTTP request path through code, transaction boundaries, and event consumers for order placement", "expect": ["trace-the-flow"], "note": "workflow-discovery must not take code tracing"},
+    {"id": "C07", "query": "The three features are already selected and estimated; sequence their delivery around dependencies and the release window", "expect": ["delivery-plan"], "note": "use-case-selection must not take sequencing of chosen work"},
+    {"id": "C08", "query": "We have one selected requirement and two plausible architectures; choose the implementation approach and write an ADR", "expect": ["solution-design"], "note": "use-case-selection compares problems, not architectures"},
+    {"id": "C09", "query": "Measure refund p95 at the agreed request rate and compare it with the technical latency target", "expect": ["nfr-validation"], "note": "outcome-measurement must not take technical NFR measurement"},
+    {"id": "C10", "query": "The receiving engineering team needs to demonstrate that it can deploy, roll back, and operate the service without me", "expect": ["enablement-handoff"], "note": "adoption-plan is about end users, not operator capability transfer"},
+    {"id": "C11", "query": "I am leaving this client; consolidate its runbooks, decisions, known risks, and unfinished work for the receiving team", "expect": ["handover-pack"], "note": "field-to-product must not take customer handover"},
+    {"id": "C12", "query": "This ordinary CRUD change has agreed acceptance criteria; map them to named unit tests and manual checks", "expect": ["verification-plan"], "note": "ai-evaluation applies to model-driven behavior"},
+    {"id": "C13", "query": "This change adds personal data to an API response and an error tracker; review data handling before release", "expect": ["security-compliance-check"], "note": "agent-action-safety must not replace general data handling review"}
   ],
   "regressions": [
     {"id": "R01", "query": "I need a reviewer for this PR in an unfamiliar repo", "expect": ["ownership-map"], "note": "narrowed ownership-map description"},

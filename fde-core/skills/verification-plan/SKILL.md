@@ -31,10 +31,12 @@ This skill's real output is not the coverage table. It's the **gap list** — th
 
 ## Prerequisites
 
-- `.fde/03-requirements.md` — the criteria being verified. **Required.** Without it this skill has no input.
-- `.fde/03b-nfrs.md` — non-functionals, if they exist
-- `.fde/06-blast-radius-*.md` — the verification list it produced
-- `.fde/06b-change-log.md` — what actually shipped
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03-requirements.md` — the criteria being verified. **Required.** Without it this skill has no input.
+- `<workspace>/03b-nfrs.md` — non-functionals, if they exist
+- `<workspace>/06-blast-radius-*.md` — the verification list it produced
+- `<workspace>/06b-change-log.md` — what actually shipped
 
 ## Procedure
 
@@ -86,6 +88,8 @@ Where a measurement is impossible, that is a **gap** in the validation table, no
 
 ### 6. Produce the gap list
 
+For model-backed behavior, cite `ai-evaluation` *(fde-ai)* and, where actions are possible, `agent-action-safety` *(fde-ai)* evidence when available. Keep ordinary functional/regression checks. A missing pack is not a pass: obtain equivalent evidence or record the applicable quality/control gap for release assessment.
+
 Extract every row with no evidence, or with evidence you couldn't confirm. For each:
 
 - What's unverified
@@ -103,7 +107,7 @@ Resist rounding up. A feature with six of seven criteria verified is not "done" 
 
 ## Output template
 
-Write to `.fde/07-verification.md`:
+Write to `<workspace>/07-verification.md`:
 
 ```markdown
 # Verification — <feature>

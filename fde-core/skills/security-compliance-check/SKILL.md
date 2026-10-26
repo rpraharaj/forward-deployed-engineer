@@ -30,9 +30,11 @@ There's a narrower reason too. The most common data-handling defects are not sop
 
 ## Prerequisites
 
-- `.fde/03b-nfrs.md` — the data classification and audit obligations
-- `.fde/06-blast-radius-*.md` — where data flows
-- `.fde/06b-change-log.md` — what actually changed
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03b-nfrs.md` — the data classification and audit obligations
+- `<workspace>/06-blast-radius-*.md` — where data flows
+- `<workspace>/06b-change-log.md` — what actually changed
 
 Know the organization's own review process and its lead time before starting. See `change-control-navigation`.
 
@@ -64,18 +66,16 @@ The event-publishing case deserves particular attention. Adding a field to an ev
 
 ### 3. Check secrets handling
 
-```bash
-# Adapt patterns; run against the diff, not the whole repo
-git diff main...HEAD | grep -inE "(password|secret|token|api[_-]?key|private[_-]?key|bearer)\s*[:=]" | head -20
-git diff main...HEAD | grep -inE "BEGIN (RSA|PRIVATE|OPENSSH)" | head
-```
+Use `../_shared/change-review.md` to inventory branch commits plus staged, unstaged, and untracked changes against the actual target branch. Run the organization's approved scanner locally with redacted output. If no scanner is available, inspect the changed files locally and report only path, line number, and finding type; never print matching values or raw hunks into chat. Record the scan's scope and limitations rather than claiming grep proves the absence of secrets.
 
 Then the questions grep can't answer: are new secrets externalized to the vault or config rather than committed? Is anything logged at debug level that wouldn't be at info? Are test fixtures carrying real credentials? Has anything been committed and then removed — which does **not** remove it from history?
 
 ```bash
 # A secret removed in a later commit is still in history
-git log -p --all -S '<fragment>' -- . | head -40
+git log --format=%h -S '<non-secret field or key name>' -- '<changed-path>'
 ```
+
+This prints commit IDs only. Do not search with the credential itself or display raw historical patches; inspect flagged commits locally using a redacting workflow.
 
 If something sensitive is in history, say so immediately. It needs a rotation, not a deletion, and the rotation is the urgent part.
 
@@ -107,7 +107,7 @@ A review pack that answers the standard questions before they're asked converts 
 
 ## Output
 
-Append to `.fde/08-release-readiness.md`:
+Append to `<workspace>/08-release-readiness.md`:
 
 ```markdown
 ## Security and compliance check
@@ -129,8 +129,8 @@ Append to `.fde/08-release-readiness.md`:
 | Error tracker | **unverified** | — | vendor-controlled | Does it capture request bodies? |
 
 ### Secrets
-- No new secrets introduced `[confirmed: diff scan]`
-- No credentials in history for changed paths `[confirmed: git log -S]`
+- Changed paths scanned with <tool, revision, date>; <findings and limitations>, values redacted
+- History checked for <non-secret key names>; <coverage and unresolved findings>. A key-name search alone does not prove the absence of credentials.
 - TLS verification enabled on the new FX call `[confirmed: FxClient:22]`
 
 ### Audit

@@ -31,8 +31,10 @@ The default failure is going in with a vague "can you walk me through the system
 
 ## Prerequisites
 
-- `.fde/02-system-map.md` and any `[unverified]` gaps from other artifacts — these *are* your question list
-- `.fde/02b-ownership.md` — so you're asking the right person
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/02-system-map.md` and any `[unverified]` gaps from other artifacts — these *are* your question list
+- `<workspace>/02b-ownership.md` — so you're asking the right person
 
 ## Procedure
 
@@ -120,7 +122,7 @@ Costs you five minutes. It catches errors, it demonstrates that their time produ
 
 ## Output template
 
-Findings go into existing artifacts. Keep a session record at `.fde/interviews/<date>-<person>.md`:
+Findings go into existing artifacts. Keep a session record at `<workspace>/interviews/<date>-<person>.md`:
 
 ```markdown
 # Interview — <name>, <role>
@@ -128,6 +130,11 @@ Findings go into existing artifacts. Keep a session record at `.fde/interviews/<
 **Date:** <YYYY-MM-DD> · **Duration:** <n> min
 **Their relationship to the system:** <built it / maintains it / consumes it / inherited it>
 **Prepared from:** <gaps in which artifacts>
+**Engagement:** <name>
+**Author:** FDE
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## Must-answer questions
 | # | Question | Answer | Confidence | Verified against code? |

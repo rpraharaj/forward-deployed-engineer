@@ -32,8 +32,10 @@ The specific mistake is stating them unmeasurably. "The system should be fast" c
 
 ## Prerequisites
 
-- `.fde/03-requirements.md` — functional scope
-- `.fde/02-system-map.md` — where things live and what's exposed
+Resolve `<workspace>` before reading or writing artifacts: read `../_shared/workspace-conventions.md` and follow its location and header rules. All artifact paths below use that resolved workspace. Preserve existing sections when appending.
+
+- `<workspace>/03-requirements.md` — functional scope
+- `<workspace>/02-system-map.md` — where things live and what's exposed
 - Access to monitoring, if it exists, for the baseline measurement
 
 ## Procedure
@@ -42,7 +44,7 @@ The specific mistake is stating them unmeasurably. "The system should be fast" c
 
 Before setting any target, establish today's number. Sources, cheapest first: existing APM or monitoring dashboards, log-derived timings, database query statistics, or a crude measurement you take yourself.
 
-Where nothing is measurable, that is itself a finding — an unobservable system cannot have a testable performance target, and `observability-gap` becomes a prerequisite rather than a nice-to-have.
+Where nothing is measurable, record the missing baseline as a gap; do not invent today's number. Propose a measurement method and identify what must be instrumented before validation. If `fde-operate` is installed, use `observability-gap` in its pre-release mode; otherwise record the instrumentation work and owner here. This does not require an incident or a release-readiness artifact, and a target awaiting agreement is not a measured baseline.
 
 Record baselines with the same discipline as everything else: the number, where it came from, and over what period.
 
@@ -121,7 +123,7 @@ Each NFR becomes a row in `07-verification.md` needing a measurement, and `relea
 
 ## Output template
 
-Write to `.fde/03b-nfrs.md`:
+Write to `<workspace>/03b-nfrs.md`:
 
 ```markdown
 # Non-functional requirements — <scope>
@@ -131,6 +133,7 @@ Write to `.fde/03b-nfrs.md`:
 **Date:** <YYYY-MM-DD>
 **Status:** draft | confirmed by <name>
 **Confidence:** <which are confirmed with the holder vs. assumed>
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
 
 ## Baseline
 | Aspect | Current | Source | Period |

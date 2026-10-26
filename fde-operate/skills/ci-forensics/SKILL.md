@@ -33,8 +33,9 @@ The main discipline is diagnosing the **class** of failure before fixing anythin
 
 ## Prerequisites
 
-- Locate the workspace: `FDE_WORKSPACE`, else the charter Location, else `.fde/`, else `../<repo>-fde/`
-- `.fde/01-environment.md` — a working local build, so you can compare against CI
+Resolve `<workspace>` before reading or writing artifacts: use `FDE_WORKSPACE` if set (report an unavailable explicit path rather than falling back), otherwise the charter's recorded Location (look in `.fde/` and `../*-fde/`), then an existing `.fde/` or `../<repo>-fde/`. If none exists, run core `fde-orient`; do not create a second workspace. All artifact paths below use that location. Follow core workspace conventions for headers; preserve existing sections when appending.
+
+- `<workspace>/01-environment.md` — a working local build, so you can compare against CI
 - Access to CI logs and history. Build history is the primary evidence here.
 
 ## Procedure
@@ -89,7 +90,7 @@ Flakes come from a short list. Work through it:
 - **Time** — tests asserting on `now()`, timeouts too tight for a loaded agent, dates crossing midnight or DST
 - **Order** — shared static state, a database not reset, files left behind. Run the suite in reverse or randomized order to confirm.
 - **Concurrency** — races surfacing under parallel execution, or on a machine with a different core count
-- **External dependencies** — network calls in tests. These should not exist; where they do, that is the finding.
+- **External dependencies** — unit tests calling uncontrolled services are a flake source. Keep intentional integration and contract tests against controlled local services, containers, or approved sandboxes; bound their timeouts and isolate their data. Classify the suite before changing its dependencies.
 - **Randomness** — unseeded generators. Seed them.
 - **Resource limits** — memory or connection pools sized for a quiet machine
 
@@ -112,7 +113,7 @@ Never add a blanket retry to make a suite green. It converts a visible flake int
 
 A pipeline slow enough that people avoid running it has the same effect as an unreliable one.
 
-Find where the time goes — most suites have a small number of dominant contributors. Common wins: parallelize, cache dependencies, split fast checks from slow ones so feedback arrives early, and remove tests that make real network calls.
+Find where the time goes — most suites have a small number of dominant contributors. Common wins: parallelize independent tests, cache dependencies, and split fast checks from slower integration checks so feedback arrives early. Replace uncontrolled external calls in unit tests with fakes while preserving dedicated integration coverage and required release gates. Do not delete coverage to improve timing.
 
 Establish what feedback time the team actually needs, and optimize toward that rather than toward an abstract "faster."
 
@@ -122,13 +123,16 @@ If the suite is quarantined heavily, or the flake rate is 30%, that is a **verif
 
 ## Output
 
-Write to `.fde/07b-ci-notes.md`:
+Write to `<workspace>/07b-ci-notes.md`:
 
 ```markdown
 # CI forensics
 
 **Engagement:** <name> · **Author:** FDE · **Date:** <YYYY-MM-DD>
 **Pipeline:** <name> · **Observation window:** <n> builds, <dates>
+**Status:** draft
+**Source revision:** <repo>@<short SHA>, or "no repository yet"
+**Confidence:** <what is confirmed, inferred, or unverified>
 
 ## State
 - **Pass rate:** 61% on unchanged commits — **suite is not trustworthy**
@@ -176,6 +180,6 @@ by CI — recorded as a gap in `07-verification.md`.
 
 **Ignoring slowness.** A suite people avoid has the same effect as one they don't trust.
 
-**Tolerating network calls in tests.** A guaranteed flake source and usually easy to remove.
+**Treating every network test as a defect.** Uncontrolled external calls in unit tests need isolation; intentional integration and contract tests still protect real boundaries and must retain their coverage.
 
 **Treating a green build from an untrusted pipeline as evidence.** It isn't, and `release-readiness` needs to know.
