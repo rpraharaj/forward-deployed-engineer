@@ -1,211 +1,181 @@
-<div align="center">
+# Forward Deployed Engineer Skills & Playbooks
 
-# FDE Skills
+**50 agent skills across seven packs for forward deployed engineers delivering in unfamiliar organizations and systems.**
 
-**Claude Code skills for engineers who get dropped into someone else's codebase and have to deliver.**
+FDE Skills is an open-source toolkit for customer discovery, codebase onboarding, enterprise integration, production delivery, AI evaluation, adoption, and handover. Each skill defines a repeatable procedure and a durable artifact, with evidence and explicit limits.
 
-From a vague ask to something running in production — on a stack you didn't choose, in a system nobody documented, with Claude Code as your only tool.
+The instructions use the [Agent Skills format](https://agentskills.io/specification). Use them with a coding agent that can read the skills and access the files and tools needed for the task. Codex has a local installation route; Claude Code is an optional plugin integration. Discovery, permissions, and automatic context loading differ—see the [integration guide](docs/integrations.md) and [recorded validation](VALIDATION.md).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Skills](https://img.shields.io/badge/skills-50-blue)
 ![Packs](https://img.shields.io/badge/packs-7-blue)
-![Cold-start tested](https://img.shields.io/badge/cold--start%20tested-5%20stacks-brightgreen)
-![Historical Claude trigger](https://img.shields.io/badge/historical%20Claude%20trigger-42%2F43-lightgrey)
 
-[Quick start](#quick-start) · [The skills](#whats-in-the-box) · [Why it's tested](#validated-not-vibed) · [Contributing](#contributing)
+[Quick start](#quick-start) · [How to use](#how-to-use-the-skills) · [Skill packs](#fde-skill-packs) · [Troubleshooting](#troubleshooting) · [Testing](#testing-and-limitations)
 
-</div>
+## What is a forward deployed engineer?
 
----
+A forward deployed engineer (FDE) works closely with customer or business teams to turn an operational problem into a usable production solution. The work can include discovery, technical scoping, software and data integration, deployment, adoption, and feeding field lessons into a shared product. Responsibilities vary by organization.
 
-## The problem
-
-You start Monday at a bank, an insurer, a telco. They put you on a fifteen-year-old billing system. The team that built it left. There's no documentation, the wiki is from 2019, and someone wants an estimate by Thursday.
-
-**Your bottleneck is never writing code.** Claude can already write the service. What it can't do — and what nobody has written down — is the *procedure* for building an accurate mental model of an unfamiliar system fast enough that a team who didn't ask for you starts trusting your judgment.
-
-That's what this is. 50 skills encoding what an experienced forward deployed engineer actually does, and the artifacts that make the work survive their departure.
-
----
+This toolkit supports that delivery work. It is also useful to customer-facing software engineers, technical consultants, and solutions engineers implementing systems. These are agent instructions and practical playbooks, not a course or certification.
 
 ## Quick start
 
+Clone the library, then install core into the project where you will work. The installer needs Python 3.10+ and no third-party packages:
+
 ```bash
 git clone https://github.com/rpraharaj/forward-deployed-engineer.git
-claude plugin marketplace add ./forward-deployed-engineer
-claude plugin install fde-core@fde-skills
+python3 forward-deployed-engineer/scripts/install-skills.py \
+  --dest /path/to/your-project/.agents/skills --packs fde-core
 ```
 
-Then just describe your situation. No need to name a skill:
+For Codex, open that project and invoke a skill in the conversation:
 
-> *"I've been dropped into a payments service I've never seen and they want multi-currency refunds by Q3."*
+```text
+$fde-orient I've inherited this payments service. Help me scope a currency-refund change before estimating it.
+```
 
-`fde-orient` opens the engagement, classifies it, and tells you what to run next.
+Or describe the situation and let the agent select an available skill. Automatic selection depends on the host and its configuration. `fde-orient` opens or resumes the engagement, identifies the work, and recommends the next installed skills.
 
-**Install `fde-core` always. Add the pack that matches the work:**
+Add packs when the work needs them. For example, install core and the AI pack into the same destination:
 
 ```bash
-claude plugin install fde-data@fde-skills        # ETL, warehouse, schema change
-claude plugin install fde-migration@fde-skills   # replatform, EOL upgrade, cutover, decommission
-claude plugin install fde-platform@fde-skills    # integration, contracts, SAP/Salesforce/ServiceNow
-claude plugin install fde-operate@fde-skills     # pipelines, post-deploy watch, observability
-claude plugin install fde-product@fde-skills     # permitted customer lessons for a shared product
-claude plugin install fde-ai@fde-skills          # AI workflow evaluation and agent action boundaries
+python3 forward-deployed-engineer/scripts/install-skills.py \
+  --dest /path/to/your-project/.agents/skills --packs fde-core fde-ai
 ```
 
-For local development without installing, start a session with `claude --plugin-dir ./forward-deployed-engineer/fde-core`; repeat `--plugin-dir` for each optional pack. The marketplace path above is local to your clone; refresh its catalog with `claude plugin marketplace update fde-skills` when pulling changes. See the [Claude plugin reference](https://code.claude.com/docs/en/plugins/cli-reference).
+The installer copies complete skill folders and shared resources. It skips identical folders, preserves unrelated skills, and refuses conflicting files or links before installing anything. Copies are snapshots; see [updating an installation](docs/integrations.md#updating-an-installation) before refreshing changed skills. No global agent configuration or project instruction files are modified.
 
-The split isn't cosmetic. Skill descriptions load into context **every session** whether they fire or not. Install what the engagement needs: core has 34 skills; the six optional packs add 16.
+For Claude Code, use the [optional plugin installation](docs/integrations.md#claude-code-optional-plugin-integration). For other agents, consult their skill discovery rules or explicitly read the skill and its references from the checkout. Keeping the full resource layout matters; copying only `SKILL.md` breaks shared references.
 
----
+## How to use the skills
 
-## What's in the box
+1. **Open the working project.** Start the agent in the customer/application repository where you installed the skills. The library checkout supplies instructions; your working project supplies the system to investigate.
+2. **Choose a starting point.** Use `fde-orient` for an unclear engagement, `repo-recon` for an unfamiliar codebase, or the [skill reference](USAGE.md#skill-reference) for a specific task. Describe the situation naturally, or explicitly select a skill. In Codex, type `$skill-name` in the conversation; this is not a shell command.
+3. **Supply the goal and boundaries.** State what you need, what evidence and access are available, what actions are allowed, and what is out of scope. Point to existing notes. Agree the workspace location and whether its artifacts should be committed or ignored.
+4. **Review the artifact.** Check source citations, assumptions, unverified claims, and owner questions. A draft plan or an unrun check must remain labelled that way.
+5. **Continue or resume from the files.** Choose the next skill for the unresolved question. In a fresh session, explicitly read the charter, working guide, and relevant artifacts before continuing.
 
-<table>
-<tr><td width="50%" valign="top">
+### Worked example: assess a refund change
 
-**LAND** — arrive and orient
-`fde-orient` · `access-and-onboarding`
-`context-strategy` · `env-bootstrap`
-`repo-recon` · `ownership-map`
-`knowledge-interview`
+Start with this prompt in Codex, after installing core:
 
-**FRAME** — work out what's actually being asked
-`workflow-discovery` · `use-case-selection`
-`outcome-measurement`
-`requirements-to-spec` · `feasibility-probe`
-`estimation` · `delivery-plan`
+```text
+$fde-orient I'm assessing an unfamiliar billing service for multi-currency refunds.
+The goal is a grounded scope and feasibility assessment before implementation.
+Repository inspection and local notes are allowed; production access is unavailable.
+Use .fde/ for the engagement. Ask about any missing scope or ownership facts.
+```
 
-**UNDERSTAND** — only where the change lands
-`trace-the-flow` · `blast-radius`
-`git-archaeology` · `data-archaeology`
+Once the charter is written and its open questions are recorded, continue:
 
-**DESIGN**
-`solution-design` · `contract-design`
-`nfr-baseline`
+```text
+$repo-recon Use .fde/00-engagement.md to map this service: entry points,
+persistence, dependencies, test coverage, and risky areas for the refund change.
+Record evidence and gaps. Do not implement the change.
+```
 
-</td><td width="50%" valign="top">
+Expected outputs under the agreed workspace:
 
-**BUILD**
-`safe-change` · `characterization-tests`
-`refactor-seams` · `integration-adapter`
-`dependency-upgrade` · `db-change-management`
-`data-pipeline-work` · `cots-configuration`
+```text
+.fde/
+├── 00-engagement.md   # goal, scope, access, owners, and next steps
+├── 02-system-map.md   # repository findings and evidence limits
+└── repo-guide.md      # only when no suitable existing working guide exists
+```
 
-**VERIFY**
-`verification-plan` · `test-data-strategy`
-`nfr-validation` · `security-compliance-check`
-`ci-forensics`
+Review the map before estimating: where does a refund enter, what stores its state, and which dependencies remain unverified? Clarify the required behavior with `requirements-to-spec`, then use `feasibility-probe` against that specification and the map. The findings depend on the actual repository; this example does not establish that currency conversion already exists or that a delivery date is feasible.
 
-**SHIP**
-`release-readiness` · `deploy-runbook`
-`cutover-plan` · `change-control-navigation`
-`post-deploy-watch` · `decommission-plan`
+For an external workspace, manual invocation, session handoff, and the complete walkthrough, see the [detailed user guide](USAGE.md).
 
-**SUSTAIN**
-`incident-triage` · `observability-gap`
-`handover-pack` · `enablement-handoff`
-`adoption-plan`
+<a id="whats-in-the-box"></a>
 
-**PRODUCT & AI** — optional engagement-specific procedures
-`field-to-product` · `ai-evaluation`
-`agent-action-safety`
+## FDE skill packs
 
-**ACROSS EVERYTHING**
-`stakeholder-brief` · `escalation-and-renegotiation`
+Install core for the general delivery lifecycle and add the packs relevant to the engagement. The pack folders are the canonical source; integrations use the same instructions.
 
-</td></tr>
-</table>
+| Pack | Skills | Supports |
+|---|---:|---|
+| [fde-core](fde-core/skills) | 34 | Orientation, discovery, requirements, comprehension, design, safe changes, verification, release, outcomes, adoption, and handover |
+| [fde-data](fde-data/skills) | 3 | Data archaeology, pipelines, and database changes |
+| [fde-migration](fde-migration/skills) | 4 | Dependency upgrades, refactoring seams, cutover, and decommissioning |
+| [fde-platform](fde-platform/skills) | 3 | Enterprise integration, contracts, and vendor platforms |
+| [fde-operate](fde-operate/skills) | 3 | CI diagnosis, observability, and post-deployment watch |
+| [fde-product](fde-product/skills) | 1 | Turning permitted field evidence into a product decision request |
+| [fde-ai](fde-ai/skills) | 2 | AI workflow evaluation and boundaries on agent actions |
 
-**Seven new procedures are experimental:** workflow discovery, use-case selection, business outcomes, end-user adoption, field-to-product feedback, AI evaluation, and agent action safety. All seven passed their initial synthetic scenario checks; three optional skills also passed isolated retests after a convention dependency was fixed. [Results and limitations](VALIDATION.md#run-16--seven-synthetic-procedure-trials) are recorded; these trials do not establish field effectiveness.
+Browse the [full skill catalog and engagement workflows](USAGE.md). A small, clear engineering task does not need every stage below.
 
-📖 **[USAGE.md](USAGE.md)** — first-day walkthrough, full reference, workflows by engagement type
-
----
-
-## Three ideas hold it together
-
-**Artifacts, not conversations.** Every skill writes a file to a `.fde/` workspace. Work that lives only in a chat transcript evaporates — and as an FDE, you always leave.
-
-**Evidence or a confidence tag.** Every claim carries a `file.java:88` citation or one of `[confirmed]` / `[inferred]` / `[unverified]`. This is the difference between being trusted in week two and being quietly routed around after being confidently wrong once.
-
-**Skills compose.** Each reads what the previous ones wrote. `feasibility-probe` reads the system map and the spec instead of re-deriving them.
-
-📖 **[DESIGN.md](DESIGN.md)** — the lifecycle model, 12 engagement archetypes, and why the portfolio is shaped this way
-
----
-
-## Validated, not vibed
-
-Most skill collections ship on the author's confidence. This one was pointed at real, unfamiliar codebases to find out where it was wrong. **It was wrong ten times.**
-
-Six cold-start runs, each against a deliberately different stack — and each found a class of assumption the previous fix did not prevent:
-
-| Run | Subject | What broke |
+| FDE responsibility | Representative skills | Example artifact |
 |---|---|---|
-| **1** | Rust workspace (`dbt-core`) | Entry-point search found **5** of **61**. Hardcoded Java/JS patterns. → *Don't assume the **language**.* |
-| **2** | .NET monolith (`nopCommerce`) | Framework search found **0** scheduled tasks; the app has **39** behind its own interface. → *Don't assume the codebase uses its **framework's vocabulary**.* |
-| **3** | XML-configured Java (`Apache OFBiz`) | Every route search returned **0**. The system declares **3,113** routes in XML. → *Don't assume the entry points are **in the code at all**.* |
-| **4** | Elixir/Phoenix (`plausible/analytics`) | Stack detected; "generic" greps returned **0**. The app has **216** Phoenix routes and **24** Oban workers. → *Don't assume a **generic grep is stack-neutral**.* |
-| **5** | COBOL / CICS / JCL (`CardDemo`) | No manifest, **0** XML. Procedure reported no entry points. The app has **25** CICS transactions, **55** JCL members, **62** copybooks. → *Don't assume the repository is a **packaged software project**.* |
-| **6** | Generated OpenAPI client (`kubernetes-client/python`) | 1,916 `.py` files, real `setup.py`. **91%** say do not edit. Canonical spec is another repo. → *Don't assume the files in the repository are the **source of truth**.* |
+| Understand the customer problem | `workflow-discovery`, `use-case-selection` | Workflow map and opportunity comparison |
+| Learn an unfamiliar system | `context-strategy`, `repo-recon`, `trace-the-flow` | System map and working guide |
+| Scope and design the work | `requirements-to-spec`, `feasibility-probe`, `solution-design` | Acceptance criteria, feasibility evidence, ADR |
+| Implement and integrate safely | `safe-change`, `integration-adapter`, `db-change-management` | Change evidence and migration plan |
+| Verify and release | `verification-plan`, `release-readiness`, `deploy-runbook` | Verification record and rollback procedure |
+| Evaluate AI behavior | `ai-evaluation`, `agent-action-safety` | Task-quality gates and executor-effect evidence |
+| Support sustained use | `adoption-plan`, `outcome-measurement`, `handover-pack` | Pilot, outcome readout, and continuation brief |
 
-Run 3 tested a prediction written down after run 2. It was correct — **and the fix still couldn't have been written without running the test.** That's the argument for this whole section.
+## Example FDE workflows
 
-Every fix is a *method*, never a pattern. Adding `IScheduleTask` to a .NET list would have fixed one repo; teaching the skill how to *find* a codebase's own abstraction fixed the class.
+**An unfamiliar enterprise integration.** Start with “We need to connect this billing system to a new payments provider.” Orient the engagement, map the relevant flow, specify the contract, probe feasibility, and plan the change and release. Use `fde-platform` for integration and contract work. The result includes a grounded specification, evidence about the affected code, and a deploy/rollback runbook.
 
-**Also measured:**
-- **Triggering** — 54 queries against all 43 descriptions: **42/43** first choice on Claude (run 4). After later description edits: **43/43** plus **10/10** regression probes on Grok (run 8). Claude rematch **blocked** (run 13) — CLI remaps to OpenRouter and OAuth is revoked; not a score. **Zero** false fires on near-miss queries like *"help me write a cover letter."*
-- **Baseline comparison** — same task with and without the skill. The baseline was good, and it claimed the codebase shipped one binary. It declares **nine**.
-- **`env-bootstrap`** — first full build/test/run, on `ripgrep`. The dedicated pin-file grep returned **nothing**; the pin was `rust-version = "1.96"` in `Cargo.toml` and `rust: 1.96.0` in CI. Compile on the machine's `rustc 1.90.0` failed as cargo promised. 1.96.0: **1218** tests passed.
+**An AI customer workflow.** Start with “Which support task should we automate, and what would count as a safe result?” Discover the current process, select a bounded use case, and establish an outcome baseline. Design and build the workflow, then evaluate task outcomes and any agent action boundaries before the release decision. Use `fde-ai`; a favorable average cannot waive a mandatory safety gate. Pilot adoption and measure business outcomes separately.
 
-📖 **[VALIDATION.md](VALIDATION.md)** — every run, every defect, and an explicit list of what still isn't tested
+**A deployed tool that people rarely use.** Start with “The tool works technically, but users still do the task in a spreadsheet.” Investigate access and workflow friction with `adoption-plan`, define support and fallback, and measure successful tasks with an eligible-population denominator. `outcome-measurement` distinguishes observed handling-time changes from realized financial benefit.
 
-The model scores above are historical and refer to the earlier 43-skill catalog. The October 2026 audit found malformed runtime metadata and permissive evaluator parsing; both are repaired, with native plugin validation and offline regressions recorded in [run 14](VALIDATION.md#run-14--local-audit-and-evaluator-regressions). The seven additions have a separate validation record; do not apply the old scores to the 50-skill catalog.
+The [usage guide](USAGE.md) covers 15 engagement archetypes and how the procedures compose.
 
-> **What this doesn't claim.** The skills don't make Claude smarter about your codebase. They add provenance, declared limits, and better accuracy on the steps the procedure forces. That's a narrower claim than most skill repos make, and it's the one the evidence supports.
+## How the skills work
 
----
+- **Artifacts survive the conversation.** Skills write to a resolved engagement workspace: `.fde/` by default, an explicit `FDE_WORKSPACE`, or another location recorded in the charter. They preserve prior evidence when updating it.
+- **Claims carry evidence.** Cite source locations or command results and label `[confirmed]`, `[inferred]`, and `[unverified]`. An empty search is a coverage limit, not proof of absence.
+- **Context is portable.** Preserve the team's existing working guide, such as `AGENTS.md`, `CLAUDE.md`, or another designated file. When none exists, use `<workspace>/repo-guide.md`. Record and read the guide explicitly; automatic loading is host-specific.
+- **Tools are capabilities, not prerequisites to invent.** Use local files, Git, and a shell where the task needs them. Network integrations, subagents, and built-in review commands are optional. Skills do not grant new permissions or replace organizational controls.
+
+Read the [portfolio design and artifact conventions](DESIGN.md) for the reasoning behind these choices.
+
+<a id="validated-not-vibed"></a>
+
+## Testing and limitations
+
+The portfolio has been exercised against unfamiliar Rust, .NET, Java/XML, Elixir/Phoenix, and COBOL/CICS/JCL systems, plus a generated OpenAPI client. Those runs exposed assumptions about languages, frameworks, configuration, and where the source of truth lives. Coverage varies by skill; these were not trials of every procedure.
+
+Seven newer procedures have initial synthetic artifact trials: workflow discovery, opportunity selection, outcomes, adoption, field-to-product feedback, AI evaluation, and agent action safety. All met their scenario checks; three optional skills were also retested without core files. They remain **experimental** pending live engagement validation. Baselines already handled most scenario decisions well.
+
+Two [native Codex CLI trials](VALIDATION.md#run-17--agent-neutral-procedures-and-native-codex-trials) exercised four core procedures: preserving an existing working guide and creating a portable guide when none existed. A successful installation does not prove that all 50 skills behave identically in every host. Cursor and other hosts require their own runtime trials before claiming tested support.
+
+Historical trigger results apply to the earlier 43-skill catalog and original evaluation method. They are retained in the [validation history](VALIDATION.md), not presented as a current score for the 50-skill catalog. Current checks cover catalog metadata, references, installer behavior, and evaluator regressions; runtime evidence is explicitly scoped.
+
+## FAQ
+
+**Is this tied to Claude Code?** No. The procedures and artifacts are agent-neutral. The Claude plugin marketplace is one optional packaging route; the local installer provides a separate route for Codex and other compatible skill directories.
+
+**Which skills should an FDE start with?** Use `fde-orient` for an unclear engagement, `repo-recon` for an unfamiliar codebase, or a more specific skill when the task is already bounded. Core contains 34 skills; optional packs add specialized procedures.
+
+**Does this require external accounts or MCP servers?** The library itself does not. A particular task may need authorized access to the system it investigates. Missing access or tools become explicit blockers; they are not silently assumed or installed.
+
+**Can I use the playbooks without native skill support?** Read the relevant `SKILL.md` and its referenced files from the checkout and follow the procedure with available tools. This is manual use, not a claim of automatic discovery or equivalent behavior on an untested agent.
+
+## Troubleshooting
+
+| Symptom | What to check |
+|---|---|
+| Skill is missing from the agent | Open the intended project, check its skill directory and installed pack, then restart the session or inspect the host's skill list. Use explicit invocation to distinguish discovery from automatic matching. |
+| A shared reference is missing | Install complete folders and `_shared/`; copying only `SKILL.md` is insufficient. See the [integration guide](docs/integrations.md). |
+| Installer reports a conflict | Preserve existing files. Follow the [update procedure](docs/integrations.md#updating-an-installation); do not delete the whole skill directory or unrelated team skills. |
+| Notes are missing or written in an unexpected place | Check `FDE_WORKSPACE` and the charter's recorded Location. An explicitly configured but unavailable path is a blocker, not a reason to silently create another workspace. |
+| The procedure needs unavailable evidence or access | Record what is blocked, its owner, and the next permitted step. A reduced-confidence investigation cannot waive a required control. |
+
+See [detailed troubleshooting](USAGE.md#troubleshooting) for checks and recovery steps.
 
 ## Contributing
 
-**Contributions are genuinely wanted, and the most valuable one isn't code.**
+The most useful contribution is a concrete case where a procedure gave the wrong answer. Try an unfamiliar stack, review an artifact against a system you know, or test another agent's installation and workflow behavior. Report the inputs, version, actual outcome, and limits.
 
-### 🔬 Run a cold-start test (start here)
+Use the [cold-start report template](.github/ISSUE_TEMPLATE/cold-start-report.md) and read the [contribution and validation guide](CONTRIBUTING.md). Keep skills focused, references discoverable, and every quality claim tied to recorded evidence.
 
-Every round of testing found something reasoning alone had missed. Five languages plus a generated-client tree are covered. Many aren't.
+## Prior art and license
 
-Point `repo-recon` at a real codebase in a stack we haven't tried — **Salesforce/Apex, low-code, embedded C, anything where there is no repository** — and tell us where it produced a wrong answer. A one-paragraph issue saying *"it found 4 entry points, there are 200, here's why"* is worth more than a new skill.
+The procedures draw on Michael Feathers' characterization testing and seams, Martin Fowler's migration patterns, and Michael Nygard's ADR practice.
 
-Use the [cold-start report template](.github/ISSUE_TEMPLATE/cold-start-report.md). Six classes so far. Low-code with no repo is still open.
-
-### 🧭 Tell us when a procedure didn't fit
-
-Used a skill on a real engagement and the steps were wrong for your situation? That's the highest-signal feedback available. Four skills have documented repository-based procedure trials, at least partially, and seven others have synthetic artifact trials; 39 of 50 have no recorded procedure trial. These are not a substitute for live engagement validation. Open an issue.
-
-### ✍️ Write or improve a skill
-
-The house style is in [DESIGN.md §8](DESIGN.md). Two rules matter most:
-
-1. **No stack specifics in a `SKILL.md` body.** Maven, npm, and pytest belong in `references/`, loaded on detection. Three of our ten defects were violations of this.
-2. **Explain *why*, don't issue rules.** A skill that says "always do X" gets followed mechanically. One that explains what goes wrong without X gets applied with judgment.
-
-### 📦 Propose a new pack
-
-Industry verticals (`fde-fintech`, `fde-healthcare`), regional compliance regimes, or platform-specific packs are all sensible extensions.
-
-📖 **[CONTRIBUTING.md](CONTRIBUTING.md)** — full guide, PR checklist, how to run the trigger evals
-
----
-
-## Prior art and thanks
-
-Standing on the shoulders of Michael Feathers (*Working Effectively with Legacy Code* — the seam-finding and characterization-test patterns), Martin Fowler (strangler fig, branch by abstraction), and the ADR practice popularized by Michael Nygard.
-
-Built with [Claude Code](https://claude.com/claude-code).
-
----
-
-## License
-
-[MIT](LICENSE) — use it, fork it, take it into your client work, sell consulting built on it. No attribution required, though a star is appreciated if it saved you a week.
+[MIT](LICENSE). Use, adapt, and contribute the toolkit under the license terms.

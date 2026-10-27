@@ -681,9 +681,45 @@ All seven maturity labels now acknowledge the synthetic trials while retaining *
 
 ---
 
+## Run 17 — agent-neutral procedures and native Codex trials
+
+**Date:** 2026-10-27 · **Scope:** make the skill portfolio independent of a particular coding agent, retain optional Claude plugin packaging, and verify a local Codex installation and actual procedure execution.
+
+The seven packs remain the canonical source. A standard-library installer copies selected skills and `_shared/` resources into a host's discovery directory. It skips identical folders and rejects conflicts before copying new folders. Tests cover core plus AI, all 50 skills, installed reference resolution (including sibling-skill references), repeat installs, adding a pack, unrelated-file preservation, invalid selections, and symlink conflicts. No global configuration, project policy, or agent instructions are changed by installation.
+
+Six core procedures were adjusted: `context-strategy`, `repo-recon`, `env-bootstrap`, and `handover-pack` preserve a designated working guide or use `<workspace>/repo-guide.md`; `fde-orient` names missing packs without assuming a plugin manager; `security-compliance-check` uses approved review processes without requiring a vendor command. Shared context guidance explains host-specific loading, existing policy, explicit reads, and optional capabilities. The evaluator's judge prompt is now neutral. Historical scores and run-16 artifacts remain unchanged; no fresh trigger score is claimed.
+
+### Native Codex execution
+
+Both trials used **codex-cli 0.144.1**, the installer output under project `.agents/skills/`, default CLI model selection, `--ephemeral --ignore-user-config --sandbox workspace-write --json`, and a 180-second timeout. Inputs were synthetic Python CLI repositories with standard-library tests, no live accounts, and an existing engagement charter. The prompts invoked skills by name without supplying their file paths or desired answers. This verifies explicit invocation, not implicit routing accuracy.
+
+| Trial | Native result | Reviewed evidence |
+|---|---|---|
+| Existing working guide: `context-strategy` + `repo-recon`, core plus AI installed | Exit 0, 127.3 seconds | Read installed skill files, shared conventions, context guidance, stack detection, and entry-point references; wrote context notes and a system map; preserved the complete original `AGENTS.md` prefix and added useful notes |
+| No instruction file: `env-bootstrap` + `handover-pack`, core installed | Exit 0, 105.0 seconds | Read shared references; produced environment notes, `.fde/repo-guide.md`, and handover; recorded the guide in the charter without creating `AGENTS.md` or `CLAUDE.md` |
+
+The primary agent reviewed the complete artifacts and CLI command events. Both trials ran module help and passed the fixture's one unittest, left application source, tests, package metadata and README unchanged, and kept untested packaging, CSV behavior, release, production, and missing ownership explicit. The first map accurately identified both CLI entry points, SQLite persistence, the dependency boundary, and the small test seam. The second handover did not invent a receiver walkthrough or named owner. The first run recorded separate shell reads of both skill files; the second reported skill use without separate `SKILL.md` shell-read events, so the host's ingestion path is not fully exposed by that trace.
+
+The first restricted startup failed before skill execution because Codex could not access its normal state. An automatic permission review timed out; its allowed retry granted normal startup access, after which both workspace-restricted trials completed. CLI model-cache refresh warnings were observed but did not prevent either successful result. No user-wide configuration was edited to work around them.
+
+[`eval/codex-smoke-results.json`](eval/codex-smoke-results.json) records fixture files, prompts, source hashes, command traces, checks, and limitations. Seven complete synthetic output snapshots are under [`eval/portability-trials/codex-2026-10-27/`](eval/portability-trials/codex-2026-10-27/); the archived project guide uses `AGENTS.snapshot.md` so the evidence does not become an active instruction file.
+
+| Check | Result |
+|---|---|
+| Native Codex procedure trials | 2/2 pass; four explicitly invoked core skills |
+| Installer and evaluator/catalog suite | 30 tests pass; seven installer tests added |
+| Installed catalog and referenced resources | All 50 skills install; relative reference paths resolve |
+| Skill creator validation on affected procedures | 6/6 pass |
+| Retained Claude marketplace and plugin manifests | Root and all seven packs pass strict validation |
+| Python compilation, documentation links/anchors, and whitespace | Pass |
+
+**Limits:** two small synthetic repositories, no independent human artifact review, no live client effectiveness evidence, no broad model comparison, no trial of implicit selection, and no execution of every skill in Codex. Claude packaging passes are not a new Claude behavioral result. Cursor and other hosts remain runtime-untested. Installation copies are snapshots and deliberately refuse overwriting conflicts; refresh requires a deliberate review/removal of the intended copied folders. No SEO plan document was added.
+
+---
+
 ## Still untested
 
-Honest coverage statement after the historical runs, local audit, and seven synthetic procedure trials.
+Honest coverage statement after the historical runs, local audit, synthetic procedure trials, and native Codex portability checks.
 
 **Well covered:**
 - **Historical triggering** — Claude: 42/43 first-choice (run 4, pre-edit). After description edits, Grok: 43/43 + 10/10 regressions (run 8). Claude rematch was **blocked** on that run's machine (run 13). Those scores predate the metadata/parser fixes in run 14; no fresh model score is claimed.
@@ -695,8 +731,9 @@ Honest coverage statement after the historical runs, local audit, and seven synt
 - **`env-bootstrap`** — one public Rust workspace through compile, test, and run. Pin-survey defect found and fixed. Internal registries, required services, and a blocked/partial outcome untested.
 - **`characterization-tests`** — one Python function (`ordinalize`), in-memory seam, mutation + reachability checked. HTTP/DB seams and "introduce a seam" untested.
 - **Seven new procedures** — one synthetic artifact scenario each, plus baselines; three optional procedures also rerun without core files. All scenario checks met, but no live engagement, human artifact review, actual AI candidate run, or executor enforcement test. See run 16 for the convention dependency fix and comparison limits.
+- **Native Codex portability** — `context-strategy`, `repo-recon`, `env-bootstrap`, and `handover-pack` across two small synthetic repositories. Existing-guide preservation and portable fallback are covered; large-context behavior, real organizational handover, other hosts, and the other procedures remain untested by these runs.
 
-**No recorded procedure trial — 39 of 50 skills.** Four have at least partial repository-based trials (`repo-recon`, `blast-radius`, `env-bootstrap`, `characterization-tests`), and seven others have synthetic artifact trials. Shared-reference checks, trigger-selection queries, and fixtures without execution do not increase that count. Most remaining skills are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. None of the new synthetic trials establishes live engagement effectiveness; those seven skills remain experimental.
+**No recorded procedure trial — 37 of 50 skills.** Four have historical repository-based trials (`repo-recon`, `blast-radius`, `env-bootstrap`, `characterization-tests`), seven others have synthetic artifact trials, and native Codex runs add partial coverage of `context-strategy` and `handover-pack`. Shared-reference checks, trigger-selection queries, and fixtures without execution do not increase that count. Most remaining skills are engagement-shaped: they need requirements, stakeholders, an environment, and a release decision that a cloned repository cannot provide. Synthetic and portability trials do not establish live engagement effectiveness; the seven newer skills remain experimental.
 
 **Remaining known gaps:**
 

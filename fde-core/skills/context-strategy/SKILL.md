@@ -1,6 +1,6 @@
 ---
 name: context-strategy
-description: Work effectively in a codebase far larger than any context window, across an engagement that spans many sessions. Decide what to read versus search versus script versus delegate, build a durable CLAUDE.md so each session does not re-derive the same map, define a working set, and hand off cleanly when context runs low. Use when a repository is too large to explore file-by-file, when context is filling up mid-task, when starting a multi-session engagement, when you catch yourself re-discovering something you already worked out, or when someone says "this repo is huge". Run before repo-recon when the tree is large; this sets the budget, it does not replace the system map.
+description: Work effectively in a codebase far larger than any context window, across an engagement that spans many sessions. Decide what to read versus search versus script versus delegate, maintain a durable working guide so each session does not re-derive the same map, define a working set, and hand off cleanly when context runs low. Use when a repository is too large to explore file-by-file, when context is filling up mid-task, when starting a multi-session engagement, when you catch yourself re-discovering something you already worked out, or when someone says "this repo is huge". Run before repo-recon when the tree is large; this sets the budget, it does not replace the system map.
 ---
 
 # Context strategy
@@ -9,7 +9,7 @@ The craft of staying effective when the system is bigger than what you can hold.
 
 ## Why this exists
 
-An FDE's only tool is Claude Code, and Claude Code has a finite context window. Enterprise repositories do not respect it — a monorepo with forty thousand files exceeds any window by orders of magnitude, and the naive approach (start reading, keep reading) fails in a specific and expensive way: context fills with low-value file contents, the genuinely important findings get summarized away, and the next session starts from zero and re-derives the same partial map.
+Every coding agent has a finite context window. Enterprise repositories do not respect it — a monorepo with forty thousand files exceeds any window by orders of magnitude, and the naive approach (start reading, keep reading) fails in a specific and expensive way: context fills with low-value file contents, the genuinely important findings get summarized away, and the next session starts from zero and re-derives the same partial map.
 
 The fix isn't reading faster. It's deciding, deliberately and repeatedly, **what deserves to occupy context** — and writing everything else down where it survives.
 
@@ -49,7 +49,7 @@ du -sh .git
 |---|---|
 | **< 500 files** | Read freely. Structure barely matters. |
 | **500 – 5,000** | Survey structurally, read selectively. Working set discipline starts paying. |
-| **5,000 – 50,000** | Never read broadly. Search and script first, read only the working set. `CLAUDE.md` becomes essential. |
+| **5,000 – 50,000** | Never read broadly. Search and script first, read only the working set. The working guide becomes essential. |
 | **> 50,000** | Treat subdirectories as separate repositories. Scope hard to one, and say so in every artifact. |
 
 Record the file count in `00c-context.md`. When `repo-recon` runs, it copies that number into the system map. It calibrates every claim you'll make about coverage.
@@ -92,19 +92,19 @@ git log --format= --name-only --since="12 months ago" \
 
 Do **not** loop `git log -1` over every file to find dead zones. That is one process per path and will consume the session. If you need untouched areas, sample top-level directories (`git log -1 --format=%ad -- <dir>`) or ask `repo-recon` step 6, which already filters noise.
 
-Put anything you'll re-run into the scratchpad, and mention the useful ones in `CLAUDE.md` so the next session doesn't reinvent them.
+Put anything you'll re-run into the scratchpad, and mention the useful ones in the working guide so the next session doesn't reinvent them.
 
 The output of a script is also *citable* under `../_shared/evidence-discipline.md` — command plus output is a valid citation, and it upgrades a claim from `[inferred]` to `[confirmed]` for free.
 
 ### 4. Delegate breadth, keep only conclusions
 
-When subagents are available, they're the right instrument for breadth-first questions across many locations: their exploration burns *their* context, and only the conclusion returns to yours.
+When subagents are available and delegation is authorized, they're the right instrument for breadth-first questions across many locations: their exploration burns *their* context, and only the conclusion returns to yours.
 
 Good delegations: "find every place the retry policy is configured", "which services publish to this topic", "survey how error handling is done across these six modules".
 
 Two rules. **Ask for a conclusion, not a file dump** — otherwise the context you saved comes straight back. And **specify the search breadth**, because an under-specified survey either stops too early or explores forever.
 
-If subagents aren't available, do the same thing with scripts and record only the summary.
+If subagents are unavailable or delegation is not authorized, do the same thing with scripts and record only the summary.
 
 ### 5. Define the working set
 
@@ -121,11 +121,11 @@ For any given task, name the files that actually matter — typically five to fi
 
 Everything else is reference, reachable by grep when needed. When the working set grows past about twenty files, the task is too big — split it. That's a useful signal rather than an inconvenience.
 
-### 6. Make `CLAUDE.md` the durable memory
+### 6. Maintain a durable working guide
 
-The single highest-return artifact for a long engagement. It loads automatically each session, so anything in it is knowledge you never re-derive.
+Use `../_shared/agent-context.md` to choose the guide: preserve the team's existing instruction file, or use `<workspace>/repo-guide.md` when none exists. Record the path and read it explicitly at session start; automatic loading differs between agents.
 
-**Belongs in `CLAUDE.md`:**
+**Belongs in the working guide:**
 
 - Exact build, test, and run commands — including the flags that matter
 - The layout map: which directory does what, in one line each
@@ -139,12 +139,12 @@ The single highest-return artifact for a long engagement. It loads automatically
 
 - Anything a grep answers in two seconds
 - Full file contents or long code excerpts
-- Engagement narrative — that's `<workspace>/`, not `CLAUDE.md`
+- Engagement narrative — that's `<workspace>/`, not the working guide
 - Speculation. If it's `[inferred]`, tag it, or leave it out.
 
-Aim for well under 200 lines. A bloated `CLAUDE.md` costs context every single session and eventually gets skimmed rather than read — the same failure as an over-long README, with a per-session price.
+Aim for well under 200 lines. A bloated guide wastes context whenever it is loaded and eventually gets skimmed rather than read — the same failure as an over-long README, with a per-session price.
 
-If the repository already has a `CLAUDE.md`, extend it rather than replacing it, and keep your additions in the existing voice. Rewriting a team's file is a bad first impression.
+If the repository already has a working guide, extend it rather than replacing it, and keep your additions in the existing voice. Rewriting a team's file is a bad first impression.
 
 ### 7. Watch the context budget and hand off deliberately
 
@@ -153,7 +153,7 @@ Notice when context is filling. The failure mode is not running out — it's run
 When you're roughly two-thirds through and the task isn't done, stop and persist:
 
 1. Write findings to the relevant `<workspace>/` artifact **with citations** — a finding without a citation is one you'll have to re-derive
-2. Update `CLAUDE.md` with anything durable
+2. Update the working guide with anything durable
 3. Note the working set and the exact next step
 4. Then continue
 
@@ -171,7 +171,7 @@ You have enough when all of these are true:
 
 1. File count and scale band are recorded
 2. A working set of at most fifteen files is named (or explicitly "none yet — waiting on recon")
-3. `CLAUDE.md` is updated, or you wrote down why it was deferred
+3. The working guide is updated, or you wrote down why it was deferred
 4. The next step is written so a fresh session can start
 
 Do not keep surveying. Breadth belongs to `repo-recon`.
@@ -198,8 +198,8 @@ Write to `<workspace>/00c-context.md`:
 ## Working set
 <the 5–15 files for the current task, or "none — recon not run">
 
-## CLAUDE.md
-<updated | deferred because …>
+## Working guide
+<path; updated | deferred because …>
 
 ## Next step
 <one sentence a fresh session can execute>
@@ -215,7 +215,7 @@ Write to `<workspace>/00c-context.md`:
 
 **Letting subagents return file contents.** Ask for conclusions. A delegation that dumps files back has moved the cost, not removed it.
 
-**Treating `CLAUDE.md` as documentation.** It's a working aid for the next session. Write what you'd want to be told, not what a newcomer would want explained.
+**Treating the working guide as documentation.** It's a working aid for the next session. Write what you'd want to be told, not what a newcomer would want explained.
 
 **Discovering something important and not writing it down.** The one unrecoverable mistake — context is lost silently, and you won't remember what you knew.
 

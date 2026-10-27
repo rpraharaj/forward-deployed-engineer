@@ -34,7 +34,7 @@ Assume no administrator rights. Practical consequences:
 - Version managers that don't need root — `asdf`, `mise`, `nvm`, `pyenv` — are usually permitted where package managers aren't
 - Docker may be unavailable, restricted to a remote daemon, or gated behind a licence. Check before designing a workflow around it.
 
-Some organizations issue a VDI or jump host for development, with the source only ever residing there. If so, that machine is your environment, and its performance and clipboard restrictions shape everything — including how much use Claude Code is on it. Establish this on day one, not week two.
+Some organizations issue a VDI or jump host for development, with the source only ever residing there. If so, that machine is your environment, and its performance and clipboard restrictions shape everything — including which coding-agent capabilities are available on it. Establish this on day one, not week two.
 
 ## Offline
 

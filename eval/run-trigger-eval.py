@@ -60,7 +60,7 @@ def load_skills() -> str:
 
 def build_prompt(skills: str, query: str) -> str:
     return (
-        "You are Claude Code. These skills are available:\n\n"
+        "You are a coding agent. These skills are available:\n\n"
         f"{skills}\n\n"
         "A user says:\n"
         f'"{query}"\n\n'

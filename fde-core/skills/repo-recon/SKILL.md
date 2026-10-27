@@ -1,6 +1,6 @@
 ---
 name: repo-recon
-description: Build a breadth-first map of an unfamiliar codebase in a bounded amount of time - entry points, module boundaries, persistence and integration surface, churn hotspots, test topology, config surface, and landmines - then write it up as a durable system map plus a working CLAUDE.md. Use when dropped into a codebase you do not know, when asked "help me understand this repo", when you need to know where a change would land before committing to anything, or when inheriting a system whose original authors have left. Deliberately maps the territory rather than exploring any one region deeply. Run before feasibility-probe or trace-the-flow. Do not use when a current system map already exists, or when the user is asking you to implement a change.
+description: Build a breadth-first map of an unfamiliar codebase in a bounded amount of time - entry points, module boundaries, persistence and integration surface, churn hotspots, test topology, config surface, and landmines - then write it up as a durable system map plus a durable working guide. Use when dropped into a codebase you do not know, when asked "help me understand this repo", when you need to know where a change would land before committing to anything, or when inheriting a system whose original authors have left. Deliberately maps the territory rather than exploring any one region deeply. Run before feasibility-probe or trace-the-flow. Do not use when a current system map already exists, or when the user is asking you to implement a change.
 ---
 
 # Repo recon
@@ -20,7 +20,7 @@ Dropped into a large codebase, the instinct is to start reading. After two hours
 
 ## When it doesn't
 
-- You already know the system — read `CLAUDE.md` and go
+- You already know the system — read the recorded working guide and go
 - You need one specific fact — grep for it
 - The repository is small enough to read outright (under ~500 files)
 - You need deep behavior of a single flow — that's `trace-the-flow`
@@ -179,7 +179,7 @@ If you *can't* answer one after a reasonable pass, that gap is itself the findin
 
 ### 11. Write both artifacts
 
-`02-system-map.md` is the engagement record. `CLAUDE.md` is the working aid that loads every session. They are different documents with different audiences — see `context-strategy` step 6 for what belongs in each. Extend an existing `CLAUDE.md` rather than replacing it.
+`02-system-map.md` is the engagement record. The working guide carries reusable commands, conventions, and landmines across sessions. Follow `../_shared/agent-context.md`: preserve existing project instructions; otherwise use `<workspace>/repo-guide.md`. Record the chosen path and do not assume automatic loading. See `context-strategy` step 6 for what belongs in each.
 
 ## Output template
 

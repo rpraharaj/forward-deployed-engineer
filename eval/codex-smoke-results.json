@@ -1,0 +1,290 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "type": "native Codex CLI portability smoke tests",
+  "cli_version": "codex-cli 0.144.1",
+  "status": "passed within recorded scope",
+  "execution": "Two codex exec invocations, default CLI model, --ephemeral --ignore-user-config --sandbox workspace-write --json; 180-second timeout each. Normal local state access was granted for startup. Model identity was not exposed in retained result metadata.",
+  "review": "Primary agent reviewed complete artifacts and command-event traces; no independent human review.",
+  "limits": [
+    "Four core procedures invoked explicitly across two small synthetic projects, not all 50 procedures or every agent.",
+    "Local installation checks cover all 50 skills and installed relative references. Explicit runtime invocation is distinct from automatic-selection accuracy.",
+    "No production operations, external tool effects, dependency installation, or feature implementation observed. Native model usage was part of the authorized test harness.",
+    "Cursor and other hosts were not run. Claude packaging was validated, without a fresh behavioral trial.",
+    "Restricted first startup failed on local state access; first permission review timed out. A permitted retry launched successfully. CLI emitted model-cache refresh warnings; both trials nevertheless completed with exit 0.",
+    "The second native trial reported using its two skill files without a separate SKILL.md shell-read event; the host ingestion path is not exposed by these events. Both shared-reference reads and resulting artifacts were inspected.",
+    "Historical results remain unchanged; new metadata and neutral evaluator wording have no fresh trigger score."
+  ],
+  "trials": [
+    {
+      "scenario": "existing-working-guide",
+      "skills_invoked": [
+        "context-strategy",
+        "repo-recon"
+      ],
+      "status": {
+        "exit_code": 0,
+        "duration_seconds": 127.3
+      },
+      "fixture_revision": "2c484c33b2ead017b2eb29646fa43bc3fb6d0800",
+      "fixture_files": {
+        ".fde/00-engagement.md": "# Engagement \u2014 Parcel Desk\n\n**Engagement:** Synthetic portability trial\n**Author:** FDE\n**Date:** 2026-10-27\n**Status:** draft\n**Source revision:** recorded by git in this fixture\n**Confidence:** synthetic project only\n\n## Workspace\n**Location:** /var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/parcel-desk/.fde\n**Committed or ignored:** committed for this synthetic fixture only\n**Working guide:** AGENTS.md\n\n## Goal\nPrepare a bounded system map and durable context for a later CSV export change. No implementation, external accounts, contacts, or software installation. The owning team is synthetic; no interviews available.\n",
+        ".gitignore": ".agents/skills/\n__pycache__/\n*.db\n",
+        "AGENTS.md": "# Project working guide\n\nTEAM_SENTINEL: retain this ownership note.\n\nUse Python standard library tools. Existing engagement workspace is .fde/. Do not change source files during analysis.\n",
+        "README.md": "# Parcel Desk\n\nInternal parcel queue CLI. Python 3.11+, standard library only.\nRun: python3 -m parcel_desk --help\nTest: python3 -m unittest discover -s tests -v\nThe package is at the project root. No service or network account is needed. CSV export is requested but not implemented.\n",
+        "parcel_desk/__init__.py": "",
+        "parcel_desk/__main__.py": "import argparse\nfrom .store import pending\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"List pending parcels\")\n    parser.add_argument(\"--db\", default=\"parcels.db\")\n    args = parser.parse_args()\n    for parcel in pending(args.db):\n        print(parcel)\n\nif __name__ == \"__main__\":\n    main()\n",
+        "parcel_desk/store.py": "import sqlite3\n\ndef pending(path):\n    with sqlite3.connect(path) as connection:\n        connection.execute(\"CREATE TABLE IF NOT EXISTS parcels (id INTEGER PRIMARY KEY, label TEXT, status TEXT)\")\n        return connection.execute(\"SELECT label FROM parcels WHERE status = ?\", (\"pending\",)).fetchall()\n",
+        "pyproject.toml": "[project]\nname = \"parcel-desk\"\nversion = \"0.1.0\"\nrequires-python = \">=3.11\"\ndependencies = []\n[project.scripts]\nparcel-desk = \"parcel_desk.__main__:main\"\n",
+        "tests/test_store.py": "import unittest\nfrom parcel_desk.store import pending\n\nclass StoreTests(unittest.TestCase):\n    def test_empty_queue(self):\n        self.assertEqual(pending(\":memory:\"), [])\n"
+      },
+      "prompt": "Use $context-strategy and $repo-recon to prepare this synthetic project for another engineer who will add CSV export next week. Capture the commands, entry points, dependencies, persistence boundary, limits, and next scoped step in the skills' artifacts. An engagement already exists in .fde/. Preserve existing team instructions. Work only in this project; do not implement the feature, install software, invoke other agents, contact people, or use external services. Use the skills discovered by Codex from this project, and report which installed skill and shared-reference files you actually read.\n",
+      "final_response": "Prepared the project for the next engineer without changing product source files.\n\nArtifacts created or updated:\n\n- [Context strategy](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/parcel-desk/.fde/00c-context.md)\n- [System map](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/parcel-desk/.fde/02-system-map.md)\n- [Project working guide](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/parcel-desk/AGENTS.md)\n\nThey capture commands, entry points, dependencies, SQLite persistence, CSV-related limits, test coverage, and the next scoped step. Existing team instructions and `TEAM_SENTINEL` were preserved.\n\nVerification:\n\n- `git diff --check` passed.\n- `python3 -m unittest discover -s tests -v` passed: 1 test.\n- No files under `parcel_desk/`, `tests/`, or other product-source paths changed.\n\nInstalled skill files read:\n\n- `.agents/skills/context-strategy/SKILL.md`\n- `.agents/skills/repo-recon/SKILL.md`\n\nShared/reference files read:\n\n- `.agents/skills/_shared/workspace-conventions.md`\n- `.agents/skills/_shared/agent-context.md`\n- `.agents/skills/_shared/stack-detection.md`\n- `.agents/skills/_shared/evidence-discipline.md`\n- `.agents/skills/repo-recon/references/entry-points-by-stack.md`",
+      "installed_skill_count": 36,
+      "commands_executed": [
+        {
+          "command": "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- project skill files' && sed -n '1,260p' .agents/skills/context-strategy/SKILL.md && sed -n '1,320p' .agents/skills/repo-recon/SKILL.md\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- required shared references' && sed -n '1,260p' .agents/skills/_shared/workspace-conventions.md && sed -n '1,260p' .agents/skills/_shared/agent-context.md && sed -n '1,320p' .agents/skills/_shared/stack-detection.md && sed -n '1,360p' .agents/skills/repo-recon/references/entry-points-by-stack.md && sed -n '1,260p' .agents/skills/_shared/evidence-discipline.md && printf '%s\\\\n' '--- existing engagement files' && find .fde -maxdepth 3 -type f -print | sort && printf '%s\\\\n' '--- engagement scope' && sed -n '1,240p' .fde/00-engagement.md 2>/dev/null || true && printf '%s\\\\n' '--- existing project guide' && sed -n '1,240p' AGENTS.md 2>/dev/null || true\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"wc -l .agents/skills/_shared/workspace-conventions.md .agents/skills/_shared/agent-context.md .agents/skills/_shared/stack-detection.md .agents/skills/repo-recon/references/entry-points-by-stack.md .agents/skills/_shared/evidence-discipline.md && sed -n '1,220p' .agents/skills/_shared/workspace-conventions.md && sed -n '1,220p' .agents/skills/_shared/agent-context.md && sed -n '1,220p' .agents/skills/_shared/evidence-discipline.md\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"sed -n '1,260p' .agents/skills/_shared/stack-detection.md && sed -n '1,210p' .agents/skills/repo-recon/references/entry-points-by-stack.md\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"sed -n '211,430p' .agents/skills/repo-recon/references/entry-points-by-stack.md\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- revision and workspace resolution' && git rev-parse --show-toplevel && git rev-parse --short HEAD && git status --short && env | rg '\"'^FDE_WORKSPACE='\"' || true && test -d /var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/parcel-desk/.fde && echo 'charter workspace exists' && printf '%s\\\\n' '--- scale' && git ls-files | wc -l && git ls-files | sed 's/.*\\\\.//' | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn | head -20 && du -sh .git && printf '%s\\\\n' '--- shape' && ls -la && find . -maxdepth 3 -type d -not -path '*/.git*' -not -path '*/node_modules*' -not -path '*/__pycache__*' | sort && printf '%s\\\\n' '--- activity' && git log -1 --format='%ad %an' --date=short && git log --oneline --since='6 months ago' | wc -l\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- tracked files' && git ls-files && printf '%s\\\\n' '--- stack survey' && find . -maxdepth 2 \\\\( -name 'pom.xml' -o -name 'build.gradle*' -o -name 'package.json' -o -name '*.csproj' -o -name '*.sln' -o -name 'go.mod' -o -name 'Cargo.toml' -o -name 'pyproject.toml' -o -name 'requirements*.txt' -o -name 'Gemfile' -o -name 'composer.json' -o -name 'mix.exs' -o -name 'build.sbt' -o -name 'pubspec.yaml' -o -name 'Makefile' -o -name 'CMakeLists.txt' -o -name 'BUILD.bazel' -o -name 'WORKSPACE' -o -name 'Dockerfile' -o -name 'docker-compose*.y*ml' -o -name '*.gemspec' \\\\) -not -path '*/node_modules/*' -not -path '*/vendor/*' -print && for m in Cargo.toml pom.xml package.json go.mod pyproject.toml build.gradle build.gradle.kts mix.exs Gemfile composer.json pubspec.yaml CMakeLists.txt Makefile; do n=\"'$(find . -name \"$m\" -not -path '\"'./.git/*' -not -path '*/node_modules/*' -not -path './target/*' 2>/dev/null | wc -l); [ \\\"\"'$n\" -gt 0 ] && echo \"$m: $n\"; done && printf '\"'%s\\\\n' '--- all tracked project content with line numbers' && for f in .gitignore AGENTS.md README.md pyproject.toml parcel_desk/__init__.py parcel_desk/app.py parcel_desk/store.py tests/test_app.py; do echo \\\"FILE \"'$f\"; nl -ba \"$f\"; done'",
+          "exit_code": 1
+        },
+        {
+          "command": "/bin/zsh -lc 'for f in .gitignore AGENTS.md README.md pyproject.toml parcel_desk/__init__.py parcel_desk/__main__.py parcel_desk/store.py tests/test_store.py .fde/00-engagement.md; do echo \"FILE $f\"; nl -ba \"$f\"; done'",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- runtime and declared entry point' && python3 --version && python3 -m parcel_desk --help && printf '%s\\\\n' '--- test command' && python3 -m unittest discover -s tests -v && printf '%s\\\\n' '--- authored/generated check' && (rg -l -i 'generated by|do not edit' -g '*.py' . || true) && printf '%s\\\\n' '--- python entry points and boundaries' && rg -n 'if __name__ ==|\\\\[project\\\\.scripts\\\\]|\"'^[[:space:]]*(from|import) '\"' pyproject.toml parcel_desk tests && printf '%s\\\\n' '--- persistence, integrations, config, landmines' && rg -n 'sqlite3|CREATE TABLE|SELECT |https?://|socket|urllib|requests|topic|queue|exchange|SQS|ServiceBus|pubsub|os\\\\.getenv|TODO|FIXME|HACK|XXX|WORKAROUND|DO NOT|WARNING|legacy|old|v1|temp' parcel_desk tests pyproject.toml README.md || true && printf '%s\\\\n' '--- test topology' && git ls-files | rg -c '(\"'^|/)(test|spec)s?/'\"' && git ls-files | rg -c '_test\\\\.|_spec\\\\.|/test_|\"'^test/'\"' && find . -path '*test*' -name '*.*' -not -path '*/node_modules/*' -not -path './.git/*' | sed 's|/[\"'^/]*$||'\"' | sort | uniq -c | sort -rn | head -15 && printf '%s\\\\n' '--- LOC' && wc -l parcel_desk/*.py tests/*.py && printf '%s\\\\n' '--- churn' && git log --format= --name-only --no-renames --since='12 months ago' 2>/dev/null | rg -v '\"'^$'\"' | rg -v '(\"'^|/)(CHANGELOG|Cargo'\"\\\\.lock|package-lock\\\\.json|pnpm-lock\\\\.yaml|yarn\\\\.lock|go\\\\.sum|poetry\\\\.lock|Gemfile\\\\.lock)' | rg -v '(\"'^|/)(Cargo|pom|package|build'\"\\\\.gradle)' | sort | uniq -c | sort -rn | head -25 && printf '%s\\\\n' '--- history' && git log --oneline --decorate --stat --all\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"git status --short && printf '%s\\\\n' '--- context' && sed -n '1,260p' .fde/00c-context.md && printf '%s\\\\n' '--- map' && sed -n '1,360p' .fde/02-system-map.md && printf '%s\\\\n' '--- guide' && sed -n '1,220p' AGENTS.md\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"git diff --check && python3 -m unittest discover -s tests -v && printf '%s\\\\n' '--- changed paths' && git status --short && printf '%s\\\\n' '--- source files in diff' && git diff --name-only -- parcel_desk tests pyproject.toml README.md && printf '%s\\\\n' '--- artifact headers' && rg -n '\"'^# |''^'\"\\\\*\\\\*(Engagement|Author|Date|Status|Source revision|Confidence):' .fde/00c-context.md .fde/02-system-map.md && printf '%s\\\\n' '--- retained sentinel' && rg -n 'TEAM_SENTINEL|Use Python standard library tools|Do not change source files' AGENTS.md\"",
+          "exit_code": 0
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/existing-working-guide/AGENTS.snapshot.md",
+          "sha256": "1171150c7488ac40b4e5ec3beac655df1e6777dce10fd21ad6ce011d2f858fca",
+          "source_path": "AGENTS.md"
+        },
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/existing-working-guide/.fde/00c-context.md",
+          "sha256": "4cff8d8b75c281a343a270ff42ae465ad00632eb567c6673334ac04b2d8834c3"
+        },
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/existing-working-guide/.fde/02-system-map.md",
+          "sha256": "ef29a80f3fd7c17e0849cbaae1e8bd0de916c6e180a69d60f637a892a5e9e949"
+        }
+      ],
+      "checks": [
+        {
+          "result": "pass",
+          "check": "Native CLI completed with exit 0 and final output",
+          "evidence": {
+            "exit_code": 0,
+            "duration_seconds": 127.3
+          }
+        },
+        {
+          "result": "pass",
+          "check": "Explicit invocation and shared-reference loading",
+          "evidence": {
+            "skills": [
+              "context-strategy",
+              "repo-recon"
+            ],
+            "separate_skill_read_events": [
+              "context-strategy",
+              "repo-recon"
+            ],
+            "shared_context_read_event": true
+          }
+        },
+        {
+          "result": "pass",
+          "check": "Application source, tests, package metadata and README unchanged",
+          "evidence": "git diff --name-only for these paths returned no rows"
+        },
+        {
+          "result": "pass",
+          "check": "No CLAUDE.md created",
+          "evidence": "No such file in project root"
+        },
+        {
+          "result": "pass",
+          "check": "Named workflow artifacts produced",
+          "evidence": [
+            "eval/portability-trials/codex-2026-10-27/existing-working-guide/AGENTS.snapshot.md",
+            "eval/portability-trials/codex-2026-10-27/existing-working-guide/.fde/00c-context.md",
+            "eval/portability-trials/codex-2026-10-27/existing-working-guide/.fde/02-system-map.md"
+          ]
+        },
+        {
+          "result": "pass",
+          "check": "Existing team instructions preserved",
+          "evidence": "AGENTS.md retains its complete original prefix and adds repository working notes"
+        },
+        {
+          "result": "pass",
+          "check": "System-map claims match synthetic source",
+          "evidence": "Manual review confirmed both CLI entry points, no third-party runtime dependencies, SQLite persistence, one-test limit, and unverified packaging/CSV behavior."
+        }
+      ]
+    },
+    {
+      "scenario": "portable-guide-fallback",
+      "skills_invoked": [
+        "env-bootstrap",
+        "handover-pack"
+      ],
+      "status": {
+        "exit_code": 0,
+        "duration_seconds": 105.0
+      },
+      "fixture_revision": "375f3c17f27325fd358f4a93599e75937112133f",
+      "fixture_files": {
+        ".fde/00-engagement.md": "# Engagement \u2014 Parcel Desk handover\n\n**Engagement:** Synthetic portability trial\n**Author:** FDE\n**Date:** 2026-10-27\n**Status:** draft\n**Source revision:** use this fixture revision\n**Confidence:** synthetic code and supplied brief only\n\n## Workspace\n**Location:** /var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde\n**Committed or ignored:** committed for this synthetic fixture\n**Working guide:** none yet\n\n## Handover brief\nThe engagement is ending. The receiving role is the internal operations engineering team; no person is named and no meeting is authorized. Preserve unresolved ownership and adoption questions. Only module help and local tests can be exercised. No release or production access exists. Scope is environment notes and a continuation handover, not CSV implementation, external contact, service operation or dependency installation. No existing instruction file is present.\n",
+        ".gitignore": ".agents/skills/\n__pycache__/\n*.db\n",
+        "README.md": "# Parcel Desk\n\nInternal parcel queue CLI. Python 3.11+, standard library only.\nRun: python3 -m parcel_desk --help\nTest: python3 -m unittest discover -s tests -v\nThe package is at the project root. No service or network account is needed. CSV export is requested but not implemented.\n",
+        "parcel_desk/__init__.py": "",
+        "parcel_desk/__main__.py": "import argparse\nfrom .store import pending\n\ndef main():\n    parser = argparse.ArgumentParser(description=\"List pending parcels\")\n    parser.add_argument(\"--db\", default=\"parcels.db\")\n    args = parser.parse_args()\n    for parcel in pending(args.db):\n        print(parcel)\n\nif __name__ == \"__main__\":\n    main()\n",
+        "parcel_desk/store.py": "import sqlite3\n\ndef pending(path):\n    with sqlite3.connect(path) as connection:\n        connection.execute(\"CREATE TABLE IF NOT EXISTS parcels (id INTEGER PRIMARY KEY, label TEXT, status TEXT)\")\n        return connection.execute(\"SELECT label FROM parcels WHERE status = ?\", (\"pending\",)).fetchall()\n",
+        "pyproject.toml": "[project]\nname = \"parcel-desk\"\nversion = \"0.1.0\"\nrequires-python = \">=3.11\"\ndependencies = []\n[project.scripts]\nparcel-desk = \"parcel_desk.__main__:main\"\n",
+        "tests/test_store.py": "import unittest\nfrom parcel_desk.store import pending\n\nclass StoreTests(unittest.TestCase):\n    def test_empty_queue(self):\n        self.assertEqual(pending(\":memory:\"), [])\n"
+      },
+      "prompt": "Use $env-bootstrap and $handover-pack to prepare this synthetic project for the receiving team. Use the supplied engagement brief in .fde/00-engagement.md and record verified commands, the durable guide, limitations, open risks, and next steps in the named skill artifacts. Stay within this project; do not change application source, install dependencies, invoke other agents, contact people, use external services, or operate production. Report installed skill and shared-reference files actually used.\n",
+      "final_response": "Prepared the receiving-team handover without changing application source or installing dependencies.\n\nCreated:\n\n- [Environment setup and verified commands](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde/01-environment.md)\n- [Durable repository guide](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde/repo-guide.md)\n- [Continuation handover, risks, and next steps](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde/09-handover.md)\n- Updated the working-guide pointer in [00-engagement.md](/private/var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde/00-engagement.md).\n\nVerification:\n\n- Python 3.12.5 satisfies the declared Python \u22653.11 requirement.\n- `python3 -m parcel_desk --help` succeeded.\n- `python3 -m unittest discover -s tests -v` passed 1/1 tests.\n- `git diff --check` passed.\n- Packaging, normal database execution, CSV behavior, integration, release, and production remain explicitly unverified.\n\nSkill files used:\n\n- `.agents/skills/env-bootstrap/SKILL.md`\n- `.agents/skills/handover-pack/SKILL.md`\n\nShared references used:\n\n- `.agents/skills/_shared/workspace-conventions.md`\n- `.agents/skills/_shared/stack-detection.md`\n- `.agents/skills/_shared/enterprise-constraints.md`\n- `.agents/skills/_shared/agent-context.md`\n\nNo other skills, agents, external services, or production systems were used.",
+      "installed_skill_count": 34,
+      "commands_executed": [
+        {
+          "command": "/bin/zsh -lc 'pwd && rg --files -uu | sort'",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"sed -n '1,260p' .agents/skills/_shared/workspace-conventions.md\nsed -n '1,320p' .agents/skills/_shared/stack-detection.md\nsed -n '1,260p' .agents/skills/_shared/enterprise-constraints.md\nsed -n '1,260p' .agents/skills/_shared/agent-context.md\nsed -n '1,260p' .fde/00-engagement.md\nif test -f .fde/00b-access.md; then sed -n '1,260p' .fde/00b-access.md; else echo 'NO_00B_ACCESS'; fi\ngit status --short\ngit rev-parse --short HEAD\ngit log -1 --format='%H%n%ad%n%s' --date=iso-strict\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"test -d /var/folders/gp/b35crnfx1h1crl2j_w_j89h80000gn/T/fde-codex-portability-_h70g7cw/handover/.fde && echo WORKSPACE_EXISTS\nsed -n '1,240p' README.md\nsed -n '1,260p' pyproject.toml\nsed -n '1,260p' parcel_desk/__main__.py\nsed -n '1,260p' parcel_desk/store.py\nsed -n '1,260p' tests/test_store.py\nfind . -maxdepth 3 \\\\( -name 'pyproject.toml' -o -name 'requirements*.txt' -o -name 'Makefile' -o -name 'Dockerfile' -o -name 'docker-compose*.yml' \\\\) -not -path './.git/*' -print\nfor m in pyproject.toml; do n=\"'$(find . -name \"$m\" -not -path '\"'./.git/*' | wc -l | tr -d ' '); echo \\\"\"'$m: $n\"; done\ngit ls-files | sed '\"'s/.*\\\\.//' | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -rn | head -25\nfind . -maxdepth 3 -type f \\\\( -path './.github/workflows/*' -o -name 'Jenkinsfile' -o -name '.gitlab-ci.yml' -o -name 'azure-pipelines.yml' -o -name '.circleci' \\\\) -print\nfind . -maxdepth 2 -type f \\\\( -name '.python-version' -o -name '.tool-versions' -o -name 'uv.lock' -o -name 'poetry.lock' -o -name 'Pipfile.lock' \\\\) -print\npython3 --version\npython3 -m pytest --version 2>&1 || true\npython3 - <<'PY'\nimport os\nprint('proxy_variable_names=' + ','.join(sorted(n for n in os.environ if 'proxy' in n.lower())))\nPY\"",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc 'python3 -m parcel_desk --help\n/usr/bin/time -p python3 -m unittest discover -s tests -v\ngit status --short'",
+          "exit_code": 0
+        },
+        {
+          "command": "/bin/zsh -lc \"git diff --check\ngit diff --stat\ngit status --short\nsed -n '1,240p' .fde/repo-guide.md\nsed -n '1,320p' .fde/01-environment.md\nsed -n '1,380p' .fde/09-handover.md\npython3 -m parcel_desk --help >/dev/null\npython3 -m unittest discover -s tests -v\"",
+          "exit_code": 0
+        }
+      ],
+      "artifacts": [
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/repo-guide.md",
+          "sha256": "10a2057fdcde3697ec8561b7eabdb2269e0482c49b72eb009e06c0f739ba16dd"
+        },
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/01-environment.md",
+          "sha256": "66087254665029aeeacb82c949de3600471570002c79f8486dde38797e37c205"
+        },
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/09-handover.md",
+          "sha256": "b8809c9c7d3ee4a78433601b4e90c1aeb849f29c20ccd6991e1a285a9332173a"
+        },
+        {
+          "path": "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/00-engagement.md",
+          "sha256": "851ddb01837a2d29ef807bc3e11d022a84caab29bf33a86bdc3e911c3ad56b92"
+        }
+      ],
+      "checks": [
+        {
+          "result": "pass",
+          "check": "Native CLI completed with exit 0 and final output",
+          "evidence": {
+            "exit_code": 0,
+            "duration_seconds": 105.0
+          }
+        },
+        {
+          "result": "pass",
+          "check": "Explicit invocation and shared-reference loading",
+          "evidence": {
+            "skills": [
+              "env-bootstrap",
+              "handover-pack"
+            ],
+            "separate_skill_read_events": [],
+            "shared_context_read_event": true
+          }
+        },
+        {
+          "result": "pass",
+          "check": "Application source, tests, package metadata and README unchanged",
+          "evidence": "git diff --name-only for these paths returned no rows"
+        },
+        {
+          "result": "pass",
+          "check": "No CLAUDE.md created",
+          "evidence": "No such file in project root"
+        },
+        {
+          "result": "pass",
+          "check": "Named workflow artifacts produced",
+          "evidence": [
+            "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/repo-guide.md",
+            "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/01-environment.md",
+            "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/09-handover.md",
+            "eval/portability-trials/codex-2026-10-27/portable-guide-fallback/.fde/00-engagement.md"
+          ]
+        },
+        {
+          "result": "pass",
+          "check": "Portable guide used instead of a host-specific file",
+          "evidence": ".fde/repo-guide.md created; neither AGENTS.md nor CLAUDE.md created; charter records guide"
+        },
+        {
+          "result": "pass",
+          "check": "Handover preserves missing evidence and ownership",
+          "evidence": "Manual review confirmed one passing test, module help, no release/production evidence, no named maintainer, and no invented walkthrough."
+        }
+      ]
+    }
+  ],
+  "source_versions": {
+    "scripts/install-skills.py": "3339c5162aceb99a6f73197d7062f3b37ec12cf5f84216ac51b873ae23589bee",
+    "fde-core/skills/_shared/agent-context.md": "ff1daf7655ef82f6becb0d05ec661f985bca9ca45d74dc129f2f22a7653ac51b",
+    "fde-core/skills/_shared/workspace-conventions.md": "e6bf3f95317a29b76a8aba2bdd7ffafe6ee512666ba8987d8028a8c4a15535ea",
+    "fde-core/skills/context-strategy/SKILL.md": "d56a265ca4c8293c5f88f27b2f1b6590115d72fe2e3dd9dadd69f83eb2ac6e2a",
+    "fde-core/skills/repo-recon/SKILL.md": "b0ea1856b1f5ae49f435d067562493740fff4eba929a06ba4c5a6cca7d51478c",
+    "fde-core/skills/env-bootstrap/SKILL.md": "9b8b8877f16652e55fbf21f897c20d9b948b596d818755f288e372d515073822",
+    "fde-core/skills/handover-pack/SKILL.md": "5fa551a94c511d8f51c24adf0d54b781d408f3c863dc11111d4681309fc96b13",
+    "fde-core/skills/fde-orient/SKILL.md": "8dd8a36eed06ba41da1faad157f9c4f89ee48a9672c0be695c8038b51212b2ee",
+    "fde-core/skills/security-compliance-check/SKILL.md": "8174475879c843d451fd3513b434465a43a48cdbad5615053d877d0793f5b533"
+  },
+  "repository_base": "bd906b28a3c956224b3e9e7a7d7b7cfb6f5b5333"
+}

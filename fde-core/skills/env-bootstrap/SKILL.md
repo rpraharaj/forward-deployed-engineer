@@ -113,7 +113,7 @@ State explicitly what you got working and what you didn't, so a later reader kno
 
 If the bootstrap took a day and the fix was three lines in a README, contribute the three lines. It's cheap, it's visible, and it's the kind of thing that makes a team glad you're there. Where the gap is bigger — a missing `.env.example`, a broken setup script — raise it rather than silently working around it.
 
-Copy the working build/test/run commands into `CLAUDE.md`. That is what stops the next session rediscovering the flags. A CI-only failure after a local green build is `ci-forensics` *(fde-operate)*.
+Copy the verified build/test/run commands into the working guide selected by `../_shared/agent-context.md` (existing project instructions, or `<workspace>/repo-guide.md`). That is what stops the next session rediscovering the flags. A CI-only failure after a local green build is `ci-forensics` *(fde-operate)*.
 
 ## Output template
 

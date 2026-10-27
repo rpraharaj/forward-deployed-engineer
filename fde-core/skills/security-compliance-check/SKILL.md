@@ -38,7 +38,7 @@ Resolve `<workspace>` before reading or writing artifacts: read `../_shared/work
 
 Know the organization's own review process and its lead time before starting. See `change-control-navigation`.
 
-**First action, not last:** file the formal review (or `/security-review` plus this pack) as soon as you know the data classification. The rest of this skill is so that review finds nothing surprising. Starting it at go-live is the failure the why-section describes.
+**First action, not last:** start the organization's formal review as soon as you know the data classification. An available agent security-review command may assist but does not replace required review. The rest of this skill is so that review finds nothing surprising. Starting it at go-live is the failure the why-section describes.
 
 ## Procedure
 

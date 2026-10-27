@@ -61,7 +61,7 @@ Every question you ask that the filesystem could have answered spends the user's
 pwd && ls -a && git remote -v 2>/dev/null && git log --oneline -10 2>/dev/null
 ```
 
-Read any `README`, `CONTRIBUTING`, `docs/`, or `CLAUDE.md`. Note what stack is present (see `../_shared/stack-detection.md`) and how active the repository is.
+Read applicable project instructions (such as `AGENTS.md` or `CLAUDE.md`), `README`, `CONTRIBUTING`, and relevant `docs/`. Use `../_shared/agent-context.md` for the durable working guide. Note what stack is present (see `../_shared/stack-detection.md`) and how active the repository is.
 
 You are looking for: does a system already exist, is it maintained, how big is it, and does the repository suggest what it does.
 
@@ -129,14 +129,7 @@ Produce a short ordered list of the next three to five **installed** skills, eac
 
 `access-and-onboarding` comes first in almost every engagement, because access lead times are the one constraint you cannot compress later. If it's not first, be able to say why.
 
-If the archetype needs `fde-data`, `fde-migration`, `fde-platform`, `fde-operate`, `fde-product`, or `fde-ai`, tell the user to install that pack before those skills can run:
-
-```bash
-claude plugin marketplace add /path/to/FDE-Claude
-claude plugin install fde-<pack>@fde-skills
-```
-
-For local development, load the core and selected pack for one session with `claude --plugin-dir /path/to/FDE-Claude/fde-core --plugin-dir /path/to/FDE-Claude/fde-<pack>`.
+If the archetype needs `fde-data`, `fde-migration`, `fde-platform`, `fde-operate`, `fde-product`, or `fde-ai`, name the missing pack and ask the user to enable it through the active agent's installation route. Do not assume a particular plugin manager or install tools automatically. The portfolio's README and integration guides describe supported routes; when those files are unavailable, record the pack and installation gap rather than inventing a command.
 
 Do not sequence a pack skill that is not installed. Substitute a core skill and record the gap in the charter.
 

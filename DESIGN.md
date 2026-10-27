@@ -1,7 +1,7 @@
 # FDE Skill Portfolio — Design
 
 **Status:** 50 skills built across seven packs. The seven Wave 5 additions are experimental; validation and its limits are recorded in [VALIDATION.md](VALIDATION.md).
-**Scope:** A portfolio of Claude Code skills for an engineer entering an unfamiliar organization: discover the right problem, deliver a safe system, support adoption, measure outcomes, and carry permitted field lessons into shared products.
+**Scope:** A portfolio of portable agent skills and playbooks for an engineer entering an unfamiliar organization: discover the right problem, deliver a safe system, support adoption, measure outcomes, and carry permitted field lessons into shared products.
 **How to use what's built:** [USAGE.md](USAGE.md) · **Cold-start test results:** [VALIDATION.md](VALIDATION.md)
 
 ---
@@ -14,7 +14,7 @@ They arrive with no context, no relationship capital, and no institutional memor
 
 **The bottleneck is never writing code.** It is building an accurate enough mental model of an unfamiliar system, fast enough that a team who didn't ask for you starts trusting your judgment. Everything downstream — the design, the estimate, the change, the release — is gated on that.
 
-So this portfolio is weighted toward **comprehension, grounding, blast radius, and verifiable claims**, not code generation. Claude already knows how to write a service. What it does not know is *the procedure for producing a system map that the team who owns the system agrees with.*
+So this portfolio is weighted toward **comprehension, grounding, blast radius, and verifiable claims**, not code generation. Code generation alone does not establish *a system map that the team who owns the system agrees with.* The procedures make that investigation explicit.
 
 ---
 
@@ -24,7 +24,7 @@ These are not incidental. Each one changes how the skills must be written.
 
 | Constraint | Consequence for design |
 |---|---|
-| **Claude Code is the only tool** | Assume filesystem, `git`, and a shell. Do not assume Jira/Confluence/GitHub MCP servers exist. Where they help, treat them as an optional accelerator with a filesystem fallback. |
+| **The coding agent varies** | Use filesystem, `git`, and a shell where the task requires them. Do not assume a particular vendor or automatic context loader. Do not assume Jira/Confluence/GitHub MCP servers exist. Where they help, treat them as an optional accelerator with a filesystem fallback. |
 | **Often no internet** | No dependence on WebSearch/WebFetch. Every skill must reach its conclusion from repo-local evidence and the running system. |
 | **Locked-down machine** | Cannot install arbitrary tooling. Prefer what ships with the repo (its own build tool, its own test runner) over anything global. |
 | **Stack is unknown until arrival** | Skills **detect, then adapt**. No skill hardcodes Maven, npm, or `pytest` in its main body. |
@@ -133,7 +133,7 @@ Wave 5 extends the arc with human `workflow-discovery` and `use-case-selection` 
 | Skill | Triggers when | What it does | Artifact |
 |---|---|---|---|
 | **`env-bootstrap`** | "I can't build this", first day in a repo, broken local setup | Detects build system, runtime versions, package registries, required services, config/secret sources. Gets to a working build → test → run loop. Records every workaround discovered, because the next person will hit them too. | `.fde/01-environment.md` |
-| **`repo-recon`** | Dropped into an unfamiliar codebase, "help me understand this repo" | Structured first pass: entry points, module boundaries, layering, churn hotspots (`git log` frequency), size/complexity outliers, test topology, dead zones, config surface. Deliberately breadth-first — it maps the territory, it does not explore any one region deeply. | `.fde/02-system-map.md` + a draft `CLAUDE.md` |
+| **`repo-recon`** | Dropped into an unfamiliar codebase, "help me understand this repo" | Structured first pass: entry points, module boundaries, layering, churn hotspots (`git log` frequency), size/complexity outliers, test topology, dead zones, config surface. Deliberately breadth-first — it maps the territory, it does not explore any one region deeply. | `.fde/02-system-map.md` + a durable working guide |
 | **`ownership-map`** | Before asking anyone for anything; PR needs reviewers; "who owns this?" | Derives ownership and decision rights from evidence: `CODEOWNERS`, commit authorship over time, review patterns, ticket references in commit messages, directory-level activity. Distinguishes *who wrote it* from *who maintains it now* — usually different people, and the second group is the one that matters. | `.fde/02b-ownership.md` |
 
 **Why `ownership-map` is a real skill and not a footnote:** an FDE's most common failure is technical work that dies politically. Knowing who must be consulted before a change is as load-bearing as knowing what the change is.
@@ -216,7 +216,7 @@ This phase is what "go-live" actually consists of, and it is the part most engin
 |---|---|---|---|
 | **`incident-triage`** | Production is broken; alert fired; "customers are seeing errors" | Works backward from symptom to code under time pressure: stack trace to source, correlation IDs across services, log and metric narrowing, recent-change correlation. Prioritizes mitigation over root cause, and says explicitly which one it is doing. | `.fde/incidents/<date>-<name>.md` |
 | **`observability-gap`** | After any incident where the answer was hard to find | Asks the diagnostic question: could we have seen this? Identifies missing logs, metrics, traces, and alerts, and adds them. The compounding skill — each pass makes the next incident cheaper. | PR + notes |
-| **`handover-pack`** | Engagement ending; rotating to another team | Consolidates everything into what the receiving team actually needs: refreshed `CLAUDE.md`, runbooks, ADRs, known issues, the things only the FDE currently knows. Explicitly includes **open risks and unfinished business** — the section most handovers omit and every receiving team needs. | `.fde/09-handover.md` |
+| **`handover-pack`** | Engagement ending; rotating to another team | Consolidates everything into what the receiving team actually needs: refreshed working guide, runbooks, ADRs, known issues, the things only the FDE currently knows. Explicitly includes **open risks and unfinished business** — the section most handovers omit and every receiving team needs. | `.fde/09-handover.md` |
 
 ---
 
@@ -238,7 +238,7 @@ The first-pass catalog was audited against what enterprise IT engagements actual
 |---|---|
 | **`access-and-onboarding`** | The single most expensive omission. FDEs routinely lose one to two weeks to access: VPN, repo permissions, DB read grants, build and pipeline rights, ticket and wiki accounts, test environments, secrets vaults. The skill turns this into a tracked critical path — enumerate what's needed *before* it blocks, identify the approver for each, sequence the requests by lead time, and record workarounds. Nothing else in the portfolio can run until this does. |
 | **`knowledge-interview`** | The original catalog assumed all answers live in the code. They don't. The highest-value source in a legacy organization is a person who has been there nine years, and the FDE gets maybe forty minutes of their time. Structured extraction: what to ask, in what order, how to capture tacit knowledge, how to distinguish what someone knows from what they assume, and how to convert an interview into cited artifacts. |
-| **`context-strategy`** | Given that Claude Code is the only tool, this is core craft and it was entirely absent. How to work productively in a repository far larger than any context window: what to read versus search versus delegate to subagents, how to build a durable `CLAUDE.md` so each session doesn't re-derive the same map, when to write a throwaway script to answer a question at scale rather than reading files one by one, and how to structure long engagements across many sessions. |
+| **`context-strategy`** | Across coding agents, managing a finite context window is core craft. How to work productively in a repository far larger than any context window: what to read versus search versus delegate to subagents, how to maintain a durable working guide so each session doesn't re-derive the same map, when to write a throwaway script to answer a question at scale rather than reading files one by one, and how to structure long engagements across many sessions. |
 | **`test-data-strategy`** | Blocks all verification and was missing. Production data usually cannot be copied for legal reasons, so realistic test data must be constructed: synthesis, subsetting, masking and referential-integrity preservation, fixtures for the awkward edge cases. In regulated organizations this is frequently the actual bottleneck to shipping, not the code. |
 
 #### B. Project archetypes the catalog didn't serve
@@ -424,7 +424,7 @@ The FDE installs core plus whichever pack matches the archetype `fde-orient` ide
 
 Not everything an FDE does deserves its own skill. These were considered and folded in elsewhere — recorded so the reasoning survives, and so we don't re-litigate them.
 
-**Already provided by Claude Code — do not rebuild:** inbound code review (`/code-review`) and security review of pending changes (`/security-review`). The portfolio should reference them, not duplicate them.
+**Use existing review capabilities where available:** inbound code review and security review of pending changes. The portfolio should use the team's approved process and available host tools rather than require a vendor-specific slash command. Tool output does not replace formal organizational review.
 
 **Folded into existing skills as `references/`:**
 
@@ -483,8 +483,9 @@ Settled in the skills; left here so we do not re-open them casually.
 2. **Artifact format** — markdown in the workspace is the default. Paste-friendly templates; no Confluence exporter in v1.
 3. **Tooling floor** — filesystem + git + shell. Host CLIs (`gh`, `glab`) are optional accelerators with a filesystem fallback.
 4. **Network** — assume offline / internal-registry by default (`enterprise-constraints.md`).
-5. **Distribution** — Claude Code plugins, one per pack, listed in `.claude-plugin/marketplace.json`. Register this repository as the `fde-skills` marketplace and install by `name@fde-skills`; use `--plugin-dir` for local session-only loading.
-6. **Naming prefix** — directory names are the skill names. Only the entry point is `fde-orient`. Collision risk is accepted in exchange for shorter invocations.
+5. **Distribution** — canonical `SKILL.md` folders remain in seven packs. `scripts/install-skills.py` copies selected packs and `_shared` resources into a host's skill directory. Claude Code marketplace/plugin manifests remain an optional integration. See [integration routes](docs/integrations.md).
+6. **Working memory** — preserve existing project instructions and the designated working guide. If none exists, use `<workspace>/repo-guide.md`; record its path and read it explicitly across agents. See `agent-context.md`.
+7. **Naming prefix** — directory names are the skill names. Only the entry point is `fde-orient`. Collision risk is accepted in exchange for shorter invocations.
 
 ---
 

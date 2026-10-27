@@ -31,6 +31,7 @@ Archetype-pack skills (`fde-data`, `fde-migration`, `fde-operate`, `fde-platform
 ├── 00-engagement.md              # charter: archetype, stakeholders, goal, constraints, workspace decisions
 ├── 00b-access.md                 # access register and critical path
 ├── 00c-context.md                # scale, working set, what was delegated
+├── repo-guide.md                # portable working guide when no suitable project instruction file exists
 ├── 01-environment.md             # how to build, test, run — including the workarounds
 ├── 02-system-map.md              # cartography
 ├── 02b-ownership.md              # who owns what, who decides

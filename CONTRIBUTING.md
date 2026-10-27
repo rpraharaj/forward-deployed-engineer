@@ -37,7 +37,7 @@ Salesforce Apex · Low-code platforms (OutSystems, Mendix, Power Platform) · Em
 
 ## 2. Report a procedure that didn't fit 🧭
 
-**39 of 50 skills have no recorded procedure trial.** Four have at least partial repository-based trials: `repo-recon`, `blast-radius`, `env-bootstrap`, and `characterization-tests`. Seven additions have initial synthetic artifact trials, recorded in [VALIDATION.md](VALIDATION.md#run-16--seven-synthetic-procedure-trials), and remain experimental. Neither kind establishes live client-engagement effectiveness; shared-reference checks are counted separately.
+**37 of 50 skills have no recorded procedure trial.** Four have historical repository-based trials: `repo-recon`, `blast-radius`, `env-bootstrap`, and `characterization-tests`. Seven additions have synthetic artifact trials in [run 16](VALIDATION.md#run-16--seven-synthetic-procedure-trials). Native Codex trials in [run 17](VALIDATION.md#run-17--agent-neutral-procedures-and-native-codex-trials) additionally exercise `context-strategy` and `handover-pack`, alongside two previously tried skills. Coverage is partial and does not establish live client-engagement effectiveness; shared-reference checks are counted separately.
 
 If you used one on real work and the steps were wrong for your situation — a missing step, an ordering that doesn't hold, a stopping condition that fired too early — that's the highest-signal feedback available, and it can't be obtained any other way.
 
@@ -82,13 +82,15 @@ Body sections:
 
 ### The description field
 
-This is the **only** triggering mechanism. It must say what the skill does *and* the concrete situations that should invoke it, phrased the way someone would actually describe the moment.
+This is the primary signal for automatic selection; explicit invocation and discovery rules depend on the host. It must say what the skill does *and* the concrete situations that should invoke it, phrased the way someone would actually describe the moment.
 
 Lean slightly assertive — under-triggering is the common failure. But bound it: our one triggering defect came from writing *"Run this before any other FDE skill,"* which turned an entry-point skill into a catch-all.
 
-### Test your triggering
+### Test portability and triggering
 
-Before opening a PR, check your skill doesn't steal queries from existing ones:
+Keep procedures agent-neutral. Preserve the team's working guide rather than requiring `CLAUDE.md`; use the shared `agent-context.md` conventions. Do not require a built-in slash command, MCP integration, or subagent that the host may not provide.
+
+Test installation with complete references and actual invocation in the host being claimed. Do not present a mocked judge or schema check as a runtime test. Before opening a PR, also check your skill doesn't steal queries from existing ones:
 
 ```bash
 # Set up the evaluator in an isolated Python environment (3.10+).
@@ -119,7 +121,7 @@ print(runner['load_skills']())
 PY
 
 # 2. Ask which skill fires for a realistic query
-printf 'You are Claude Code. These skills are available:\n\n%s\n\nA user says:\n"%s"\n\nWhich skill(s) would you invoke? Reply with ONLY skill names, comma-separated, most relevant first (max 2). If none apply, reply exactly NONE. No explanation.' \
+printf 'You are a coding agent. These skills are available:\n\n%s\n\nA user says:\n"%s"\n\nWhich skill(s) would you invoke? Reply with ONLY skill names, comma-separated, most relevant first (max 2). If none apply, reply exactly NONE. No explanation.' \
   "$(cat /tmp/skills.txt)" "your realistic test query here" | grok --single --output-format plain
 ```
 
@@ -157,13 +159,15 @@ Open an issue to discuss the boundary before building. The test for a separate p
 - [ ] Under ~250 lines; depth pushed into `references/`
 - [ ] Produces a named artifact with the standard header
 - [ ] Has an explicit stopping condition, if it's a comprehension skill
+- [ ] Procedures do not require a particular agent or automatically loaded filename
+- [ ] Complete installed references and supported host behavior checked
 - [ ] Cross-references resolve (`../_shared/...`, `references/...`)
 - [ ] Triggering tested in both directions, results included
 
-Run the structural checks:
+The offline suite above is the portable regression check and exercises actual installation into temporary projects. Run the optional plugin and reference checks when changing the Claude packaging or linked files:
 
 ```bash
-# Validate the marketplace and every pack with Claude's runtime-aware validator.
+# Optional: validate the retained Claude marketplace integration (requires Claude CLI).
 claude plugin validate . || exit 1
 for pack in fde-core fde-data fde-migration fde-platform fde-operate fde-product fde-ai; do
   claude plugin validate --strict "$pack" || exit 1
@@ -182,7 +186,7 @@ done
 
 ## What we won't merge
 
-- Skills that duplicate what Claude Code already provides (`/code-review`, `/security-review`)
+- Skills that duplicate available host review tools without adding an FDE-specific procedure
 - Stack-specific patterns in a `SKILL.md` body — push them down a level
 - Skills with unbounded procedures and no stopping condition
 - Claims in the docs that aren't backed by a test result. [VALIDATION.md](VALIDATION.md) states what's untested precisely, and that honesty is load-bearing — it's the same standard the skills demand of their users.

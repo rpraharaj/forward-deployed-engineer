@@ -1,6 +1,6 @@
 ---
 name: handover-pack
-description: Consolidate an engagement into what the receiving team actually needs - refreshed CLAUDE.md, runbooks, ADRs, known issues, and explicitly the open risks and unfinished business that most handovers omit. Use when an engagement is ending, when rotating to another team, when someone else will take over work in progress, or when you want the work to survive your departure. Write it before the last week, not during it.
+description: Consolidate an engagement into what the receiving team actually needs - refreshed working guide, runbooks, ADRs, known issues, and explicitly the open risks and unfinished business that most handovers omit. Use when an engagement is ending, when rotating to another team, when someone else will take over work in progress, or when you want the work to survive your departure. Write it before the last week, not during it.
 ---
 
 # Handover pack
@@ -48,13 +48,13 @@ Handovers written for a generic reader help nobody. Establish specifically: who 
 
 A team that built the surrounding system needs a completely different document from a team inheriting something foreign. Where the receiving team doesn't exist yet — genuinely common, and a real risk — say so prominently. An unowned system is the finding, not a gap in your document.
 
-### 3. Refresh `CLAUDE.md` first
+### 3. Refresh the working guide first
 
-The highest-return artifact, because it loads automatically for anyone using Claude Code on this repo. Everything in it is knowledge nobody has to look up.
+Follow `../_shared/agent-context.md`: preserve the team's existing instruction file, or maintain `<workspace>/repo-guide.md` if none exists. Record its path so the receiving person or agent can read it explicitly; automatic loading is host-specific.
 
 Update: build and test commands including the workarounds, the layout map, conventions that differ from the language default, landmines, and where things live. Keep it under about 200 lines — see `context-strategy` step 6.
 
-Where the repository had a `CLAUDE.md` before you, keep its voice and structure. This is a contribution to their file, not a replacement.
+Where the repository had a working guide before you, keep its voice and structure. This is a contribution to their file, not a replacement.
 
 ### 4. Consolidate the durable artifacts
 
@@ -162,7 +162,7 @@ Write to `<workspace>/09-handover.md`:
 ## Where everything is
 | What | Where |
 |---|---|
-| Working aid for Claude Code | `CLAUDE.md` |
+| Working guide | <existing project guide, or `<workspace>/repo-guide.md`> |
 | Deploy + rollback | `<workspace>/runbooks/deploy-refund-currency.md` |
 | Decisions and why | `<workspace>/adr/` |
 | System map | `<workspace>/02-system-map.md` |
